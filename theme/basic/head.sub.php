@@ -53,9 +53,6 @@ header("Pragma: no-cache"); // HTTP/1.0
         if (defined('_SHOP_')) $shop_css = '_shop';
         echo '<link rel="stylesheet" href="' . run_replace('head_css_url', G5_THEME_CSS_URL . '/' . (G5_IS_MOBILE ? 'mobile' : 'default') . $shop_css . '.css?ver=' . G5_CSS_VER, G5_THEME_URL) . '">' . PHP_EOL;
         ?>
-        <!--[if lte IE 8]>
-<script src="<?php echo G5_JS_URL ?>/html5.js"></script>
-<![endif]-->
         <script>
           // 자바스크립트에서 사용하는 전역변수 선언
           var g5_url = "<?php echo G5_URL ?>";
