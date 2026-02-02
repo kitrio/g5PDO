@@ -1679,21 +1679,12 @@ function html_symbol($str)
 // DB 연결
 function sql_connect($host, $user, $pass, $db = G5_MYSQL_DB)
 {
-    global $g5;
+    mysqli_report(MYSQLI_REPORT_OFF);
+    $link = @mysqli_connect($host, $user, $pass, $db) or die('MySQL Host, User, Password, DB 정보에 오류가 있습니다.');
 
-    if (function_exists('mysqli_connect') && G5_MYSQLI_USE) {
-        mysqli_report(MYSQLI_REPORT_OFF);
-        $link = @mysqli_connect($host, $user, $pass, $db) or die('MySQL Host, User, Password, DB 정보에 오류가 있습니다.');
-
-        // 연결 오류 발생 시 스크립트 종료
-        if (mysqli_connect_errno()) {
-            die('Connect Error: ' . mysqli_connect_error());
-        }
-    } else {
-        if (!function_exists('mysql_connect')) {
-            die('MySQL이 설치되지 않아 mysql_connect 함수를 사용할 수 없습니다.');
-        }
-        $link = mysql_connect($host, $user, $pass) or die('MySQL Host, User, Password 정보에 오류가 있습니다.');
+    // 연결 오류 발생 시 스크립트 종료
+    if (mysqli_connect_errno()) {
+        die('Connect Error: ' . mysqli_connect_error());
     }
 
     return $link;
@@ -1703,12 +1694,7 @@ function sql_connect($host, $user, $pass, $db = G5_MYSQL_DB)
 // DB 선택
 function sql_select_db($db, $connect)
 {
-    global $g5;
-
-    if (function_exists('mysqli_select_db') && G5_MYSQLI_USE)
-        return @mysqli_select_db($connect, $db);
-    else
-        return @mysql_select_db($db, $connect);
+    return @mysqli_select_db($connect, $db);
 }
 
 
@@ -1719,20 +1705,14 @@ function sql_set_charset($charset, $link = null)
     if (!$link)
         $link = $g5['connect_db'];
 
-    if (function_exists('mysqli_set_charset') && G5_MYSQLI_USE)
-        mysqli_set_charset($link, $charset);
-    else
-        mysql_query(" set names {$charset} ", $link);
+    mysqli_set_charset($link, $charset);
 }
 
 function sql_data_seek($result, $offset = 0)
 {
     if (!$result) return;
 
-    if (function_exists('mysqli_set_charset') && G5_MYSQLI_USE)
-        mysqli_data_seek($result, $offset);
-    else
-        mysql_data_seek($result, $offset);
+    mysqli_data_seek($result, $offset);
 }
 
 // mysqli_query 와 mysqli_error 를 한꺼번에 처리
@@ -1741,8 +1721,9 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
 {
     global $g5, $g5_debug;
 
-    if (!$link)
+    if (!$link) {
         $link = $g5['connect_db'];
+    }
 
     // Blind SQL Injection 취약점 해결
     $sql = trim($sql);
@@ -1756,21 +1737,13 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
 
     $start_time = ($is_debug || G5_COLLECT_QUERY) ? get_microtime() : 0;
 
-    if (function_exists('mysqli_query') && G5_MYSQLI_USE) {
-        if ($error) {
-            $result = @mysqli_query($link, $sql) or die("<p>$sql<p>" . mysqli_errno($link) . " : " . mysqli_error($link) . "<p>error file : {$_SERVER['SCRIPT_NAME']}");
-        } else {
-            try {
-                $result = @mysqli_query($link, $sql);
-            } catch (Exception $e) {
-                $result = null;
-            }
-        }
+    if ($error) {
+        $result = @mysqli_query($link, $sql) or die("<p>$sql<p>" . mysqli_errno($link) . " : " . mysqli_error($link) . "<p>error file : {$_SERVER['SCRIPT_NAME']}");
     } else {
-        if ($error) {
-            $result = @mysql_query($sql, $link) or die("<p>$sql<p>" . mysql_errno() . " : " . mysql_error() . "<p>error file : {$_SERVER['SCRIPT_NAME']}");
-        } else {
-            $result = @mysql_query($sql, $link);
+        try {
+            $result = @mysqli_query($link, $sql);
+        } catch (Exception $e) {
+            $result = null;
         }
     }
 
@@ -1779,17 +1752,10 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
     $error = null;
     $source = array();
     if ($is_debug || G5_COLLECT_QUERY) {
-        if (function_exists('mysqli_error') && G5_MYSQLI_USE) {
-            $error = array(
-                'error_code' => mysqli_errno($link),
-                'error_message' => mysqli_error($link),
-            );
-        } else {
-            $error = array(
-                'error_code' => mysql_errno($link),
-                'error_message' => mysql_error($link),
-            );
-        }
+        $error = array(
+            'error_code' => mysqli_errno($link),
+            'error_message' => mysqli_error($link),
+        );
 
         $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $found = false;
@@ -1861,14 +1827,11 @@ function sql_fetch_array($result)
 {
     if (!$result) return array();
 
-    if (function_exists('mysqli_fetch_assoc') && G5_MYSQLI_USE)
-        try {
-            $row = @mysqli_fetch_assoc($result);
-        } catch (Exception $e) {
-            $row = null;
-        }
-    else
-        $row = @mysql_fetch_assoc($result);
+    try {
+        $row = @mysqli_fetch_assoc($result);
+    } catch (Exception $e) {
+        $row = null;
+    }
 
     return $row;
 }
@@ -1881,10 +1844,7 @@ function sql_free_result($result)
 {
     if (!is_resource($result)) return;
 
-    if (function_exists('mysqli_free_result') && G5_MYSQLI_USE)
-        return mysqli_free_result($result);
-    else
-        return mysql_free_result($result);
+    mysqli_free_result($result);
 }
 
 
@@ -1916,19 +1876,13 @@ function sql_insert_id($link = null)
     if (!$link)
         $link = $g5['connect_db'];
 
-    if (function_exists('mysqli_insert_id') && G5_MYSQLI_USE)
-        return mysqli_insert_id($link);
-    else
-        return mysql_insert_id($link);
+    return mysqli_insert_id($link);
 }
 
 
 function sql_num_rows($result)
 {
-    if (function_exists('mysqli_num_rows') && G5_MYSQLI_USE)
-        return mysqli_num_rows($result);
-    else
-        return mysql_num_rows($result);
+    return mysqli_num_rows($result);
 }
 
 
@@ -1944,18 +1898,8 @@ function sql_field_names($table, $link = null)
     $sql = " select * from `$table` limit 1 ";
     $result = sql_query($sql, $link);
 
-    if (function_exists('mysqli_fetch_field') && G5_MYSQLI_USE) {
-        while ($field = mysqli_fetch_field($result)) {
-            $columns[] = $field->name;
-        }
-    } else {
-        $i = 0;
-        $cnt = mysql_num_fields($result);
-        while ($i < $cnt) {
-            $field = mysql_fetch_field($result, $i);
-            $columns[] = $field->name;
-            $i++;
-        }
+    while ($field = mysqli_fetch_field($result)) {
+        $columns[] = $field->name;
     }
 
     return $columns;
@@ -1969,11 +1913,7 @@ function sql_error_info($link = null)
     if (!$link)
         $link = $g5['connect_db'];
 
-    if (function_exists('mysqli_error') && G5_MYSQLI_USE) {
-        return mysqli_errno($link) . ' : ' . mysqli_error($link);
-    } else {
-        return mysql_errno($link) . ' : ' . mysql_error($link);
-    }
+    return mysqli_errno($link) . ' : ' . mysqli_error($link);
 }
 
 
@@ -2455,17 +2395,12 @@ function sql_real_escape_string($str, $link = null)
     if (!$link)
         $link = $g5['connect_db'];
 
-    if (function_exists('mysqli_connect') && G5_MYSQLI_USE) {
-        return mysqli_real_escape_string($link, $str);
-    }
-
-    return mysql_real_escape_string($str, $link);
+    return mysqli_real_escape_string($link, $str);
 }
 
 function escape_trim($field)
 {
-    $str = call_user_func(G5_ESCAPE_FUNCTION, $field);
-    return $str;
+    return call_user_func(G5_ESCAPE_FUNCTION, $field);
 }
 
 
