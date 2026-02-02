@@ -276,9 +276,10 @@ function thumbnail($filename, $source_path, $target_path, $thumb_width, $thumb_h
     // $thumb_file = "$target_path/thumb-{$thumb_filename}_{$thumb_width}x{$thumb_height}.".$ext[$size[2]];
     $thumb_file = "$target_path/thumb-{$thumb_filename}_{$thumb_width}x{$thumb_height}." . $file_ext;
 
+    $thumb_time = @filemtime($thumb_file);
+    $source_time = @filemtime($source_file);
+
     if (file_exists($thumb_file)) {
-        $thumb_time = @filemtime($thumb_file);
-        $source_time = @filemtime($source_file);
         if ($is_create == false && $source_time < $thumb_time) {
             return basename($thumb_file);
         }
@@ -627,31 +628,17 @@ function UnsharpMask($img, $amount, $radius, $threshold)
     //////////////////////////////////////////////////
 
 
-    if (function_exists('imageconvolution')) { // PHP >= 5.1
-        $matrix = array(
-            array(1, 2, 1),
-            array(2, 4, 2),
-            array(1, 2, 1)
-        );
-        $divisor = array_sum(array_map('array_sum', $matrix));
-        $offset = 0;
+    $matrix = array(
+        array(1, 2, 1),
+        array(2, 4, 2),
+        array(1, 2, 1)
+    );
+    $divisor = array_sum(array_map('array_sum', $matrix));
+    $offset = 0;
 
-        imagecopy($imgBlur, $img, 0, 0, 0, 0, $w, $h);
-        imageconvolution($imgBlur, $matrix, $divisor, $offset);
-    } else {
+    imagecopy($imgBlur, $img, 0, 0, 0, 0, $w, $h);
+    imageconvolution($imgBlur, $matrix, $divisor, $offset);
 
-        // Move copies of the image around one pixel at the time and merge them with weight
-        // according to the matrix. The same matrix is simply repeated for higher radii.
-        for ($i = 0; $i < $radius; $i++) {
-            imagecopy($imgBlur, $img, 0, 0, 1, 0, $w - 1, $h); // left
-            imagecopymerge($imgBlur, $img, 1, 0, 0, 0, $w, $h, 50); // right
-            imagecopymerge($imgBlur, $img, 0, 0, 0, 0, $w, $h, 50); // center
-            imagecopy($imgCanvas, $imgBlur, 0, 0, 0, 0, $w, $h);
-
-            imagecopymerge($imgBlur, $imgCanvas, 0, 0, 0, 1, $w, $h - 1, 33.33333); // up
-            imagecopymerge($imgBlur, $imgCanvas, 0, 1, 0, 0, $w, $h, 25); // down
-        }
-    }
 
     if ($threshold > 0) {
         // Calculate the difference between the blurred pixels and the original
