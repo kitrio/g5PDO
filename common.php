@@ -5,16 +5,16 @@
 error_reporting(E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING);
 
 if (!defined('G5_SET_TIME_LIMIT')) define('G5_SET_TIME_LIMIT', 0);
-@set_time_limit(G5_SET_TIME_LIMIT);
+set_time_limit(G5_SET_TIME_LIMIT);
 
-if (version_compare(PHP_VERSION, '5.2.17', '<')) {
-    die(sprintf('PHP 5.2.17 or higher required. Your PHP version is %s', PHP_VERSION));
+if (version_compare(PHP_VERSION, '7.2', '<')) {
+    die(sprintf('PHP 7.2 or higher required. Your PHP version is %s', PHP_VERSION));
 }
 
-//==========================================================================================================================
+//==============================================================================
 // extract($_GET); 명령으로 인해 page.php?_POST[var1]=data1&_POST[var2]=data2 와 같은 코드가 _POST 변수로 사용되는 것을 막음
 // 081029 : letsgolee 님께서 도움 주셨습니다.
-//--------------------------------------------------------------------------------------------------------------------------
+
 $ext_arr = array('PHP_SELF', '_ENV', '_GET', '_POST', '_FILES', '_SERVER', '_COOKIE', '_SESSION', '_REQUEST',
         'HTTP_ENV_VARS', 'HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_POST_FILES', 'HTTP_SERVER_VARS',
         'HTTP_COOKIE_VARS', 'HTTP_SESSION_VARS', 'GLOBALS');
@@ -24,7 +24,7 @@ for ($i = 0; $i < $ext_cnt; $i++) {
     if (isset($_GET[$ext_arr[$i]])) unset($_GET[$ext_arr[$i]]);
     if (isset($_POST[$ext_arr[$i]])) unset($_POST[$ext_arr[$i]]);
 }
-//==========================================================================================================================
+//==============================================================================
 
 // Cloudflare 사용시 REMOTE_ADDR 에 사용자 IP 적용과 https 사용 여부
 if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
@@ -33,8 +33,8 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
 
 function g5_path()
 {
-    $chroot = substr($_SERVER['SCRIPT_FILENAME'], 0, strpos($_SERVER['SCRIPT_FILENAME'], dirname(__FILE__)));
-    $result['path'] = str_replace('\\', '/', $chroot . dirname(__FILE__));
+    $chroot = substr($_SERVER['SCRIPT_FILENAME'], 0, strpos($_SERVER['SCRIPT_FILENAME'], __DIR__));
+    $result['path'] = str_replace('\\', '/', $chroot . __DIR__);
     $server_script_name = preg_replace('/\/+/', '/', str_replace('\\', '/', $_SERVER['SCRIPT_NAME']));
     $server_script_filename = preg_replace('/\/+/', '/', str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']));
     $tilde_remove = preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $server_script_name);
@@ -93,23 +93,18 @@ function sql_escape_string($str)
             $str = preg_replace($pattern, $replace, $str);
     }
 
-    $str = call_user_func('addslashes', $str);
-
-    return $str;
+    return call_user_func('addslashes', $str);
 }
 
 
 //==============================================================================
-// SQL Injection 등으로 부터 보호를 위해 sql_escape_string() 적용
-//------------------------------------------------------------------------------
+
 // magic_quotes_gpc 에 의한 backslashes 제거
-if (7.0 > (float)phpversion()) {
-    if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-        $_POST = array_map_deep('stripslashes', $_POST);
-        $_GET = array_map_deep('stripslashes', $_GET);
-        $_COOKIE = array_map_deep('stripslashes', $_COOKIE);
-        $_REQUEST = array_map_deep('stripslashes', $_REQUEST);
-    }
+if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+    $_POST = array_map_deep('stripslashes', $_POST);
+    $_GET = array_map_deep('stripslashes', $_GET);
+    $_COOKIE = array_map_deep('stripslashes', $_COOKIE);
+    $_REQUEST = array_map_deep('stripslashes', $_REQUEST);
 }
 
 // sql_escape_string 적용
@@ -122,10 +117,8 @@ $_REQUEST = array_map_deep(G5_ESCAPE_FUNCTION, $_REQUEST);
 
 // PHP 4.1.0 부터 지원됨
 // php.ini 의 register_globals=off 일 경우
-@extract($_GET);
-@extract($_POST);
-@extract($_SERVER);
-
+extract($_GET);
+extract($_POST);
 
 // 완두콩님이 알려주신 보안관련 오류 수정
 // $member 에 값을 직접 넘길 수 있음
@@ -133,10 +126,7 @@ $config = array();
 $member = array('mb_id' => '', 'mb_level' => 1, 'mb_name' => '', 'mb_point' => 0, 'mb_certify' => '', 'mb_email' => '', 'mb_open' => '', 'mb_homepage' => '', 'mb_tel' => '', 'mb_hp' => '', 'mb_zip1' => '', 'mb_zip2' => '', 'mb_addr1' => '', 'mb_addr2' => '', 'mb_addr3' => '', 'mb_addr_jibeon' => '', 'mb_signature' => '', 'mb_profile' => '');
 $board = array('bo_table' => '', 'bo_skin' => '', 'bo_mobile_skin' => '', 'bo_upload_count' => 0, 'bo_use_dhtml_editor' => '', 'bo_subject' => '', 'bo_image_width' => 0);
 $group = array('gr_device' => '', 'gr_subject' => '');
-$g5 = array();
-if (version_compare(phpversion(), '8.0.0', '>=')) {
-    $g5 = array('title' => '');
-}
+$g5 = array('title' => '');
 $qaconfig = array();
 $g5_debug = array('php' => array(), 'sql' => array());
 
@@ -149,7 +139,7 @@ $g5_object = new G5_object_cache();
 
 //==============================================================================
 // 공통
-//------------------------------------------------------------------------------
+
 $dbconfig_file = G5_DATA_PATH . '/' . G5_DBCONFIG_FILE;
 if (file_exists($dbconfig_file)) {
     include_once($dbconfig_file);
@@ -202,8 +192,6 @@ if (file_exists($dbconfig_file)) {
     <?php
     exit;
 }
-//==============================================================================
-
 
 //==============================================================================
 // SESSION 설정
@@ -246,7 +234,7 @@ function chrome_domain_session_name()
     $document_root_path = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT']));
 
     if (G5_PATH !== $document_root_path) {
-        $add_str = substr_count(G5_PATH, '/') . basename(dirname(__FILE__));
+        $add_str = substr_count(G5_PATH, '/') . basename(__DIR__);
     }
 
     if ($add_str || (isset($_SERVER['HTTP_HOST']) && preg_match('/(' . implode('|', $domain_array) . ')/i', $_SERVER['HTTP_HOST']))) {  // 위의 도메인주소를 포함한 url접속시 기본세션이름을 변경한다.
@@ -263,13 +251,6 @@ if (!class_exists('XenoPostToForm')) {
         public static function g5_session_name()
         {
             return (defined('G5_SESSION_NAME') && G5_SESSION_NAME) ? G5_SESSION_NAME : 'PHPSESSID';
-        }
-
-        public static function php52_request_check()
-        {
-            $cookie_session_name = self::g5_session_name();
-            if (isset($_REQUEST[$cookie_session_name]) && $_REQUEST[$cookie_session_name] != session_id())
-                goto_url(G5_BBS_URL . '/logout.php');
         }
 
         public static function check()
@@ -414,121 +395,136 @@ define('G5_CAPTCHA_DIR', !empty($config['cf_captcha']) ? $config['cf_captcha'] :
 define('G5_CAPTCHA_URL', G5_PLUGIN_URL . '/' . G5_CAPTCHA_DIR);
 define('G5_CAPTCHA_PATH', G5_PLUGIN_PATH . '/' . G5_CAPTCHA_DIR);
 
-// 4.00.03 : [보안관련] PHPSESSID 가 틀리면 로그아웃한다. php5.2 버전 이하에서만 해당되는 코드이며, 오히려 무한리다이렉트 오류가 일어날수 있으므로 주석처리합니다.
-// if( method_exists('XenoPostToForm', 'php52_request_check') ) XenoPostToForm::php52_request_check();
-
-// QUERY_STRING
+/**
+ * QUERY_STRING
+ */
 $qstr = '';
 
+$sca = '';
 if (isset($_REQUEST['sca'])) {
     $sca = clean_xss_tags(trim($_REQUEST['sca']));
     if ($sca) {
         $sca = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $sca);
         $qstr .= '&amp;sca=' . urlencode($sca);
     }
-} else {
-    $sca = '';
 }
 
+/**
+ * search field
+ */
+$sfl = '';
 if (isset($_REQUEST['sfl'])) {
     $sfl = trim($_REQUEST['sfl']);
     $sfl = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s\#]/", "", $sfl);
-    if ($sfl)
-        $qstr .= '&amp;sfl=' . urlencode($sfl); // search field (검색 필드)
-} else {
-    $sfl = '';
+    if ($sfl) {
+        $qstr .= '&amp;sfl=' . urlencode($sfl);
+    }
 }
 
 
+$stx = '';
 if (isset($_REQUEST['stx'])) { // search text (검색어)
     $stx = get_search_string(trim($_REQUEST['stx']));
-    if ($stx || $stx === '0')
+    if ($stx || $stx === '0') {
         $qstr .= '&amp;stx=' . urlencode(cut_str($stx, 20, ''));
-} else {
-    $stx = '';
+    }
 }
 
+$sst = '';
 if (isset($_REQUEST['sst'])) {
     $sst = trim($_REQUEST['sst']);
     $sst = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s]/", "", $sst);
-    if ($sst)
-        $qstr .= '&amp;sst=' . urlencode($sst); // search sort (검색 정렬 필드)
-} else {
-    $sst = '';
+    if ($sst) {
+        $qstr .= '&amp;sst=' . urlencode($sst);
+    } // search sort (검색 정렬 필드)
 }
 
-if (isset($_REQUEST['sod'])) { // search order (검색 오름, 내림차순)
-    $sod = preg_match("/^(asc|desc)$/i", $sod) ? $sod : '';
-    if ($sod)
+/**
+ * search order (검색 오름, 내림차순)
+ */
+$sod = '';
+if (isset($_REQUEST['sod'])) {
+    $sod = strtolower($_REQUEST['sod']);
+    $sod = ($sod === 'asc' || $sod === 'desc') ? $sod : '';
+    if ($sod) {
         $qstr .= '&amp;sod=' . urlencode($sod);
-} else {
-    $sod = '';
+    }
 }
 
-if (isset($_REQUEST['sop'])) { // search operator (검색 or, and 오퍼레이터)
-    $sop = preg_match("/^(or|and)$/i", $sop) ? $sop : '';
-    if ($sop)
+/**
+ * search operator (검색 or, and 오퍼레이터)
+ */
+$sop = '';
+if (isset($_REQUEST['sop'])) {
+    $sop = strtolower($_REQUEST['sop']);
+    $sop = ($sop === 'or' || $sop === 'and') ? $sop : '';
+    if ($sop) {
         $qstr .= '&amp;sop=' . urlencode($sop);
-} else {
-    $sop = '';
+    }
 }
 
-if (isset($_REQUEST['spt'])) { // search part (검색 파트[구간])
-    $spt = (int)$spt;
-    if ($spt)
-        $qstr .= '&amp;spt=' . urlencode($spt);
-} else {
-    $spt = '';
+
+/**
+ * search part (검색 파트[구간])
+ */
+$spt = '';
+if (isset($_REQUEST['spt'])) {
+    $spt = (int)$_REQUEST['spt'];
+    if ($spt) {
+        $qstr .= '&amp;spt=' . urlencode((string)$spt);
+    }
 }
 
+$page = 0;
 if (isset($_REQUEST['page'])) { // 리스트 페이지
     $page = (int)$_REQUEST['page'];
-    if ($page)
-        $qstr .= '&amp;page=' . urlencode($page);
-} else {
-    $page = '';
+    if ($page < 1) {
+        $page = 1;
+    }
+    if ($page) {
+        $qstr .= '&amp;page=' . urlencode((string)$page);
+    }
 }
 
+/** @var string $w 게시판 글쓰기 모드 $w = 'u' (수정) 'd' (삭제) */
+$w = '';
 if (isset($_REQUEST['w'])) {
-    $w = substr($w, 0, 2);
-} else {
-    $w = '';
+    $w = substr($_REQUEST['w'], 0, 2);
 }
 
 /** @var int $wr_id 게시판 글의 ID */
+$wr_id = 0;
 if (isset($_REQUEST['wr_id'])) {
     $wr_id = (int)$_REQUEST['wr_id'];
-} else {
-    $wr_id = 0;
 }
 
+$bo_table = '';
 if (isset($_REQUEST['bo_table']) && !is_array($_REQUEST['bo_table'])) {
     $bo_table = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['bo_table']));
     $bo_table = substr($bo_table, 0, 20);
-} else {
-    $bo_table = '';
 }
 
-// URL ENCODING
+/**
+ * URL ENCODING
+ */
+$url = '';
 if (isset($_REQUEST['url'])) {
     $url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', trim($_REQUEST['url']));
     $urlencode = urlencode($url);
 } else {
-    $url = '';
-    $urlencode = urlencode($_SERVER['REQUEST_URI']);
+    $urlencode = isset($_SERVER['REQUEST_URI']) ? urlencode($_SERVER['REQUEST_URI']) : '';
     if (G5_DOMAIN) {
-        $p = @parse_url(G5_DOMAIN);
+        $p = parse_url(G5_DOMAIN);
         $p['path'] = isset($p['path']) ? $p['path'] : '/';
         $urlencode = rtrim(G5_DOMAIN, '%2F') . '%2F' . ltrim(urldecode(preg_replace("/^" . urlencode($p['path']) . "/", "", $urlencode)), '%2F');
     }
 }
 
+$gr_id = '';
 if (isset($_REQUEST['gr_id'])) {
     if (!is_array($_REQUEST['gr_id'])) {
         $gr_id = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['gr_id']));
     }
-} else {
-    $gr_id = '';
 }
 //===================================
 
@@ -710,14 +706,14 @@ if (defined('G5_THEME_PATH') && is_file(G5_THEME_PATH . '/theme.config.php'))
 if (defined('G5_USE_SHOP') && G5_USE_SHOP)
     include_once(G5_PATH . '/shop.config.php');
 
-//=====================================================================================
+//==============================================================================
 // 사용기기 설정
 // 테마의 G5_THEME_DEVICE 설정에 따라 사용자 화면 제한됨
 // 테마에 별도 설정이 없는 경우 config.php G5_SET_DEVICE 설정에 따라 사용자 화면 제한됨
 // pc 설정 시 모바일 기기에서도 PC화면 보여짐
 // mobile 설정 시 PC에서도 모바일화면 보여짐
 // both 설정 시 접속 기기에 따른 화면 보여짐
-//-------------------------------------------------------------------------------------
+
 $is_mobile = false;
 $set_device = true;
 
@@ -750,14 +746,13 @@ if (defined('G5_SET_DEVICE') && $set_device) {
             break;
     }
 }
-//==============================================================================
 
 //==============================================================================
 // Mobile 모바일 설정
 // 쿠키에 저장된 값이 모바일이라면 브라우저 상관없이 모바일로 실행
 // 그렇지 않다면 브라우저의 HTTP_USER_AGENT 에 따라 모바일 결정
 // G5_MOBILE_AGENT : config.php 에서 선언
-//------------------------------------------------------------------------------
+
 if (G5_USE_MOBILE && $set_device) {
     if (isset($_REQUEST['device']) && $_REQUEST['device'] == 'pc')
         $is_mobile = false;
@@ -777,8 +772,6 @@ define('G5_DEVICE_BUTTON_DISPLAY', $set_device);
 if (G5_IS_MOBILE) {
     $g5['mobile_path'] = G5_PATH . '/' . G5_MOBILE_DIR;
 }
-//==============================================================================
-
 
 //==============================================================================
 // 스킨경로
