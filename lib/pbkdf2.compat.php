@@ -144,7 +144,7 @@ function pbkdf2_default($algo, $password, $salt, $count, $key_length)
     // Check if the selected algorithm is available.
 
     $algo = strtolower($algo);
-    if (!function_exists('hash_algos') || !in_array($algo, hash_algos())) {
+    if (!in_array($algo, hash_algos())) {
         if ($algo === 'sha1') {
             return pbkdf2_fallback($password, $salt, $count, $key_length);
         } else {
@@ -152,32 +152,7 @@ function pbkdf2_default($algo, $password, $salt, $count, $key_length)
         }
     }
 
-    // Use built-in function if available.
-
-    if (function_exists('hash_pbkdf2')) {
-        return hash_pbkdf2($algo, $password, $salt, $count, $key_length, true);
-    }
-
-    // Count the blocks.
-
-    $hash_length = strlen(hash($algo, '', true));
-    $block_count = ceil($key_length / $hash_length);
-
-    // Hash it!
-
-    $output = '';
-    for ($i = 1; $i <= $block_count; $i++) {
-        $last = $salt . pack('N', $i);                               // $i encoded as 4 bytes, big endian.
-        $last = $xorsum = hash_hmac($algo, $last, $password, true);  // first iteration.
-        for ($j = 1; $j < $count; $j++) {                            // The other $count - 1 iterations.
-            $xorsum ^= ($last = hash_hmac($algo, $last, $password, true));
-        }
-        $output .= $xorsum;
-    }
-
-    // Truncate and return.
-
-    return substr($output, 0, $key_length);
+    return hash_pbkdf2($algo, $password, $salt, $count, $key_length, true);
 }
 
 // Fallback function using sha1() and a pure-PHP implementation of HMAC.

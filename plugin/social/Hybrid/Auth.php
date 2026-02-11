@@ -130,20 +130,9 @@ class Hybrid_Auth
             throw new Exception('Hybridauth Library needs the CURL PHP extension.');
         }
 
-        // PHP JSON extension [http://php.net/manual/en/book.json.php]
-        if (!function_exists('json_decode')) {
-            Hybrid_Logger::error('Hybridauth Library needs the JSON PHP extension.');
-            throw new Exception('Hybridauth Library needs the JSON PHP extension.');
-        }
-
         // session.name
         if (session_name() != "PHPSESSID") {
             Hybrid_Logger::info('PHP session.name diff from default PHPSESSID. http://php.net/manual/en/session.configuration.php#ini.session.name.');
-        }
-
-        // safe_mode is on
-        if (ini_get('safe_mode')) {
-            Hybrid_Logger::info('PHP safe_mode is on. http://php.net/safe-mode.');
         }
 
         // open basedir is on
@@ -165,11 +154,8 @@ class Hybrid_Auth
             Hybrid_Error::clearError();
 
             // try to provide the previous if any
-            // Exception::getPrevious (PHP 5 >= 5.3.0) http://php.net/manual/en/exception.getprevious.php
-            if (version_compare(PHP_VERSION, '5.3.0', '>=') && ($p instanceof Exception)) {
+            if ($p instanceof Exception) {
                 throw new Exception($m, $c, $p);
-            } else {
-                throw new Exception($m, $c);
             }
         }
 

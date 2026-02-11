@@ -138,7 +138,6 @@ class SMS
             $Error = CheckCommonType($dest, $rsvTime);
             if ($Error) return $Error;
             // 내용 검사 2
-            //if ( eregi("[^0-9]",$callBack) ) return "회신 전화번호가 잘못되었습니다";
             if (preg_match("/[^0-9]/i", $callBack)) return "회신 전화번호가 잘못되었습니다";
 
             $msg = cut_char($msg, 80); // 80자 제한

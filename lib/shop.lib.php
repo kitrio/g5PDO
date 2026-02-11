@@ -763,7 +763,6 @@ function message($subject, $content, $align = "left", $width = "450")
 function is_null_time($datetime)
 {
     // 공란 0 : - 제거
-    //$datetime = ereg_replace("[ 0:-]", "", $datetime); // 이 함수는 PHP 5.3.0 에서 배제되고 PHP 6.0 부터 사라집니다.
     $datetime = preg_replace("/[ 0:-]/", "", $datetime);
     if ($datetime == "")
         return true;
