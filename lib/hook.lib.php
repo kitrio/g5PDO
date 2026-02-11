@@ -3,20 +3,6 @@ if (!defined('_GNUBOARD_')) exit;
 
 define('G5_HOOK_DEFAULT_PRIORITY', 8);
 
-if (!function_exists('get_called_class')) {
-    function get_called_class()
-    {
-        $bt = debug_backtrace();
-        $lines = file($bt[1]['file']);
-        preg_match(
-            '/([a-zA-Z0-9\_]+)::' . $bt[1]['function'] . '/',
-            $lines[$bt[1]['line'] - 1],
-            $matches
-        );
-        return $matches[1];
-    }
-}
-
 include_once(dirname(__FILE__) . '/Hook/hook.class.php');
 include_once(dirname(__FILE__) . '/Hook/hook.extends.class.php');
 
