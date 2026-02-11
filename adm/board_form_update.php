@@ -86,10 +86,8 @@ if (!is_include_path_check($bo_include_tail, 1)) {
     alert('하단 파일 경로에 포함시킬수 없는 문자열이 있습니다.');
 }
 
-if (function_exists('filter_input_include_path')) {
-    $bo_include_head = filter_input_include_path($bo_include_head);
-    $bo_include_tail = filter_input_include_path($bo_include_tail);
-}
+$bo_include_head = filter_input_include_path($bo_include_head);
+$bo_include_tail = filter_input_include_path($bo_include_tail);
 
 $board_path = G5_DATA_PATH . '/file/' . $bo_table;
 
@@ -552,10 +550,7 @@ if ($all_fields) {
 }
 
 delete_cache_latest($bo_table);
-
-if (function_exists('get_admin_captcha_by')) {
-    get_admin_captcha_by('remove');
-}
+get_admin_captcha_by('remove');
 
 run_event('admin_board_form_update', $bo_table, $w);
 

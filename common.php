@@ -542,7 +542,7 @@ if (isset($_SESSION['ss_mb_id']) && $_SESSION['ss_mb_id']) { // 로그인중이�
     // 차단된 회원이면 ss_mb_id 초기화, 또는 세션에 저장된 회원 토큰값을 비교하여 틀리면 초기화
     if (($member['mb_intercept_date'] && $member['mb_intercept_date'] <= date("Ymd", G5_SERVER_TIME))
             || ($member['mb_leave_date'] && $member['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME))
-            || (function_exists('check_auth_session_token') && !check_auth_session_token($member['mb_datetime']))
+            || (!check_auth_session_token($member['mb_datetime']))
     ) {
         set_session('ss_mb_id', '');
         $member = array();
@@ -579,7 +579,7 @@ if (isset($_SESSION['ss_mb_id']) && $_SESSION['ss_mb_id']) { // 로그인중이�
                             (!$config['cf_use_email_certify'] || preg_match('/[1-9]/', $row['mb_email_certify']))) {
                         // 세션에 회원아이디를 저장하여 로그인으로 간주
                         set_session('ss_mb_id', $tmp_mb_id);
-                        if (function_exists('update_auth_session_token')) update_auth_session_token($row['mb_datetime']);
+                        update_auth_session_token($row['mb_datetime']);
 
                         // 페이지를 재실행
                         echo "<script type='text/javascript'> window.location.reload(); </script>";

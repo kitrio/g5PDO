@@ -102,12 +102,8 @@ function goto_url($url)
 {
     run_event('goto_url', $url);
 
-    if (function_exists('safe_filter_url_host')) {
-        $url = safe_filter_url_host($url);
-    }
-
+    $url = safe_filter_url_host($url);
     $url = str_replace("&amp;", "&", $url);
-    //echo "<script> location.replace('$url'); </script>";
 
     if (!headers_sent())
         header('Location: ' . $url);
@@ -184,9 +180,7 @@ function alert($msg = '', $url = '', $error = true, $post = false)
 
     run_event('alert', $msg, $url, $error, $post);
 
-    if (function_exists('safe_filter_url_host')) {
-        $url = safe_filter_url_host($url);
-    }
+    $url = safe_filter_url_host($url);
 
     $msg = $msg ? strip_tags($msg, '<br>') : '올바른 방법으로 이용해 주십시오.';
 
@@ -226,11 +220,9 @@ function confirm($msg, $url1 = '', $url2 = '', $url3 = '')
         alert($msg);
     }
 
-    if (function_exists('safe_filter_url_host')) {
-        $url1 = safe_filter_url_host($url1);
-        $url2 = safe_filter_url_host($url2);
-        $url3 = safe_filter_url_host($url3);
-    }
+    $url1 = safe_filter_url_host($url1);
+    $url2 = safe_filter_url_host($url2);
+    $url3 = safe_filter_url_host($url3);
 
     if (!trim($url1) || !trim($url2)) {
         $msg = '$url1 과 $url2 를 지정해 주세요.';
@@ -2982,7 +2974,7 @@ function googl_short_url($longUrl)
     global $config;
 
     // 구글 짧은 주소는 서비스가 종료 되었습니다.
-    return function_exists('run_replace') ? run_replace('googl_short_url', $longUrl) : $longUrl;
+    return run_replace('googl_short_url', $longUrl);
 }
 
 

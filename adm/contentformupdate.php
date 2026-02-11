@@ -129,9 +129,7 @@ if ($w == "") {
     run_event('admin_content_deleted', $co_id);
 }
 
-if (function_exists('get_admin_captcha_by')) {
-    get_admin_captcha_by('remove');
-}
+get_admin_captcha_by('remove');
 
 g5_delete_cache_by_prefix('content-' . $co_id . '-');
 

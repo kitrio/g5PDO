@@ -553,10 +553,7 @@ class UploadHandler
                     $image_width_height = $this->get_image_size($file_path);
                     $file->width = $image_width_height[0];
                     $file->height = $image_width_height[1];
-
-                    if (function_exists('run_replace')) {
-                        $file->url = run_replace('get_editor_upload_url', $file->url, $file_path, $file);
-                    }
+                    $file->url = run_replace('get_editor_upload_url', $file->url, $file_path, $file);
                 } else {    //로빈아빠님이 알려주심, 이미지 업로드 체크
                     unlink($file_path);
                     $file->error = $this->get_error_message('accept_file_types');

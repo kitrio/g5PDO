@@ -383,9 +383,7 @@ if ($w == '' || $w == 'u') {
     }
 }
 
-if (function_exists('get_admin_captcha_by')) {
-    get_admin_captcha_by('remove');
-}
+get_admin_captcha_by('remove');
 
 run_event('admin_member_form_update', $w, $mb_id);
 

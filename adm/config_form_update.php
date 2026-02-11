@@ -378,9 +378,7 @@ if (isset($_POST['cf_bbs_rewrite'])) {
     g5_delete_all_cache();
 }
 
-if (function_exists('get_admin_captcha_by')) {
-    get_admin_captcha_by('remove');
-}
+get_admin_captcha_by('remove');
 
 run_event('admin_config_form_update');
 

@@ -101,10 +101,8 @@ foreach ($check_keys as $key) {
     }
 }
 
-if (function_exists('filter_input_include_path')) {
-    $ca_include_head = filter_input_include_path($ca_include_head);
-    $ca_include_tail = filter_input_include_path($ca_include_tail);
-}
+$ca_include_head = filter_input_include_path($ca_include_head);
+$ca_include_tail = filter_input_include_path($ca_include_tail);
 
 if ($w == "u" || $w == "d")
     check_demo();
@@ -240,8 +238,7 @@ if ($w == "") {
     run_event('shop_admin_category_deleted', $ca_id);
 }
 
-if (function_exists('get_admin_captcha_by'))
-    get_admin_captcha_by('remove');
+get_admin_captcha_by('remove');
 
 if ($w == "" || $w == "u") {
     goto_url("./categoryform.php?w=u&amp;ca_id=$ca_id&amp;$qstr");

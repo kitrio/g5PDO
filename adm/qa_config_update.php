@@ -110,9 +110,7 @@ sql_query($sql);
 
 run_event('admin_qa_config_updated');
 
-if (function_exists('get_admin_captcha_by')) {
-    get_admin_captcha_by('remove');
-}
+get_admin_captcha_by('remove');
 
 if ($error_msg) {
     alert($error_msg, './qa_config.php');
