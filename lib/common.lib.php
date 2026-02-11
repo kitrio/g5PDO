@@ -2695,41 +2695,23 @@ function get_skin_javascript($skin_path, $dir = '')
     return $str;
 }
 
-if (!function_exists('get_called_class')) {
-    function get_called_class()
-    {
-        $bt = debug_backtrace();
-        $lines = file($bt[1]['file']);
-        preg_match(
-            '/([a-zA-Z0-9\_]+)::' . $bt[1]['function'] . '/',
-            $lines[$bt[1]['line'] - 1],
-            $matches
-        );
-        return $matches[1];
-    }
-}
-
-function get_html_process_cls()
-{
-    return html_process::getInstance();
-}
 
 // HTML 마지막 처리
 function html_end()
 {
-    return get_html_process_cls()->run();
+    return html_process::getInstance()->run();
 }
 
 function add_stylesheet($stylesheet, $order = 0)
 {
     if (trim($stylesheet))
-        get_html_process_cls()->merge_stylesheet($stylesheet, $order);
+        html_process::getInstance()->merge_stylesheet($stylesheet, $order);
 }
 
 function add_javascript($javascript, $order = 0)
 {
     if (trim($javascript))
-        get_html_process_cls()->merge_javascript($javascript, $order);
+        html_process::getInstance()->merge_javascript($javascript, $order);
 }
 
 class html_process
@@ -2739,6 +2721,11 @@ class html_process
     protected static $css = array();
     protected static $js = array();
     private static $instances = array();
+
+    /**
+     * @param $id
+     * @return html_process
+     */
 
     public static function getInstance($id = '0')
     {
