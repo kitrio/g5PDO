@@ -3838,6 +3838,16 @@ function get_skin_url($dir, $skin)
     return str_replace(G5_PATH, G5_URL, $skin_path);
 }
 
+/**
+ * @param string $skin_path
+ * @return array|string
+ */
+function get_skin_url_from_path($skin_path)
+{
+    return str_replace(G5_PATH, G5_URL, $skin_path);
+}
+
+
 // 발신번호 유효성 체크
 function check_vaild_callback($callback)
 {
