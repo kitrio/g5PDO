@@ -929,10 +929,6 @@ function gap_time($begin_time, $end_time)
 // 공란없이 이어지는 문자 자르기 (wayboard 참고 (way.co.kr))
 function continue_cut_str($str, $len = 80)
 {
-    /*
-    $pattern = "[^ \n<>]{".$len."}";
-    return eregi_replace($pattern, "\\0\n", $str);
-    */
     $pattern = "/[^ \n<>]{" . $len . "}/";
     return preg_replace($pattern, "\\0\n", $str);
 }

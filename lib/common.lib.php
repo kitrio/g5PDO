@@ -1,7 +1,7 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-include_once(dirname(__FILE__) . '/pbkdf2.compat.php');
+include_once(__DIR__ . '/pbkdf2.compat.php');
 
 /*************************************************************************
  **
@@ -255,36 +255,12 @@ function url_auto_link($str)
     $ori_str = $str;
 
     // 140326 유창화님 제안코드로 수정
-    // http://sir.kr/pg_lecture/461
-    // http://sir.kr/pg_lecture/463
     $attr_nofollow = (function_exists('check_html_link_nofollow') && check_html_link_nofollow('url_auto_link')) ? ' rel="nofollow"' : '';
     $str = str_replace(array("&lt;", "&gt;", "&amp;", "&quot;", "&nbsp;", "&#039;"), array("\t_lt_\t", "\t_gt_\t", "&", "\"", "\t_nbsp_\t", "'"), $str);
-    //$str = preg_replace("`(?:(?:(?:href|src)\s*=\s*(?:\"|'|)){0})((http|https|ftp|telnet|news|mms)://[^\"'\s()]+)`", "<A HREF=\"\\1\" TARGET='{$config['cf_link_target']}'>\\1</A>", $str);
     $str = preg_replace("/([^(href=\"?'?)|(src=\"?'?)]|\(|^)((http|https|ftp|telnet|news|mms):\/\/[a-zA-Z0-9\.-]+\.[가-힣\xA1-\xFEa-zA-Z0-9\.:&#!=_\?\/~\+%@;\-\|\,\(\)]+)/i", "\\1<A HREF=\"\\2\" TARGET=\"{$config['cf_link_target']}\" $attr_nofollow>\\2</A>", $str);
     $str = preg_replace("/(^|[\"'\s(])(www\.[^\"'\s()]+)/i", "\\1<A HREF=\"http://\\2\" TARGET=\"{$config['cf_link_target']}\" $attr_nofollow>\\2</A>", $str);
     $str = preg_replace("/[0-9a-z_-]+@[a-z0-9._-]{4,}/i", "<a href=\"mailto:\\0\" $attr_nofollow>\\0</a>", $str);
     $str = str_replace(array("\t_nbsp_\t", "\t_lt_\t", "\t_gt_\t", "'"), array("&nbsp;", "&lt;", "&gt;", "&#039;"), $str);
-
-    /*
-    // 속도 향상 031011
-    $str = preg_replace("/&lt;/", "\t_lt_\t", $str);
-    $str = preg_replace("/&gt;/", "\t_gt_\t", $str);
-    $str = preg_replace("/&amp;/", "&", $str);
-    $str = preg_replace("/&quot;/", "\"", $str);
-    $str = preg_replace("/&nbsp;/", "\t_nbsp_\t", $str);
-    $str = preg_replace("/([^(http:\/\/)]|\(|^)(www\.[^[:space:]]+)/i", "\\1<A HREF=\"http://\\2\" TARGET='{$config['cf_link_target']}'>\\2</A>", $str);
-    //$str = preg_replace("/([^(HREF=\"?'?)|(SRC=\"?'?)]|\(|^)((http|https|ftp|telnet|news|mms):\/\/[a-zA-Z0-9\.-]+\.[\xA1-\xFEa-zA-Z0-9\.:&#=_\?\/~\+%@;\-\|\,]+)/i", "\\1<A HREF=\"\\2\" TARGET='$config['cf_link_target']'>\\2</A>", $str);
-    // 100825 : () 추가
-    // 120315 : CHARSET 에 따라 링크시 글자 잘림 현상이 있어 수정
-    $str = preg_replace("/([^(HREF=\"?'?)|(SRC=\"?'?)]|\(|^)((http|https|ftp|telnet|news|mms):\/\/[a-zA-Z0-9\.-]+\.[가-힣\xA1-\xFEa-zA-Z0-9\.:&#=_\?\/~\+%@;\-\|\,\(\)]+)/i", "\\1<A HREF=\"\\2\" TARGET='{$config['cf_link_target']}'>\\2</A>", $str);
-
-    // 이메일 정규표현식 수정 061004
-    //$str = preg_replace("/(([a-z0-9_]|\-|\.)+@([^[:space:]]*)([[:alnum:]-]))/i", "<a href='mailto:\\1'>\\1</a>", $str);
-    $str = preg_replace("/([0-9a-z]([-_\.]?[0-9a-z])*@[0-9a-z]([-_\.]?[0-9a-z])*\.[a-z]{2,4})/i", "<a href='mailto:\\1'>\\1</a>", $str);
-    $str = preg_replace("/\t_nbsp_\t/", "&nbsp;" , $str);
-    $str = preg_replace("/\t_lt_\t/", "&lt;", $str);
-    $str = preg_replace("/\t_gt_\t/", "&gt;", $str);
-    */
 
     return run_replace('url_auto_link', $str, $ori_str);
 }
@@ -306,7 +282,6 @@ function set_http($url, $protocol = "http://")
 //function get_filesize($file)
 function get_filesize($size)
 {
-    //$size = @filesize(addslashes($file));
     if ($size >= 1048576) {
         $size = number_format($size / 1048576, 1) . "M";
     } else if ($size >= 1024) {
@@ -363,7 +338,6 @@ function get_file($bo_table, $wr_id)
         $file[$no]['source'] = addslashes($row['bf_source']);
         $file[$no]['bf_content'] = $bf_content;
         $file[$no]['content'] = get_text($bf_content);
-        //$file[$no]['view'] = view_file_link($row['bf_file'], $file[$no]['content']);
         $file[$no]['view'] = view_file_link($row['bf_file'], $row['bf_width'], $row['bf_height'], $file[$no]['content']);
         $file[$no]['file'] = $row['bf_file'];
         $file[$no]['image_width'] = $row['bf_width'] ? $row['bf_width'] : 640;
@@ -406,8 +380,6 @@ function get_list($write_row, $board, $skin_url, $subject_len = 40)
 {
     global $g5, $config, $g5_object;
     global $qstr, $page;
-
-    //$t = get_microtime();
 
     $g5_object->set('bbs', $write_row['wr_id'], $write_row, $board['bo_table']);
 
@@ -932,13 +904,11 @@ function get_admin($admin = 'super', $fields = '*')
         $is = true;
     }
 
-    // if (($is && !$mb['mb_id']) || $admin == 'group') {
     if (($is && !isset($mb['mb_id'])) || $admin == 'group') {
         $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$group['gr_admin']}') limit 1 ");
         $is = true;
     }
 
-    // if (($is && !$mb['mb_id']) || $admin == 'super') {
     if (($is && !isset($mb['mb_id'])) || $admin == 'super') {
         $mb = sql_fetch("select {$fields} from {$g5['member_table']} where mb_id in ('{$config['cf_admin']}') limit 1 ");
     }
@@ -2792,9 +2762,6 @@ class html_process
             // 시간이 지난 접속은 삭제한다
             sql_query(" delete from {$g5['login_table']} where lo_datetime < '" . date("Y-m-d H:i:s", G5_SERVER_TIME - (60 * $config['cf_login_minutes'])) . "' ");
 
-            // 부담(overhead)이 있다면 테이블 최적화
-            //$row = sql_fetch(" SHOW TABLE STATUS FROM `$mysql_db` LIKE '$g5['login_table']' ");
-            //if ($row['Data_free'] > 0) sql_query(" OPTIMIZE TABLE $g5['login_table'] ");
         }
 
         $buffer = ob_get_contents();
@@ -3091,7 +3058,6 @@ if (!function_exists("get_sock")) {
     function get_sock($url, $timeout = 30)
     {
         // host 와 uri 를 분리
-        //if (ereg("http://([a-zA-Z0-9_\-\.]+)([^<]*)", $url, $res))
         if (preg_match("/http:\/\/([a-zA-Z0-9_\-\.]+)([^<]*)/", $url, $res)) {
             $host = $res[1];
             $get = $res[2];
@@ -3102,8 +3068,6 @@ if (!function_exists("get_sock")) {
         // 80번 포트로 소캣접속 시도
         $fp = fsockopen($host, 80, $errno, $errstr, $timeout);
         if (!$fp) {
-            //die("$errstr ($errno)\n");
-
             echo "$errstr ($errno)\n";
             return null;
         } else {
@@ -3300,7 +3264,6 @@ function get_search_string($stx)
 function clean_xss_tags($str, $check_entities = 0, $is_remove_tags = 0, $cur_str_len = 0, $is_trim_both = 1)
 {
     if ($is_trim_both) {
-        // tab('\t'), formfeed('\f'), vertical tab('\v'), newline('\n'), carriage return('\r') 를 제거한다.
         $str = preg_replace("#[\t\f\v\n\r]#", '', $str);
     }
 
@@ -3614,11 +3577,6 @@ function check_url_host($url, $msg = '', $return_url = G5_URL, $is_redirect = fa
         }
     }
 
-    // if(stripos($url, 'http:') !== false) {
-    //     if(!isset($p['scheme']) || !$p['scheme'] || !isset($p['host']) || !$p['host'])
-    //         alert('url 정보가 올바르지 않습니다.', $return_url);
-    // }
-
     //php 5.6.29 이하 버전에서는 parse_url 버그가 존재함
     //php 7.0.1 ~ 7.0.5 버전에서는 parse_url 버그가 존재함
     if ($is_redirect && (isset($p['host']) && $p['host'])) {
@@ -3637,7 +3595,6 @@ function check_url_host($url, $msg = '', $return_url = G5_URL, $is_redirect = fa
     }
 
     if ((isset($p['scheme']) && $p['scheme']) || (isset($p['host']) && $p['host']) || $is_host_check) {
-        //if ($p['host'].(isset($p['port']) ? ':'.$p['port'] : '') != $_SERVER['HTTP_HOST']) {
         if (run_replace('check_same_url_host', (($p['host'] != $host) || $is_host_check), $p, $host, $is_host_check, $return_url, $is_redirect)) {
             echo '<script>' . PHP_EOL;
             echo 'alert("url에 타 도메인을 지정할 수 없습니다.");' . PHP_EOL;
@@ -3796,7 +3753,6 @@ function get_skin_path($dir, $skin)
     global $config;
 
     if (preg_match('#^theme/(.+)$#', $skin, $match)) { // 테마에 포함된 스킨이라면
-        $theme_path = '';
         $cf_theme = trim($config['cf_theme']);
 
         $theme_path = G5_PATH . '/' . G5_THEME_DIR . '/' . $cf_theme;
@@ -3874,7 +3830,6 @@ class str_encrypt
         if (!$salt) {
             $config_hash = md5(serialize(array($config['cf_title'], $config['cf_theme'], $config['cf_admin_email_name'], $config['cf_login_point'], $config['cf_memo_send_point'])));
 
-            //$this->salt = md5(preg_replace('/[^0-9A-Za-z]/', substr($config_hash, -1), $_SERVER['SERVER_SOFTWARE'].$config_hash.$_SERVER['DOCUMENT_ROOT']));
             $this->salt = hash('sha256', preg_replace('/[^0-9A-Za-z]/', substr($config_hash, -1), $_SERVER['SERVER_SOFTWARE'] . $config_hash . $_SERVER['DOCUMENT_ROOT']));
         } else {
             $this->salt = $salt;
