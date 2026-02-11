@@ -8,13 +8,13 @@ auth_check_menu($auth, $sub_menu, 'w');
 
 check_admin_token();
 
-$bo_table       = isset($_POST['bo_table']) ? substr(preg_replace('/[^a-z0-9_]/i', '', $_POST['bo_table']), 0, 20) : null;
-$target_table   = isset($_POST['target_table']) ? trim($_POST['target_table']) : '';
+$bo_table = isset($_POST['bo_table']) ? substr(preg_replace('/[^a-z0-9_]/i', '', $_POST['bo_table']), 0, 20) : null;
+$target_table = isset($_POST['target_table']) ? trim($_POST['target_table']) : '';
 $target_subject = isset($_POST['target_subject']) ? trim($_POST['target_subject']) : '';
 
 $target_subject = strip_tags(clean_xss_attributes($target_subject));
 
-$file_copy      = array();
+$file_copy = array();
 
 if (empty($bo_table)) {
     alert("원본 테이블 정보가 없습니다.");
@@ -91,10 +91,10 @@ $sql = " insert into {$g5['board_table']}
                 bo_new = '{$board['bo_new']}',
                 bo_hot = '{$board['bo_hot']}',
                 bo_image_width = '{$board['bo_image_width']}',
-                bo_skin = '" . sql_real_escape_string($board['bo_skin']). "',
-                bo_mobile_skin = '" . sql_real_escape_string($board['bo_mobile_skin']). "',
-                bo_include_head = '" . sql_real_escape_string($board['bo_include_head']). "',
-                bo_include_tail = '" . sql_real_escape_string($board['bo_include_tail']). "',
+                bo_skin = '" . sql_real_escape_string($board['bo_skin']) . "',
+                bo_mobile_skin = '" . sql_real_escape_string($board['bo_mobile_skin']) . "',
+                bo_include_head = '" . sql_real_escape_string($board['bo_include_head']) . "',
+                bo_include_tail = '" . sql_real_escape_string($board['bo_include_tail']) . "',
                 bo_content_head = '" . addslashes($board['bo_content_head']) . "',
                 bo_content_tail = '" . addslashes($board['bo_content_tail']) . "',
                 bo_mobile_content_head = '" . addslashes($board['bo_mobile_content_head']) . "',

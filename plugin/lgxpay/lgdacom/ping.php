@@ -1,47 +1,46 @@
 <?php
 
-	$configPath = "C:/lgdacom"; //LGÀ¯ÇÃ·¯½º¿¡¼­ Á¦°øÇÑ È¯°æÆÄÀÏ("/conf/lgdacom.conf") À§Ä¡ ÁöÁ¤. 
+$configPath = "C:/lgdacom"; //LGï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½("/conf/lgdacom.conf") ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½.
 
-    /*
-     * [LGÀ¯ÇÃ·¯½º ¿¬°á È®ÀÎ ÆäÀÌÁö]
-     *
-     * ÀÌÆäÀÌÁö´Â LGÀ¯ÇÃ·¯½º°úÀÇ ¿¬°áÀ» Å×½ºÆ® ÇÏ´Â ÆäÀÌÁö ÀÔ´Ï´Ù.(¼öÁ¤ÇÏÁö ¸¶¼¼¿ä.)
-     */
-    $CST_PLATFORM   = $HTTP_POST_VARS["CST_PLATFORM"];
-    $CST_MID        = $HTTP_POST_VARS["CST_MID"]; // 't'°¡ Ãß°¡µÇÁö ¾ÊÀº °¡ÀÔ¿äÃ»½Ã ¾ÆÀÌµð¸¦ ÀÔ·Â¹Ù¶ø´Ï´Ù.
-    $LGD_MID        = (("test" == $CST_PLATFORM)?"t":"").$CST_MID;
-    
-    if( $CST_PLATFORM == null || $CST_PLATFORM == "" ) {
-        echo "[TX_PING error] ÆÄ¶ó¹ÌÅÍ ´©¶ô<br>";
-        return;
-    }
-    if( $LGD_MID == null || $LGD_MID == "" ) {
-        echo "[TX_PING error] ÆÄ¶ó¹ÌÅÍ ´©¶ô<br>";
-        return;
-    }
+/*
+ * [LGï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]
+ *
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ LGï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´Ï´ï¿½.(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.)
+ */
+$CST_PLATFORM = $HTTP_POST_VARS["CST_PLATFORM"];
+$CST_MID = $HTTP_POST_VARS["CST_MID"]; // 't'ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô¿ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ô·Â¹Ù¶ï¿½ï¿½Ï´ï¿½.
+$LGD_MID = (("test" == $CST_PLATFORM) ? "t" : "") . $CST_MID;
 
-    require_once("./XPayClient.php");
-    $xpay = &new XPayClient($configPath, $CST_PLATFORM);
-    $xpay->Init_TX($LGD_MID);
+if ($CST_PLATFORM == null || $CST_PLATFORM == "") {
+    echo "[TX_PING error] ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br>";
+    return;
+}
+if ($LGD_MID == null || $LGD_MID == "") {
+    echo "[TX_PING error] ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br>";
+    return;
+}
 
-    $xpay->Set("LGD_TXNAME", "Ping");
-    $xpay->Set("LGD_RESULTCNT", "3");
+require_once("./XPayClient.php");
+$xpay = &new XPayClient($configPath, $CST_PLATFORM);
+$xpay->Init_TX($LGD_MID);
 
-    if ($xpay->TX()) {
-        echo "response code = " . $xpay->Response_Code() . "<br>";
-        echo "response msg = " . $xpay->Response_Msg() . "<br>";
-        echo "response count = " . $xpay->Response_Count() . "<p>";
+$xpay->Set("LGD_TXNAME", "Ping");
+$xpay->Set("LGD_RESULTCNT", "3");
 
-        $keys = $xpay->Response_Names();
-        for ($i = 0; $i < $xpay->Response_Count(); $i++) {
-            echo "count = " . $i . "<br>";
-            foreach($keys as $name) {
-                echo $name . " = " . $xpay->Response($name, $i) . "<br>";
-            }
+if ($xpay->TX()) {
+    echo "response code = " . $xpay->Response_Code() . "<br>";
+    echo "response msg = " . $xpay->Response_Msg() . "<br>";
+    echo "response count = " . $xpay->Response_Count() . "<p>";
+
+    $keys = $xpay->Response_Names();
+    for ($i = 0; $i < $xpay->Response_Count(); $i++) {
+        echo "count = " . $i . "<br>";
+        foreach ($keys as $name) {
+            echo $name . " = " . $xpay->Response($name, $i) . "<br>";
         }
     }
-    else {
-        echo "[TX_PING error] <br>";
-        echo "response code = " . $xpay->Response_Code() . "<br>";
-        echo "response msg = " . $xpay->Response_Msg() . "<p>";
-    }
+} else {
+    echo "[TX_PING error] <br>";
+    echo "response code = " . $xpay->Response_Code() . "<br>";
+    echo "response msg = " . $xpay->Response_Msg() . "<p>";
+}

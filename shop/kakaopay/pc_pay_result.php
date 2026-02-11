@@ -1,8 +1,8 @@
 <?php
 include_once('./_common.php');
-include_once(G5_SHOP_PATH.'/settle_inicis.inc.php');
-require_once(G5_SHOP_PATH.'/inicis/libs/HttpClient.php');
-require_once(G5_SHOP_PATH.'/inicis/libs/json_lib.php');
+include_once(G5_SHOP_PATH . '/settle_inicis.inc.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/HttpClient.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/json_lib.php');
 
 $inicis_pay_result = false;
 
@@ -88,10 +88,10 @@ try {
             $oid = preg_replace('/[^A-Za-z0-9\-_]/', '', $resultMap['MOID']);
 
             /*************************  결제보안 추가 2016-05-18 START ****************************/
-            $secureMap['mid']       = $default['de_kakaopay_mid'];                         //mid
-            $secureMap['tstamp']    = $timestamp;                   //timestemp
-            $secureMap['MOID']      = $resultMap['MOID'];           //MOID
-            $secureMap['TotPrice']  = $resultMap['TotPrice'];       //TotPrice
+            $secureMap['mid'] = $default['de_kakaopay_mid'];                         //mid
+            $secureMap['tstamp'] = $timestamp;                   //timestemp
+            $secureMap['MOID'] = $resultMap['MOID'];           //MOID
+            $secureMap['TotPrice'] = $resultMap['TotPrice'];       //TotPrice
 
             // signature 데이터 생성
             $secureSignature = $util->makeSignatureAuth($secureMap);
@@ -102,15 +102,15 @@ try {
 
             $data = isset($row['dt_data']) ? unserialize(base64_decode($row['dt_data'])) : array();
 
-            if(isset($data['pp_id']) && $data['pp_id']) {
-                $page_return_url  = G5_SHOP_URL.'/personalpayform.php?pp_id='.$data['pp_id'];
+            if (isset($data['pp_id']) && $data['pp_id']) {
+                $page_return_url = G5_SHOP_URL . '/personalpayform.php?pp_id=' . $data['pp_id'];
             } else {
-                $page_return_url  = G5_SHOP_URL.'/orderform.php';
-                if(get_session('ss_direct'))
+                $page_return_url = G5_SHOP_URL . '/orderform.php';
+                if (get_session('ss_direct'))
                     $page_return_url .= '?sw_direct=1';
             }
 
-            if ((strcmp('0000', $resultMap['resultCode']) == 0) && (strcmp($secureSignature, $resultMap['authSignature']) == 0) ) { //결제보안 추가 2016-05-18
+            if ((strcmp('0000', $resultMap['resultCode']) == 0) && (strcmp($secureSignature, $resultMap['authSignature']) == 0)) { //결제보안 추가 2016-05-18
                 /*                         * ***************************************************************************
                  * 여기에 가맹점 내부 DB에 결제 결과를 반영하는 관련 프로그램 코드를 구현한다.
 
@@ -119,28 +119,28 @@ try {
                  * **************************************************************************** */
 
                 //최종결제요청 결과 성공 DB처리
-                $tno        = $resultMap['tid'];
-                $amount     = $resultMap['TotPrice'];
-                $app_time   = $resultMap['applDate'].$resultMap['applTime'];
+                $tno = $resultMap['tid'];
+                $amount = $resultMap['TotPrice'];
+                $app_time = $resultMap['applDate'] . $resultMap['applTime'];
                 $pay_method = $resultMap['payMethod'];
-                $pay_type   = $PAY_METHOD[$pay_method];
-                $depositor  = isset($resultMap['VACT_InputName']) ? $resultMap['VACT_InputName'] : '';
-                $commid     = '';
-                $mobile_no  = isset($resultMap['HPP_Num']) ? $resultMap['HPP_Num'] : '';
-                $app_no     = $resultMap['applNum'];
-                $card_name  = $CARD_CODE[$resultMap['CARD_Code']];
-                switch($pay_type) {
+                $pay_type = $PAY_METHOD[$pay_method];
+                $depositor = isset($resultMap['VACT_InputName']) ? $resultMap['VACT_InputName'] : '';
+                $commid = '';
+                $mobile_no = isset($resultMap['HPP_Num']) ? $resultMap['HPP_Num'] : '';
+                $app_no = $resultMap['applNum'];
+                $card_name = $CARD_CODE[$resultMap['CARD_Code']];
+                switch ($pay_type) {
                     case '계좌이체':
                         $bank_name = $BANK_CODE[$resultMap['ACCT_BankCode']];
                         if ($default['de_escrow_use'] == 1)
-                            $escw_yn         = 'Y';
+                            $escw_yn = 'Y';
                         break;
                     case '가상계좌':
-                        $bankname  = $BANK_CODE[$resultMap['VACT_BankCode']];
-                        $account   = $resultMap['VACT_Num'].' '.$resultMap['VACT_Name'];
-                        $app_no    = $resultMap['VACT_Num'];
+                        $bankname = $BANK_CODE[$resultMap['VACT_BankCode']];
+                        $account = $resultMap['VACT_Num'] . ' ' . $resultMap['VACT_Name'];
+                        $app_no = $resultMap['VACT_Num'];
                         if ($default['de_escrow_use'] == 1)
-                            $escw_yn         = 'Y';
+                            $escw_yn = 'Y';
                         break;
                     default:
                         break;
@@ -149,7 +149,7 @@ try {
                 $inicis_pay_result = true;
 
             } else {
-                $s = '(오류코드:'.$resultMap['resultCode'].') '.$resultMap['resultMsg'];
+                $s = '(오류코드:' . $resultMap['resultCode'] . ') ' . $resultMap['resultMsg'];
                 alert($s, $page_return_url);
             }
 
@@ -209,6 +209,6 @@ try {
     echo $s;
 }
 
-if( !$inicis_pay_result ){
+if (!$inicis_pay_result) {
     die("<br><br>결제 에러가 일어났습니다. 에러 이유는 위와 같습니다.");
 }

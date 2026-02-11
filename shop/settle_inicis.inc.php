@@ -8,8 +8,7 @@ if ($default['de_card_test']) {
         // 에스크로결제 테스트
         $default['de_inicis_mid'] = 'iniescrow0';
         $default['de_inicis_sign_key'] = 'SU5JTElURV9UUklQTEVERVNfS0VZU1RS';
-    }
-    else {
+    } else {
         // 일반결제 테스트
         $default['de_inicis_mid'] = 'INIpayTest';
         $default['de_inicis_sign_key'] = 'SU5JTElURV9UUklQTEVERVNfS0VZU1RS';
@@ -17,21 +16,19 @@ if ($default['de_card_test']) {
 
     // 테스트 결제 URL
     $stdpay_js_url = 'https://stgstdpay.inicis.com/stdjs/INIStdPay.js';
-}
-else {
-    if( !defined('G5_MOBILE_INICIS_SETTLE') ){
-        $default['de_inicis_mid'] = "SIR".$default['de_inicis_mid'];
+} else {
+    if (!defined('G5_MOBILE_INICIS_SETTLE')) {
+        $default['de_inicis_mid'] = "SIR" . $default['de_inicis_mid'];
     }
 
     if ($default['de_escrow_use'] == 1) {
         // 에스크로결제
         $useescrow = ':useescrow';
-    }
-    else {
+    } else {
         // 일반결제
         $useescrow = '';
     }
-    
+
     // 실 결제 URL
     $stdpay_js_url = 'https://stdpay.inicis.com/stdjs/INIStdPay.js';
 }
@@ -39,9 +36,9 @@ else {
 /**************************
  * 1. 라이브러리 인클루드 *
  **************************/
-require_once(G5_SHOP_PATH.'/inicis/libs/INIStdPayUtil.php');
-require_once(G5_SHOP_PATH.'/inicis/libs/sha256.inc.php');
-require_once(G5_SHOP_PATH.'/inicis/libs/inicis_youngcart_fn.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/INIStdPayUtil.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/sha256.inc.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/inicis_youngcart_fn.php');
 
 $mid = $default['de_inicis_mid'];
 $signKey = $default['de_inicis_sign_key'];
@@ -57,17 +54,17 @@ $cardQuotaBase = '2:3:4:5:6:7:8:9:10:11:12';  // 가맹점에서 사용할 할�
 
 $inicis_cardpoint = $default['de_inicis_cartpoint_use'] ? ':cardpoint' : '';   //신용카드 포인트 결제에 관한 옵션 ( 신청해야 함 )
 
-$acceptmethod = 'HPP(2):no_receipt:vbank('.date('Ymd', strtotime("+3 days", G5_SERVER_TIME)).'):below1000:centerCd(Y)'.$useescrow.$inicis_cardpoint;
+$acceptmethod = 'HPP(2):no_receipt:vbank(' . date('Ymd', strtotime("+3 days", G5_SERVER_TIME)) . '):below1000:centerCd(Y)' . $useescrow . $inicis_cardpoint;
 
 /* 기타 */
-$siteDomain = G5_SHOP_URL.'/inicis'; //가맹점 도메인 입력
+$siteDomain = G5_SHOP_URL . '/inicis'; //가맹점 도메인 입력
 // 페이지 URL에서 고정된 부분을 적는다.
 // Ex) returnURL이 http://localhost:8082/demo/INIpayStdSample/INIStdPayReturn.php 라면
 //                 http://localhost:8082/demo/INIpayStdSample 까지만 기입한다.
 
-$returnUrl = $siteDomain.'/inistdpay_return.php';
-$closeUrl  = $siteDomain.'/close.php';
-$popupUrl  = $siteDomain.'/popup.php';
+$returnUrl = $siteDomain . '/inistdpay_return.php';
+$closeUrl = $siteDomain . '/close.php';
+$popupUrl = $siteDomain . '/popup.php';
 
 $BANK_CODE = array(
     '03' => '기업은행',
@@ -129,9 +126,9 @@ $CARD_CODE = array(
 );
 
 $PAY_METHOD = array(
-    'VCard'      => '신용카드',
-    'Card'       => '신용카드',
+    'VCard' => '신용카드',
+    'Card' => '신용카드',
     'DirectBank' => '계좌이체',
-    'HPP'        => '휴대폰',
-    'VBank'      => '가상계좌'
+    'HPP' => '휴대폰',
+    'VBank' => '가상계좌'
 );

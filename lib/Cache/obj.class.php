@@ -1,12 +1,14 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-Class G5_object_cache {
+class G5_object_cache
+{
     public $writes = array();
     public $contents = array();
     public $etcs = array();
 
-    function get($type, $key, $group ='default') {
+    function get($type, $key, $group = 'default')
+    {
 
         switch ($type) {
             case 'bbs':
@@ -20,8 +22,8 @@ Class G5_object_cache {
                 break;
         }
 
-        if( $this->exists($type, $key, $group) ){
-            if ( is_object($datas[$group][$key]) )
+        if ($this->exists($type, $key, $group)) {
+            if (is_object($datas[$group][$key]))
                 return clone $datas[$group][$key];
             else
                 return $datas[$group][$key];
@@ -30,7 +32,8 @@ Class G5_object_cache {
         return false;
     }
 
-    function exists($type, $key, $group = 'default' ) {
+    function exists($type, $key, $group = 'default')
+    {
 
         $return_data = '';
 
@@ -46,11 +49,12 @@ Class G5_object_cache {
                 break;
         }
 
-        return isset($datas[$group]) && ( isset($datas[$group][$key]) || array_key_exists($key, $datas[$group]) );
+        return isset($datas[$group]) && (isset($datas[$group][$key]) || array_key_exists($key, $datas[$group]));
     }
 
-    function set($type, $key, $data=array(), $group='default') {
-        if ( is_object( $data ) )
+    function set($type, $key, $data = array(), $group = 'default')
+    {
+        if (is_object($data))
             $data = clone $data;
 
         switch ($type) {
@@ -66,6 +70,7 @@ Class G5_object_cache {
         }
 
     }
+
     /**
      * cache 데이터 제거
      * @param string $type

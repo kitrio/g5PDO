@@ -1,15 +1,15 @@
 <?php
 include_once('./_common.php');
-include_once(G5_SHOP_PATH.'/settle_inicis.inc.php');
+include_once(G5_SHOP_PATH . '/settle_inicis.inc.php');
 
-if($default['de_pg_service'] != 'inicis' && ! ($default['de_inicis_lpay_use'] || $default['de_inicis_kakaopay_use']) )
-    die(json_encode(array('error'=>'올바른 방법으로 이용해 주십시오.')));
+if ($default['de_pg_service'] != 'inicis' && !($default['de_inicis_lpay_use'] || $default['de_inicis_kakaopay_use']))
+    die(json_encode(array('error' => '올바른 방법으로 이용해 주십시오.')));
 
 $orderNumber = get_session('ss_order_inicis_id');
 $price = preg_replace('#[^0-9]#', '', $_POST['price']);
 
-if(strlen($price) < 1)
-    die(json_encode(array('error'=>'가격이 올바르지 않습니다.')));
+if (strlen($price) < 1)
+    die(json_encode(array('error' => '가격이 올바르지 않습니다.')));
 
 //
 //###################################
@@ -28,4 +28,4 @@ $mKey = hash("sha256", $signKey);
 $params = "oid=" . $orderNumber . "&price=" . $price . "&timestamp=" . $timestamp;
 $sign = hash("sha256", $params);
 
-die(json_encode(array('error'=>'', 'mKey'=>$mKey, 'timestamp'=>$timestamp, 'sign'=>$sign)));
+die(json_encode(array('error' => '', 'mKey' => $mKey, 'timestamp' => $timestamp, 'sign' => $sign)));

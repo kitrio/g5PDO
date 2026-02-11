@@ -573,16 +573,6 @@ class PHPExcel_Helper_HTML
 
     protected $richTextObject;
 
-    protected function initialise()
-    {
-        $this->face = $this->size = $this->color = null;
-        $this->bold = $this->italic = $this->underline = $this->superscript = $this->subscript = $this->strikethrough = false;
-
-        $this->stack = array();
-
-        $this->stringData = '';
-    }
-
     public function toRichTextObject($html)
     {
         $this->initialise();
@@ -605,18 +595,36 @@ class PHPExcel_Helper_HTML
         return $this->richTextObject;
     }
 
-    protected function cleanWhitespace()
+    protected function initialise()
     {
-        foreach ($this->richTextObject->getRichTextElements() as $key => $element) {
-            $text = $element->getText();
-            // Trim any leading spaces on the first run
-            if ($key == 0) {
-                $text = ltrim($text);
+        $this->face = $this->size = $this->color = null;
+        $this->bold = $this->italic = $this->underline = $this->superscript = $this->subscript = $this->strikethrough = false;
+
+        $this->stack = array();
+
+        $this->stringData = '';
+    }
+
+    protected function parseElements(DOMNode $element)
+    {
+        foreach ($element->childNodes as $child) {
+            if ($child instanceof DOMText) {
+                $this->parseTextNode($child);
+            } elseif ($child instanceof DOMElement) {
+                $this->parseElementNode($child);
             }
-            // Trim any spaces immediately after a line break
-            $text = preg_replace('/\n */mu', "\n", $text);
-            $element->setText($text);
         }
+    }
+
+    protected function parseTextNode(DOMText $textNode)
+    {
+        $domText = preg_replace(
+            '/\s+/u',
+            ' ',
+            str_replace(array("\r", "\n"), ' ', $textNode->nodeValue)
+        );
+        $this->stringData .= $domText;
+        $this->buildTextRun();
     }
 
     protected function buildTextRun()
@@ -657,18 +665,41 @@ class PHPExcel_Helper_HTML
         $this->stringData = '';
     }
 
-    protected function rgbToColour($rgb)
+    protected function parseElementNode(DOMElement $element)
     {
-        preg_match_all('/\d+/', $rgb, $values);
-        foreach ($values[0] as &$value) {
-            $value = str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
-        }
-        return implode($values[0]);
+        $callbackTag = strtolower($element->nodeName);
+        $this->stack[] = $callbackTag;
+
+        $this->handleCallback($element, $callbackTag, $this->startTagCallbacks);
+
+        $this->parseElements($element);
+        array_pop($this->stack);
+
+        $this->handleCallback($element, $callbackTag, $this->endTagCallbacks);
     }
 
-    protected function colourNameLookup($rgb)
+    protected function handleCallback($element, $callbackTag, $callbacks)
     {
-        return self::$colourMap[$rgb];
+        if (isset($callbacks[$callbackTag])) {
+            $elementHandler = $callbacks[$callbackTag];
+            if (method_exists($this, $elementHandler)) {
+                call_user_func(array($this, $elementHandler), $element);
+            }
+        }
+    }
+
+    protected function cleanWhitespace()
+    {
+        foreach ($this->richTextObject->getRichTextElements() as $key => $element) {
+            $text = $element->getText();
+            // Trim any leading spaces on the first run
+            if ($key == 0) {
+                $text = ltrim($text);
+            }
+            // Trim any spaces immediately after a line break
+            $text = preg_replace('/\n */mu', "\n", $text);
+            $element->setText($text);
+        }
     }
 
     protected function startFontTag($tag)
@@ -689,6 +720,20 @@ class PHPExcel_Helper_HTML
                 $this->$attributeName = $attributeValue;
             }
         }
+    }
+
+    protected function rgbToColour($rgb)
+    {
+        preg_match_all('/\d+/', $rgb, $values);
+        foreach ($values[0] as &$value) {
+            $value = str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
+        }
+        return implode($values[0]);
+    }
+
+    protected function colourNameLookup($rgb)
+    {
+        return self::$colourMap[$rgb];
     }
 
     protected function endFontTag()
@@ -759,50 +804,5 @@ class PHPExcel_Helper_HTML
     protected function breakTag()
     {
         $this->stringData .= "\n";
-    }
-
-    protected function parseTextNode(DOMText $textNode)
-    {
-        $domText = preg_replace(
-            '/\s+/u',
-            ' ',
-            str_replace(array("\r", "\n"), ' ', $textNode->nodeValue)
-        );
-        $this->stringData .= $domText;
-        $this->buildTextRun();
-    }
-
-    protected function handleCallback($element, $callbackTag, $callbacks)
-    {
-        if (isset($callbacks[$callbackTag])) {
-            $elementHandler = $callbacks[$callbackTag];
-            if (method_exists($this, $elementHandler)) {
-                call_user_func(array($this, $elementHandler), $element);
-            }
-        }
-    }
-
-    protected function parseElementNode(DOMElement $element)
-    {
-        $callbackTag = strtolower($element->nodeName);
-        $this->stack[] = $callbackTag;
-
-        $this->handleCallback($element, $callbackTag, $this->startTagCallbacks);
-
-        $this->parseElements($element);
-        array_pop($this->stack);
-
-        $this->handleCallback($element, $callbackTag, $this->endTagCallbacks);
-    }
-
-    protected function parseElements(DOMNode $element)
-    {
-        foreach ($element->childNodes as $child) {
-            if ($child instanceof DOMText) {
-                $this->parseTextNode($child);
-            } elseif ($child instanceof DOMElement) {
-                $this->parseElementNode($child);
-            }
-        }
     }
 }

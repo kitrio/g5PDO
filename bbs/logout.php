@@ -2,7 +2,7 @@
 define('G5_CERT_IN_PROG', true);
 include_once('./_common.php');
 
-if(function_exists('social_provider_logout')){
+if (function_exists('social_provider_logout')) {
     social_provider_logout();
 }
 
@@ -16,7 +16,7 @@ set_cookie('ck_auto', '', 0);
 // 자동로그인 해제 end --------------------------------
 
 if ($url) {
-    if ( substr($url, 0, 2) == '//' )
+    if (substr($url, 0, 2) == '//')
         $url = 'http:' . $url;
 
     if (preg_match('#\\\0#', $url) || preg_match('/^\/{1,}\\\/', $url)) {
@@ -32,7 +32,7 @@ if ($url) {
         alert('url에 도메인을 지정할 수 없습니다.', G5_URL);
     }
 
-    if($url == 'shop')
+    if ($url == 'shop')
         $link = G5_SHOP_URL;
     else
         $link = $url;

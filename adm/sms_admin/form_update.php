@@ -22,11 +22,11 @@ if ($w == 'u') // 업데이트
 
     if (!strlen(trim($fo_content)))
         alert('이모티콘을 입력해주세요');
-/*
-    $res = sql_fetch("select * from {$g5['sms5_form_table']} where fo_no<>'$fo_no' and fo_content='$fo_content'");
-    if ($res)
-        alert('같은 이모티콘이 존재합니다.');
-*/
+    /*
+        $res = sql_fetch("select * from {$g5['sms5_form_table']} where fo_no<>'$fo_no' and fo_content='$fo_content'");
+        if ($res)
+            alert('같은 이모티콘이 존재합니다.');
+    */
     $res = sql_fetch("select * from {$g5['sms5_form_table']} where fo_no='$fo_no'");
     if (!$res)
         alert('존재하지 않는 데이터 입니다.');
@@ -40,9 +40,8 @@ if ($w == 'u') // 업데이트
 
     $group = sql_fetch("select * from {$g5['sms5_form_group_table']} where fg_no = '$fg_no'");
 
-    sql_query("update {$g5['sms5_form_table']} set fg_no='$fg_no', fg_member='{$group['fg_member']}', fo_name='$fo_name', fo_content='$fo_content', fo_datetime='".G5_TIME_YMDHIS."' where fo_no='$fo_no'");
-}
-else if ($w == 'd') // 삭제
+    sql_query("update {$g5['sms5_form_table']} set fg_no='$fg_no', fg_member='{$group['fg_member']}', fo_name='$fo_name', fo_content='$fo_content', fo_datetime='" . G5_TIME_YMDHIS . "' where fo_no='$fo_no'");
+} else if ($w == 'd') // 삭제
 {
     if (!is_numeric($fo_no))
         alert('고유번호가 없습니다.');
@@ -55,8 +54,7 @@ else if ($w == 'd') // 삭제
     sql_query("update {$g5['sms5_form_group_table']} set fg_count = fg_count - 1 where fg_no = '{$res['fg_no']}'");
 
     $get_fg_no = $fg_no;
-}
-else // 등록
+} else // 등록
 {
     if (!$fg_no) $fg_no = 0;
 
@@ -72,11 +70,11 @@ else // 등록
 
     $group = sql_fetch("select * from {$g5['sms5_form_group_table']} where fg_no = '$fg_no'");
 
-    sql_query("insert into {$g5['sms5_form_table']} set fg_no='$fg_no', fg_member='{$group['fg_member']}', fo_name='$fo_name', fo_content='$fo_content', fo_datetime='".G5_TIME_YMDHIS."'");
+    sql_query("insert into {$g5['sms5_form_table']} set fg_no='$fg_no', fg_member='{$group['fg_member']}', fo_name='$fo_name', fo_content='$fo_content', fo_datetime='" . G5_TIME_YMDHIS . "'");
     sql_query("update {$g5['sms5_form_group_table']} set fg_count = fg_count + 1 where fg_no = '$fg_no'");
 
     $get_fg_no = $fg_no;
 }
 
-$go_url = './form_list.php?page='.$page.'&amp;fg_no='.$get_fg_no;
+$go_url = './form_list.php?page=' . $page . '&amp;fg_no=' . $get_fg_no;
 goto_url($go_url);

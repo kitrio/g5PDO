@@ -23,8 +23,7 @@ $sql = " select a.it_id,
           group by a.it_id
           order by a.ct_id asc ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++)
-{
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
     // 합계금액 계산
     $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                     SUM(ct_point * ct_qty) as point,
@@ -45,30 +44,30 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     $options = '';
     $options_ul = ' style="margin:0;padding:0"'; // ul style
     $options_li = ' style="padding:5px 0;list-style:none"'; // li style
-    for($k=0; $row2=sql_fetch_array($result2); $k++) {
-        if($k == 0)
-            $options .= '<ul'.$options_ul.'>'.PHP_EOL;
+    for ($k = 0; $row2 = sql_fetch_array($result2); $k++) {
+        if ($k == 0)
+            $options .= '<ul' . $options_ul . '>' . PHP_EOL;
         $price_plus = '';
-        if($row2['io_price'] >= 0)
+        if ($row2['io_price'] >= 0)
             $price_plus = '+';
-        $options .= '<li'.$options_li.'>'.$row2['ct_option'].' ('.$price_plus.display_price($row2['io_price']).') '.$row2['ct_qty'].'개</li>'.PHP_EOL;
+        $options .= '<li' . $options_li . '>' . $row2['ct_option'] . ' (' . $price_plus . display_price($row2['io_price']) . ') ' . $row2['ct_qty'] . '개</li>' . PHP_EOL;
     }
 
-    if($k > 0)
+    if ($k > 0)
         $options .= '</ul>';
 
-    $list[$i]['g_dir']         = G5_URL;
-    $list[$i]['it_id']         = $row['it_id'];
-    $list[$i]['it_simg']       = get_it_image($row['it_id'], 70, 70);
-    $list[$i]['it_name']       = $row['it_name'];
-    $list[$i]['it_origin']     = $row['it_origin'];
-    $list[$i]['it_opt']        = $options;
-    $list[$i]['ct_price']      = $row['ct_price'];
-    $list[$i]['stotal_price']  = $sum['price'];
-    $list[$i]['stotal_point']  = $sum['point'];
+    $list[$i]['g_dir'] = G5_URL;
+    $list[$i]['it_id'] = $row['it_id'];
+    $list[$i]['it_simg'] = get_it_image($row['it_id'], 70, 70);
+    $list[$i]['it_name'] = $row['it_name'];
+    $list[$i]['it_origin'] = $row['it_origin'];
+    $list[$i]['it_opt'] = $options;
+    $list[$i]['ct_price'] = $row['ct_price'];
+    $list[$i]['stotal_price'] = $sum['price'];
+    $list[$i]['stotal_point'] = $sum['point'];
 
-    $ttotal_price  += $list[$i]['stotal_price'];
-    $ttotal_point  += $list[$i]['stotal_point'];
+    $ttotal_price += $list[$i]['stotal_price'];
+    $ttotal_point += $list[$i]['stotal_point'];
 }
 //------------------------------------------------------------------------------
 

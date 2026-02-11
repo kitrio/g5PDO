@@ -10,11 +10,11 @@ $g5['title'] = '캡챠파일 일괄삭제';
 require_once './admin.head.php';
 ?>
 
-<div class="local_desc02 local_desc">
-    <p>
-        완료 메세지가 나오기 전에 프로그램의 실행을 중지하지 마십시오.
-    </p>
-</div>
+    <div class="local_desc02 local_desc">
+        <p>
+            완료 메세지가 나오기 전에 프로그램의 실행을 중지하지 마십시오.
+        </p>
+    </div>
 
 <?php
 flush();
@@ -28,7 +28,7 @@ echo '<ul class="session_del">' . PHP_EOL;
 
 $files = glob(G5_DATA_PATH . '/cache/?captcha-*');
 if (is_array($files)) {
-    $before_time  = G5_SERVER_TIME - 3600; // 한시간전
+    $before_time = G5_SERVER_TIME - 3600; // 한시간전
     foreach ($files as $gcaptcha_file) {
         $modification_time = filemtime($gcaptcha_file); // 파일접근시간
 

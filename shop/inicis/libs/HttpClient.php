@@ -6,7 +6,8 @@ define("READ_TIMEOUT", 15);
 //$host = $explode_data[2];
 //$path = "/" . $explode_data[3] . "/" . $explode_data[4];
 
-class HttpClient {
+class HttpClient
+{
 
     var $sock = 0;
     var $ssl;
@@ -20,7 +21,8 @@ class HttpClient {
     var $errorcode;
     var $errormsg;
 
-    function processHTTP($url, $param) {
+    function processHTTP($url, $param)
+    {
 
         $data = "";
         foreach ($param as $key => $value) {
@@ -36,7 +38,7 @@ class HttpClient {
         // [scheme] => https
         // [host] => fcstdpay.inicis.com || stdpay.inicis.com || ksstdpay.inicis.com
         // [path] => /api/payAuth
-        if (! is_inicis_url_return($url)) {
+        if (!is_inicis_url_return($url)) {
             return false;
         }
 
@@ -139,15 +141,18 @@ class HttpClient {
         //	return false;
     }
 
-    function getErrorCode() {
+    function getErrorCode()
+    {
         return $this->errorcode;
     }
 
-    function getErrorMsg() {
+    function getErrorMsg()
+    {
         return $this->errormsg;
     }
 
-    function getBody() {
+    function getBody()
+    {
         return $this->body;
     }
 

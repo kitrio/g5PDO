@@ -5,30 +5,30 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 //add_stylesheet('<link rel="stylesheet" href="'.G5_MSHOP_SKIN_URL.'/style.css">', 0);
 
 // 장바구니 또는 위시리스트 ajax 스크립트
-add_javascript('<script src="'.G5_JS_URL.'/shop.list.action.js"></script>', 10);
+add_javascript('<script src="' . G5_JS_URL . '/shop.list.action.js"></script>', 10);
 ?>
 
 <script src="<?php echo G5_JS_URL ?>/jquery.fancylist.js"></script>
-<?php if($config['cf_kakao_js_apikey']) { ?>
-<script src="https://developers.kakao.com/sdk/js/kakao.min.js" async></script>
-<script>
-var kakao_javascript_apikey = "<?php echo $config['cf_kakao_js_apikey']; ?>";
-</script>
-<script src="<?php echo G5_JS_URL; ?>/kakaolink.js?ver=<?php echo G5_JS_VER; ?>"></script>
+<?php if ($config['cf_kakao_js_apikey']) { ?>
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js" async></script>
+    <script>
+      var kakao_javascript_apikey = "<?php echo $config['cf_kakao_js_apikey']; ?>";
+    </script>
+    <script src="<?php echo G5_JS_URL; ?>/kakaolink.js?ver=<?php echo G5_JS_VER; ?>"></script>
 <?php } ?>
 
 <!-- 메인상품진열 20 시작 { -->
 <?php
 $li_width = intval(100 / $this->list_mod);
-$li_width_style = ' style="width:'.$li_width.'%;"';
-$i=0;
+$li_width_style = ' style="width:' . $li_width . '%;"';
+$i = 0;
 
-foreach((array) $list as $row){
+foreach ((array)$list as $row) {
 
-    if( empty($row) ) continue;
+    if (empty($row)) continue;
 
     $item_link_href = shop_item_url($row['it_id']);
-    $star_score = $row['it_use_avg'] ? (int) get_star($row['it_use_avg']) : '';
+    $star_score = $row['it_use_avg'] ? (int)get_star($row['it_use_avg']) : '';
     $is_soldout = is_soldout($row['it_id'], true);   // 품절인지 체크
 
     if ($i == 0) {
@@ -39,7 +39,7 @@ foreach((array) $list as $row){
         }
     }
 
-    if($i % $this->list_mod == 0)
+    if ($i % $this->list_mod == 0)
         $li_clear = ' sct_clear';
     else
         $li_clear = '';
@@ -52,7 +52,7 @@ foreach((array) $list as $row){
     }
 
     if ($this->view_it_img) {
-        echo get_it_image($row['it_id'], $this->img_width, $this->img_height, '', '', stripslashes($row['it_name']))."\n";
+        echo get_it_image($row['it_id'], $this->img_width, $this->img_height, '', '', stripslashes($row['it_name'])) . "\n";
     }
 
     if ($this->href) {
@@ -65,13 +65,13 @@ foreach((array) $list as $row){
         echo "</div>\n";
     }
 
-	// 사용후기 평점표시
-	if ($this->view_star && $star_score) {
-        echo "<div class=\"sct_star\"><img src=\"".G5_SHOP_URL."/img/s_star".$star_score.".png\" alt=\"별점 ".$star_score."점\" class=\"sit_star\"></div>\n";
+    // 사용후기 평점표시
+    if ($this->view_star && $star_score) {
+        echo "<div class=\"sct_star\"><img src=\"" . G5_SHOP_URL . "/img/s_star" . $star_score . ".png\" alt=\"별점 " . $star_score . "점\" class=\"sit_star\"></div>\n";
     }
 
     if ($this->view_it_id) {
-        echo "<div class=\"sct_id\">&lt;".stripslashes($row['it_id'])."&gt;</div>\n";
+        echo "<div class=\"sct_id\">&lt;" . stripslashes($row['it_id']) . "&gt;</div>\n";
     }
 
     if ($this->href) {
@@ -79,7 +79,7 @@ foreach((array) $list as $row){
     }
 
     if ($this->view_it_name) {
-        echo stripslashes($row['it_name'])."\n";
+        echo stripslashes($row['it_name']) . "\n";
     }
 
     if ($this->href) {
@@ -88,22 +88,22 @@ foreach((array) $list as $row){
 
     if ($this->view_it_price) {
         echo "<div class=\"sct_cost\">\n";
-        echo display_price(get_price($row), $row['it_tel_inq'])."\n";
+        echo display_price(get_price($row), $row['it_tel_inq']) . "\n";
         echo "</div>\n";
     }
 
     if ($this->view_it_icon) {
-        echo "<div class=\"sct_icon\">".item_icon($row)."</div>\n";
+        echo "<div class=\"sct_icon\">" . item_icon($row) . "</div>\n";
     }
 
     if ($this->view_sns) {
         $sns_top = $this->img_height + 10;
-        $sns_url  = $item_link_href;
-        $sns_title = get_text($row['it_name']).' | '.get_text($config['cf_title']);
+        $sns_url = $item_link_href;
+        $sns_title = get_text($row['it_name']) . ' | ' . get_text($config['cf_title']);
         echo "<div class=\"sct_sns\" style=\"top:{$sns_top}px\">";
-        echo get_sns_share_link('facebook', $sns_url, $sns_title, G5_MSHOP_SKIN_URL.'/img/facebook.png');
-        echo get_sns_share_link('twitter', $sns_url, $sns_title, G5_MSHOP_SKIN_URL.'/img/twitter.png');
-        echo get_sns_share_link('kakaotalk', $sns_url, $sns_title, G5_MSHOP_SKIN_URL.'/img/sns_kakao.png');
+        echo get_sns_share_link('facebook', $sns_url, $sns_title, G5_MSHOP_SKIN_URL . '/img/facebook.png');
+        echo get_sns_share_link('twitter', $sns_url, $sns_title, G5_MSHOP_SKIN_URL . '/img/twitter.png');
+        echo get_sns_share_link('kakaotalk', $sns_url, $sns_title, G5_MSHOP_SKIN_URL . '/img/sns_kakao.png');
         echo "</div>\n";
     }
     echo "</div>\n";
@@ -114,7 +114,7 @@ foreach((array) $list as $row){
 
 if ($i > 0) echo "</ul>\n";
 
-if($i == 0) echo "<p class=\"sct_noitem\">등록된 상품이 없습니다.</p>\n";
+if ($i == 0) echo "<p class=\"sct_noitem\">등록된 상품이 없습니다.</p>\n";
 ?>
 <!-- } 상품진열 20 끝 -->
 

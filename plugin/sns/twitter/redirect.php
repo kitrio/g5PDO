@@ -3,12 +3,12 @@ include_once("./_common.php");
 
 /* Start session and load library. */
 //session_start();
-require_once(G5_SNS_PATH.'/twitter/twitteroauth/twitteroauth.php');
-require_once(G5_SNS_PATH.'/twitter/twitterconfig.php');
+require_once(G5_SNS_PATH . '/twitter/twitteroauth/twitteroauth.php');
+require_once(G5_SNS_PATH . '/twitter/twitterconfig.php');
 
 /* Build TwitterOAuth object with client credentials. */
 $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
- 
+
 /* Get temporary credentials. */
 $request_token = $connection->getRequestToken(OAUTH_CALLBACK);
 
@@ -17,15 +17,15 @@ $_SESSION['oauth_token'] = $token = @$request_token['oauth_token'];
 $_SESSION['oauth_token_secret'] = @$request_token['oauth_token_secret'];
 
 //print_r2($_SESSION); exit;
- 
+
 /* If last connection failed don't display authorization link. */
 switch ($connection->http_code) {
-  case 200:
-    /* Build authorize URL and redirect user to Twitter. */
-    $url = $connection->getAuthorizeURL($token);
-    header('Location: ' . $url); 
-    break;
-  default:
-    /* Show notification if something went wrong. */
-    echo 'Could not connect to Twitter. Refresh the page or try again later.';
+    case 200:
+        /* Build authorize URL and redirect user to Twitter. */
+        $url = $connection->getAuthorizeURL($token);
+        header('Location: ' . $url);
+        break;
+    default:
+        /* Show notification if something went wrong. */
+        echo 'Could not connect to Twitter. Refresh the page or try again later.';
 }

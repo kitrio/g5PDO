@@ -1,13 +1,13 @@
 <?php
 include_once('./_common.php');
 
-$w     = isset($_REQUEST['w']) ? preg_replace('/[^0-9a-z]/i', '', trim($_REQUEST['w'])) : '';
+$w = isset($_REQUEST['w']) ? preg_replace('/[^0-9a-z]/i', '', trim($_REQUEST['w'])) : '';
 $it_id = isset($_REQUEST['it_id']) ? get_search_string(trim($_REQUEST['it_id'])) : '';
 $is_id = isset($_REQUEST['is_id']) ? preg_replace('/[^0-9]/', '', trim($_REQUEST['is_id'])) : 0;
-$use = array('is_subject'=>'', 'is_content'=>'');
+$use = array('is_subject' => '', 'is_content' => '');
 
 if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/itemuseform.php');
+    include_once(G5_MSHOP_PATH . '/itemuseform.php');
     return;
 }
 
@@ -20,7 +20,7 @@ if (!$is_member) {
 // 상품정보체크
 $row = get_shop_item($it_id, true);
 
-if(! (isset($row['it_id']) && $row['it_id']))
+if (!(isset($row['it_id']) && $row['it_id']))
     alert_close('상품정보가 존재하지 않습니다.');
 
 if ($w == "") {
@@ -34,7 +34,7 @@ if ($w == "") {
         alert_close("사용후기 정보가 없습니다.");
     }
 
-    $it_id    = $use['it_id'];
+    $it_id = $use['it_id'];
     $is_score = $use['is_score'];
 
     if (!$is_admin && $use['mb_id'] != $member['mb_id']) {
@@ -42,7 +42,7 @@ if ($w == "") {
     }
 }
 
-include_once(G5_PATH.'/head.sub.php');
+include_once(G5_PATH . '/head.sub.php');
 
 $is_dhtml_editor = false;
 // 모바일에서는 DHTML 에디터 사용불가
@@ -54,12 +54,12 @@ $editor_js = '';
 $editor_js .= get_editor_js('is_content', $is_dhtml_editor);
 $editor_js .= chk_editor_js('is_content', $is_dhtml_editor);
 
-$itemuseform_skin = G5_SHOP_SKIN_PATH.'/itemuseform.skin.php';
+$itemuseform_skin = G5_SHOP_SKIN_PATH . '/itemuseform.skin.php';
 
-if(!file_exists($itemuseform_skin)) {
-    echo str_replace(G5_PATH.'/', '', $itemuseform_skin).' 스킨 파일이 존재하지 않습니다.';
+if (!file_exists($itemuseform_skin)) {
+    echo str_replace(G5_PATH . '/', '', $itemuseform_skin) . ' 스킨 파일이 존재하지 않습니다.';
 } else {
     include_once($itemuseform_skin);
 }
 
-include_once(G5_PATH.'/tail.sub.php');
+include_once(G5_PATH . '/tail.sub.php');

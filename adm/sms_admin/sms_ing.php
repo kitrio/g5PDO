@@ -7,12 +7,23 @@ $g5['title'] = "SMS 전송 중";
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<title>SMS 전송 중</title>
-<style>
-body {margin:0;padding:0;background:#000;color:#fff;font-size:0.75em;line-height:2em}
-div {padding:50px 0;text-align:center}
-</style>
+    <meta charset="utf-8">
+    <title>SMS 전송 중</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-size: 0.75em;
+            line-height: 2em
+        }
+
+        div {
+            padding: 50px 0;
+            text-align: center
+        }
+    </style>
 </head>
 <body>
 

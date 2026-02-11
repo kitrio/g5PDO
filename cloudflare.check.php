@@ -1,8 +1,11 @@
 <?php
+
 // CloudFlare를 사용시, 사용자 환경에 맞는 $_SERVER['REMOTE_ADDR']과 $_SERVER['HTTPS'] 사용 여부를 수정합니다.
-class G5CloudflareRequestHandler {
-    public static function check_cloudflare_ips($user_ip){
-        
+class G5CloudflareRequestHandler
+{
+    public static function check_cloudflare_ips($user_ip)
+    {
+
         // 클라우드플레어 IP, https://www.cloudflare.com/ips
         $cloudflare_ips = array(
             // IPv4
@@ -30,7 +33,7 @@ class G5CloudflareRequestHandler {
             '2a06:98c0::/29',
             '2c0f:f248::/32',
         );
-            
+
         // 사용자 IP가 Cloudflare IP 대역 범위에 있는지 확인
         $is_cloudflare_ip = false;
         foreach ($cloudflare_ips as $cidr) {
@@ -39,12 +42,13 @@ class G5CloudflareRequestHandler {
                 break;
             }
         }
-        
+
         return $is_cloudflare_ip;
     }
 
     // IP 주소가 CIDR 범위 내에 있는지 확인하는 함수 (IPv4, IPv6 모두 가능)
-    public static function ip_in_range($ip, $range) {
+    public static function ip_in_range($ip, $range)
+    {
         // IPv4와 IPv6를 구분
         if (strpos($range, ':') === false && preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $ip)) {
             // IPv4 처리
@@ -53,29 +57,31 @@ class G5CloudflareRequestHandler {
             // IPv6 처리
             return self::ipv6_in_range($ip, $range);
         }
-        
+
         return false;
     }
 
     // IPv4 CIDR 범위 검사
-    public static function ipv4_in_range($ip, $range) {
+    public static function ipv4_in_range($ip, $range)
+    {
         list($range, $netmask) = explode('/', $range, 2);
         $range_decimal = ip2long($range);
         $ip_decimal = ip2long($ip);
         $wildcard_decimal = pow(2, (32 - $netmask)) - 1;
         $netmask_decimal = ~$wildcard_decimal;
-        
+
         return (($ip_decimal & $netmask_decimal) == ($range_decimal & $netmask_decimal));
     }
 
     // IPv6 CIDR 범위 검사
-    public static function ipv6_in_range($ip, $range) {
+    public static function ipv6_in_range($ip, $range)
+    {
         list($range_ip, $netmask) = explode('/', $range, 2);
-        $netmask = (int) $netmask;
+        $netmask = (int)$netmask;
 
         $ip_bin = @inet_pton($ip);
         $range_bin = @inet_pton($range_ip);
-        
+
         // IPv6 주소는 128비트이므로, 비트마스크를 적용
         $unpacked = unpack('A16', $ip_bin);
         $ip_bits = $unpacked[1];
@@ -98,9 +104,10 @@ class G5CloudflareRequestHandler {
     }
 
 }
+
 if ($_SERVER['HTTP_CF_CONNECTING_IP'] && G5CloudflareRequestHandler::check_cloudflare_ips($_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = preg_replace('/[^0-9a-fA-F:.]/', '', $_SERVER['HTTP_CF_CONNECTING_IP']);
-    
+
     // Cloudflare 환경을 고려한 https 사용여부
     if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === "https") {
         $_SERVER['HTTPS'] = 'on';

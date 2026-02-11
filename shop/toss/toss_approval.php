@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 // 토스페이먼츠 class
-require_once(G5_SHOP_PATH.'/toss/toss.inc.php');
+require_once(G5_SHOP_PATH . '/toss/toss.inc.php');
 
 $toss = new TossPayments(
     $config['cf_toss_client_key'],
@@ -61,17 +61,17 @@ if (isset($paymentKey)) {
     // 업데이트
     $sql = "
         UPDATE {$g5['g5_shop_order_data_table']} SET
-            dt_data = '".$dt_data_new."'
+            dt_data = '" . $dt_data_new . "'
             WHERE od_id = '$orderId'
             {$addQuery}
     ";
     sql_query($sql);
 }
 
-if(isset($payReqMap['pp_id']) && $payReqMap['pp_id']) {
-    $page_return_url  = G5_SHOP_URL.'/personalpayform.php?pp_id='.$payReqMap['pp_id'];
+if (isset($payReqMap['pp_id']) && $payReqMap['pp_id']) {
+    $page_return_url = G5_SHOP_URL . '/personalpayform.php?pp_id=' . $payReqMap['pp_id'];
 } else {
-    $page_return_url  = G5_SHOP_URL.'/orderform.php';
+    $page_return_url = G5_SHOP_URL . '/orderform.php';
     if ($_SESSION['ss_direct']) {
         $page_return_url .= '?sw_direct=1';
     }

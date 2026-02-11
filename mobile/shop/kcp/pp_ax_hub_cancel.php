@@ -21,28 +21,25 @@ $bSucc = "false"; // DB 작업 실패 또는 금액 불일치의 경우 "false" 
 /* = -------------------------------------------------------------------------- = */
 /* =   07-1. DB 작업 실패일 경우 자동 승인 취소                                 = */
 /* = -------------------------------------------------------------------------- = */
-if ( $req_tx == "pay" )
-{
-    if( $res_cd == "0000" )
-    {
-        if ( $bSucc == "false" )
-        {
+if ($req_tx == "pay") {
+    if ($res_cd == "0000") {
+        if ($bSucc == "false") {
             $c_PayPlus->mf_clear();
 
             $tran_cd = "00200000";
 
-            $c_PayPlus->mf_set_modx_data( "tno",      $tno                         );  // KCP 원거래 거래번호
-            $c_PayPlus->mf_set_modx_data( "mod_type", "STSC"                       );  // 원거래 변경 요청 종류
-            $c_PayPlus->mf_set_modx_data( "mod_ip",   $cust_ip                     );  // 변경 요청자 IP
-            $c_PayPlus->mf_set_modx_data( "mod_desc", $cancel_msg );  // 변경 사유
+            $c_PayPlus->mf_set_modx_data("tno", $tno);  // KCP 원거래 거래번호
+            $c_PayPlus->mf_set_modx_data("mod_type", "STSC");  // 원거래 변경 요청 종류
+            $c_PayPlus->mf_set_modx_data("mod_ip", $cust_ip);  // 변경 요청자 IP
+            $c_PayPlus->mf_set_modx_data("mod_desc", $cancel_msg);  // 변경 사유
 
-            $c_PayPlus->mf_do_tx( "",  $g_conf_home_dir, $g_conf_site_cd,
-                                  $g_conf_site_key,  $tran_cd,    "",
-                                  $g_conf_gw_url,  $g_conf_gw_port,  "payplus_cli_slib",
-                                  $ordr_idxx, $cust_ip,    $g_conf_log_level,
-                                  0, 0 );
+            $c_PayPlus->mf_do_tx("", $g_conf_home_dir, $g_conf_site_cd,
+                $g_conf_site_key, $tran_cd, "",
+                $g_conf_gw_url, $g_conf_gw_port, "payplus_cli_slib",
+                $ordr_idxx, $cust_ip, $g_conf_log_level,
+                0, 0);
 
-            $res_cd  = $c_PayPlus->m_res_cd;
+            $res_cd = $c_PayPlus->m_res_cd;
             $res_msg = $c_PayPlus->m_res_msg;
         }
     }

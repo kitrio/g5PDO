@@ -8,18 +8,18 @@ $sop = strtolower($sop);
 if ($sop != 'and' && $sop != 'or')
     $sop = 'and';
 
-@include_once($board_skin_path.'/view.head.skin.php');
+@include_once($board_skin_path . '/view.head.skin.php');
 
 $sql_search = "";
 // 검색이면
 if ($sca || $stx || $stx === '0') {
     // where 문을 얻음
     $sql_search = get_sql_search($sca, $sfl, $stx, $sop);
-    $search_href = get_pretty_url($bo_table,'','&amp;page='.$page.$qstr);
+    $search_href = get_pretty_url($bo_table, '', '&amp;page=' . $page . $qstr);
     $list_href = get_pretty_url($bo_table);
 } else {
     $search_href = '';
-    $list_href = get_pretty_url($bo_table,'',$qstr);
+    $list_href = get_pretty_url($bo_table, '', $qstr);
 }
 
 if (!$board['bo_use_list_view']) {
@@ -30,7 +30,7 @@ if (!$board['bo_use_list_view']) {
     $sql = " select wr_id, wr_subject, wr_datetime from {$write_table} where wr_is_comment = 0 and wr_num = '{$write['wr_num']}' and wr_reply < '{$write['wr_reply']}' {$sql_search} order by wr_num desc, wr_reply desc limit 1 ";
     $prev = sql_fetch($sql);
     // 위의 쿼리문으로 값을 얻지 못했다면
-    if (! (isset($prev['wr_id']) && $prev['wr_id'])) {
+    if (!(isset($prev['wr_id']) && $prev['wr_id'])) {
         $sql = " select wr_id, wr_subject, wr_datetime from {$write_table} where wr_is_comment = 0 and wr_num < '{$write['wr_num']}' {$sql_search} order by wr_num desc, wr_reply desc limit 1 ";
         $prev = sql_fetch($sql);
     }
@@ -39,7 +39,7 @@ if (!$board['bo_use_list_view']) {
     $sql = " select wr_id, wr_subject, wr_datetime from {$write_table} where wr_is_comment = 0 and wr_num = '{$write['wr_num']}' and wr_reply > '{$write['wr_reply']}' {$sql_search} order by wr_num, wr_reply limit 1 ";
     $next = sql_fetch($sql);
     // 위의 쿼리문으로 값을 얻지 못했다면
-    if (! (isset($next['wr_id']) && $next['wr_id'])) {
+    if (!(isset($next['wr_id']) && $next['wr_id'])) {
         $sql = " select wr_id, wr_subject, wr_datetime from {$write_table} where wr_is_comment = 0 and wr_num > '{$write['wr_num']}' {$sql_search} order by wr_num, wr_reply limit 1 ";
         $next = sql_fetch($sql);
     }
@@ -64,33 +64,32 @@ if (isset($next['wr_id']) && $next['wr_id']) {
 // 쓰기 링크
 $write_href = '';
 if ($member['mb_level'] >= $board['bo_write_level']) {
-    $write_href = short_url_clean(G5_BBS_URL.'/write.php?bo_table='.$bo_table);
+    $write_href = short_url_clean(G5_BBS_URL . '/write.php?bo_table=' . $bo_table);
 }
 
 // 답변 링크
 $reply_href = '';
 if ($member['mb_level'] >= $board['bo_reply_level']) {
-    $reply_href = short_url_clean(G5_BBS_URL.'/write.php?w=r&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.$qstr);
+    $reply_href = short_url_clean(G5_BBS_URL . '/write.php?w=r&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . $qstr);
 }
 
 // 수정, 삭제 링크
 $update_href = $delete_href = '';
 // 로그인중이고 자신의 글이라면 또는 관리자라면 비밀번호를 묻지 않고 바로 수정, 삭제 가능
 if (($member['mb_id'] && ($member['mb_id'] === $write['mb_id'])) || $is_admin) {
-    $update_href = short_url_clean(G5_BBS_URL.'/write.php?w=u&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;page='.$page.$qstr);
+    $update_href = short_url_clean(G5_BBS_URL . '/write.php?w=u&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;page=' . $page . $qstr);
     set_session('ss_delete_token', $token = uniqid(time()));
-    $delete_href = G5_BBS_URL.'/delete.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;token='.$token.'&amp;page='.$page.urldecode($qstr);
-}
-else if (!$write['mb_id']) { // 회원이 쓴 글이 아니라면
-    $update_href = G5_BBS_URL.'/password.php?w=u&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;page='.$page.$qstr;
-    $delete_href = G5_BBS_URL.'/password.php?w=d&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;page='.$page.$qstr;
+    $delete_href = G5_BBS_URL . '/delete.php?bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;token=' . $token . '&amp;page=' . $page . urldecode($qstr);
+} else if (!$write['mb_id']) { // 회원이 쓴 글이 아니라면
+    $update_href = G5_BBS_URL . '/password.php?w=u&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;page=' . $page . $qstr;
+    $delete_href = G5_BBS_URL . '/password.php?w=d&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;page=' . $page . $qstr;
 }
 
 // 최고, 그룹관리자라면 글 복사, 이동 가능
 $copy_href = $move_href = '';
 if ($write['wr_reply'] == '' && ($is_admin == 'super' || $is_admin == 'group')) {
-    $copy_href = G5_BBS_URL.'/move.php?sw=copy&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;page='.$page.$qstr;
-    $move_href = G5_BBS_URL.'/move.php?sw=move&amp;bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;page='.$page.$qstr;
+    $copy_href = G5_BBS_URL . '/move.php?sw=copy&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;page=' . $page . $qstr;
+    $move_href = G5_BBS_URL . '/move.php?sw=move&amp;bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;page=' . $page . $qstr;
 }
 
 $scrap_href = '';
@@ -98,15 +97,15 @@ $good_href = '';
 $nogood_href = '';
 if ($is_member) {
     // 스크랩 링크
-    $scrap_href = G5_BBS_URL.'/scrap_popin.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
+    $scrap_href = G5_BBS_URL . '/scrap_popin.php?bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id;
 
     // 추천 링크
     if ($board['bo_use_good'])
-        $good_href = G5_BBS_URL.'/good.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;good=good';
+        $good_href = G5_BBS_URL . '/good.php?bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;good=good';
 
     // 비추천 링크
     if ($board['bo_use_nogood'])
-        $nogood_href = G5_BBS_URL.'/good.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.'&amp;good=nogood';
+        $nogood_href = G5_BBS_URL . '/good.php?bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . '&amp;good=nogood';
 }
 
 $view = get_view($write, $board, $board_skin_path);
@@ -130,6 +129,7 @@ function conv_rich_content($matches)
     global $view;
     return view_image($view, $matches[1], $matches[2]);
 }
+
 $view['rich_content'] = preg_replace_callback("/{이미지\:([0-9]+)[:]?([^}]*)}/i", "conv_rich_content", $view['content']);
 
 $is_signature = false;
@@ -142,6 +142,6 @@ if ($board['bo_use_signature'] && $view['mb_id']) {
     $signature = conv_content($signature, 1);
 }
 
-include_once($board_skin_path.'/view.skin.php');
+include_once($board_skin_path . '/view.skin.php');
 
-@include_once($board_skin_path.'/view.tail.skin.php');
+@include_once($board_skin_path . '/view.tail.skin.php');

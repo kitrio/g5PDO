@@ -27,102 +27,102 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * @pluginDesc 에디터를 싸고 있는 iframe 사이즈 조절을 담당하는 플러그인
  */
 nhn.husky.SE_OuterIFrameControl = $Class({
-	name : "SE_OuterIFrameControl",
-	oResizeGrip : null,
+  name: "SE_OuterIFrameControl",
+  oResizeGrip: null,
 
-	$init : function(oAppContainer){
-		// page up, page down, home, end, left, up, right, down
-		this.aHeightChangeKeyMap = [-100, 100, 500, -500, -1, -10, 1, 10];
-	
-		this._assignHTMLObjects(oAppContainer);
+  $init: function (oAppContainer) {
+    // page up, page down, home, end, left, up, right, down
+    this.aHeightChangeKeyMap = [-100, 100, 500, -500, -1, -10, 1, 10];
 
-		//키보드 이벤트
-		this.$FnKeyDown = $Fn(this._keydown, this);
-		if(this.oResizeGrip){
-			this.$FnKeyDown.attach(this.oResizeGrip, "keydown");
-		}
-		
-		//마우스 이벤트 
-		if(!!jindo.$Agent().navigator().ie){
-			this.$FnMouseDown = $Fn(this._mousedown, this);
-			this.$FnMouseMove = $Fn(this._mousemove, this);
-			this.$FnMouseMove_Parent = $Fn(this._mousemove_parent, this);
-			this.$FnMouseUp = $Fn(this._mouseup, this);
-			
-			if(this.oResizeGrip){
-				this.$FnMouseDown.attach(this.oResizeGrip, "mousedown");
-			}
-		}	
-	},
+    this._assignHTMLObjects(oAppContainer);
 
-	_assignHTMLObjects : function(oAppContainer){
-		oAppContainer = jindo.$(oAppContainer) || document;
+    //키보드 이벤트
+    this.$FnKeyDown = $Fn(this._keydown, this);
+    if (this.oResizeGrip) {
+      this.$FnKeyDown.attach(this.oResizeGrip, "keydown");
+    }
 
-		this.oResizeGrip = cssquery.getSingle(".husky_seditor_editingArea_verticalResizer", oAppContainer);
-		
-		this.elIFrame = window.frameElement;
-		this.welIFrame = $Element(this.elIFrame);
-	},
+    //마우스 이벤트
+    if (!!jindo.$Agent().navigator().ie) {
+      this.$FnMouseDown = $Fn(this._mousedown, this);
+      this.$FnMouseMove = $Fn(this._mousemove, this);
+      this.$FnMouseMove_Parent = $Fn(this._mousemove_parent, this);
+      this.$FnMouseUp = $Fn(this._mouseup, this);
 
-	$ON_MSG_APP_READY : function(){
-		this.oApp.exec("SE_FIT_IFRAME", []);
-	},
+      if (this.oResizeGrip) {
+        this.$FnMouseDown.attach(this.oResizeGrip, "mousedown");
+      }
+    }
+  },
 
-	$ON_MSG_EDITING_AREA_SIZE_CHANGED : function(){
-		this.oApp.exec("SE_FIT_IFRAME", []);
-	},
+  _assignHTMLObjects: function (oAppContainer) {
+    oAppContainer = jindo.$(oAppContainer) || document;
 
-	$ON_SE_FIT_IFRAME : function(){
-		this.elIFrame.style.height = document.body.offsetHeight+"px";
-	},
-	
-	$AFTER_RESIZE_EDITING_AREA_BY : function(ipWidthChange, ipHeightChange){
-		this.oApp.exec("SE_FIT_IFRAME", []);
-	},
-	
-	_keydown : function(oEvent){
-		var oKeyInfo = oEvent.key();
+    this.oResizeGrip = cssquery.getSingle(".husky_seditor_editingArea_verticalResizer", oAppContainer);
 
-		// 33, 34: page up/down, 35,36: end/home, 37,38,39,40: left, up, right, down
-		if(oKeyInfo.keyCode >= 33 && oKeyInfo.keyCode <= 40){
-			this.oApp.exec("MSG_EDITING_AREA_RESIZE_STARTED", []);
-			this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, this.aHeightChangeKeyMap[oKeyInfo.keyCode-33]]);
-			this.oApp.exec("MSG_EDITING_AREA_RESIZE_ENDED", []);
+    this.elIFrame = window.frameElement;
+    this.welIFrame = $Element(this.elIFrame);
+  },
 
-			oEvent.stop();
-		}
-	},
-		
-	_mousedown : function(oEvent){
-		this.iStartHeight = oEvent.pos().clientY;
-		this.iStartHeightOffset = oEvent.pos().layerY;
+  $ON_MSG_APP_READY: function () {
+    this.oApp.exec("SE_FIT_IFRAME", []);
+  },
 
-		this.$FnMouseMove.attach(document, "mousemove");
-		this.$FnMouseMove_Parent.attach(parent.document, "mousemove");
-		
-		this.$FnMouseUp.attach(document, "mouseup");		
-		this.$FnMouseUp.attach(parent.document, "mouseup");
+  $ON_MSG_EDITING_AREA_SIZE_CHANGED: function () {
+    this.oApp.exec("SE_FIT_IFRAME", []);
+  },
 
-		this.iStartHeight = oEvent.pos().clientY;
-		this.oApp.exec("MSG_EDITING_AREA_RESIZE_STARTED", [this.$FnMouseDown, this.$FnMouseMove, this.$FnMouseUp]);
-	},
+  $ON_SE_FIT_IFRAME: function () {
+    this.elIFrame.style.height = document.body.offsetHeight + "px";
+  },
 
-	_mousemove : function(oEvent){
-		var iHeightChange = oEvent.pos().clientY - this.iStartHeight;
-		this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, iHeightChange]);
-	},
+  $AFTER_RESIZE_EDITING_AREA_BY: function (ipWidthChange, ipHeightChange) {
+    this.oApp.exec("SE_FIT_IFRAME", []);
+  },
 
-	_mousemove_parent : function(oEvent){
-		var iHeightChange = oEvent.pos().pageY - (this.welIFrame.offset().top + this.iStartHeight);
-		this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, iHeightChange]);
-	},
+  _keydown: function (oEvent) {
+    var oKeyInfo = oEvent.key();
 
-	_mouseup : function(oEvent){
-		this.$FnMouseMove.detach(document, "mousemove");
-		this.$FnMouseMove_Parent.detach(parent.document, "mousemove");
-		this.$FnMouseUp.detach(document, "mouseup");
-		this.$FnMouseUp.detach(parent.document, "mouseup");
+    // 33, 34: page up/down, 35,36: end/home, 37,38,39,40: left, up, right, down
+    if (oKeyInfo.keyCode >= 33 && oKeyInfo.keyCode <= 40) {
+      this.oApp.exec("MSG_EDITING_AREA_RESIZE_STARTED", []);
+      this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, this.aHeightChangeKeyMap[oKeyInfo.keyCode - 33]]);
+      this.oApp.exec("MSG_EDITING_AREA_RESIZE_ENDED", []);
 
-		this.oApp.exec("MSG_EDITING_AREA_RESIZE_ENDED", [this.$FnMouseDown, this.$FnMouseMove, this.$FnMouseUp]);
-	}
+      oEvent.stop();
+    }
+  },
+
+  _mousedown: function (oEvent) {
+    this.iStartHeight = oEvent.pos().clientY;
+    this.iStartHeightOffset = oEvent.pos().layerY;
+
+    this.$FnMouseMove.attach(document, "mousemove");
+    this.$FnMouseMove_Parent.attach(parent.document, "mousemove");
+
+    this.$FnMouseUp.attach(document, "mouseup");
+    this.$FnMouseUp.attach(parent.document, "mouseup");
+
+    this.iStartHeight = oEvent.pos().clientY;
+    this.oApp.exec("MSG_EDITING_AREA_RESIZE_STARTED", [this.$FnMouseDown, this.$FnMouseMove, this.$FnMouseUp]);
+  },
+
+  _mousemove: function (oEvent) {
+    var iHeightChange = oEvent.pos().clientY - this.iStartHeight;
+    this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, iHeightChange]);
+  },
+
+  _mousemove_parent: function (oEvent) {
+    var iHeightChange = oEvent.pos().pageY - (this.welIFrame.offset().top + this.iStartHeight);
+    this.oApp.exec("RESIZE_EDITING_AREA_BY", [0, iHeightChange]);
+  },
+
+  _mouseup: function (oEvent) {
+    this.$FnMouseMove.detach(document, "mousemove");
+    this.$FnMouseMove_Parent.detach(parent.document, "mousemove");
+    this.$FnMouseUp.detach(document, "mouseup");
+    this.$FnMouseUp.detach(parent.document, "mouseup");
+
+    this.oApp.exec("MSG_EDITING_AREA_RESIZE_ENDED", [this.$FnMouseDown, this.$FnMouseMove, this.$FnMouseUp]);
+  }
 });

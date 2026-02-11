@@ -14,7 +14,7 @@ if ($token && get_session("ss_token") == $token) {
 
 $od = sql_fetch(" select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' and mb_id = '{$member['mb_id']}' ");
 
-if (! (isset($od['od_id']) && $od['od_id'])) {
+if (!(isset($od['od_id']) && $od['od_id'])) {
     alert("존재하는 주문이 아닙니다.");
 }
 
@@ -25,23 +25,23 @@ $sql = " select SUM(IF(ct_status = '주문', 1, 0)) as od_count2,
             where od_id = '$od_id' ";
 $ct = sql_fetch($sql);
 
-$uid = md5($od['od_id'].$od['od_time'].$od['od_ip']);
+$uid = md5($od['od_id'] . $od['od_time'] . $od['od_ip']);
 
-if($od['od_cancel_price'] > 0 || $ct['od_count1'] != $ct['od_count2']) {
-    alert("취소할 수 있는 주문이 아닙니다.", G5_SHOP_URL."/orderinquiryview.php?od_id=$od_id&amp;uid=$uid");
+if ($od['od_cancel_price'] > 0 || $ct['od_count1'] != $ct['od_count2']) {
+    alert("취소할 수 있는 주문이 아닙니다.", G5_SHOP_URL . "/orderinquiryview.php?od_id=$od_id&amp;uid=$uid");
 }
 
 // PG 결제 취소
-if($od['od_tno']) {
-    switch($od['od_pg']) {
+if ($od['od_tno']) {
+    switch ($od['od_pg']) {
         case 'lg':
             require_once('./settle_lg.inc.php');
-            $LGD_TID    = $od['od_tno'];        //LG유플러스으로 부터 내려받은 거래번호(LGD_TID)
+            $LGD_TID = $od['od_tno'];        //LG유플러스으로 부터 내려받은 거래번호(LGD_TID)
 
             $xpay = new XPay($configPath, $CST_PLATFORM);
 
             // Mert Key 설정
-            $xpay->set_config_value('t'.$LGD_MID, $config['cf_lg_mert_key']);
+            $xpay->set_config_value('t' . $LGD_MID, $config['cf_lg_mert_key']);
             $xpay->set_config_value($LGD_MID, $config['cf_lg_mert_key']);
             $xpay->Init_TX($LGD_MID);
 
@@ -65,12 +65,12 @@ if($od['od_tno']) {
             }
             break;
         case 'toss':
-            $cancel_msg = '주문자 본인 취소-'.$cancel_memo;
-            include_once(G5_SHOP_PATH.'/toss/toss_cancel.php');
+            $cancel_msg = '주문자 본인 취소-' . $cancel_memo;
+            include_once(G5_SHOP_PATH . '/toss/toss_cancel.php');
             break;
         case 'inicis':
-            include_once(G5_SHOP_PATH.'/settle_inicis.inc.php');
-            $cancel_msg = '주문자 본인 취소-'.$cancel_memo;
+            include_once(G5_SHOP_PATH . '/settle_inicis.inc.php');
+            $cancel_msg = '주문자 본인 취소-' . $cancel_memo;
 
             $args = array(
                 'paymethod' => get_type_inicis_paymethod($od['od_settle_case']),
@@ -92,13 +92,13 @@ if($od['od_tno']) {
                 $res_msg = 'curl 로 데이터를 받지 못했습니다.';
             }
 
-            if($res_cd != '00') {
-                alert($res_msg.' 코드 : '.$res_cd);
+            if ($res_cd != '00') {
+                alert($res_msg . ' 코드 : ' . $res_cd);
             }
             break;
         case 'nicepay':
-            include_once(G5_SHOP_PATH.'/settle_nicepay.inc.php');
-            $cancel_msg = '주문자 본인 취소-'.$cancel_memo;
+            include_once(G5_SHOP_PATH . '/settle_nicepay.inc.php');
+            $cancel_msg = '주문자 본인 취소-' . $cancel_memo;
 
             $tno = $od['od_tno'];
 
@@ -107,11 +107,11 @@ if($od['od_tno']) {
             // 0:전체 취소, 1:부분 취소(별도 계약 필요)
             $partialCancelCode = 0;
 
-            include G5_SHOP_PATH.'/nicepay/cancel_process.php';
+            include G5_SHOP_PATH . '/nicepay/cancel_process.php';
 
             $res_cd = '';
             $res_msg = 'curl 로 데이터를 받지 못하거나 통신에 실패했습니다.';
-            
+
             if (isset($result['ResultCode'])) {
 
                 $res_cd = $result['ResultCode'];
@@ -122,8 +122,8 @@ if($od['od_tno']) {
                 }
             }
 
-            if($res_cd != '2001') {
-                alert($res_msg.' 코드 : '.$res_cd);
+            if ($res_cd != '2001') {
+                alert($res_msg . ' 코드 : ' . $res_cd);
             }
             break;
         default:
@@ -132,19 +132,19 @@ if($od['od_tno']) {
             $_POST['tno'] = $od['od_tno'];
             $_POST['req_tx'] = 'mod';
             $_POST['mod_type'] = 'STSC';
-            if($od['od_escrow']) {
+            if ($od['od_escrow']) {
                 $_POST['req_tx'] = 'mod_escrow';
                 $_POST['mod_type'] = 'STE2';
-                if($od['od_settle_case'] == '가상계좌')
+                if ($od['od_settle_case'] == '가상계좌')
                     $_POST['mod_type'] = 'STE5';
             }
-            $_POST['mod_desc'] = iconv("utf-8", "euc-kr", '주문자 본인 취소-'.$cancel_memo);
+            $_POST['mod_desc'] = iconv("utf-8", "euc-kr", '주문자 본인 취소-' . $cancel_memo);
             $_POST['site_cd'] = $default['de_kcp_mid'];
 
             // 취소내역 한글깨짐방지
             setlocale(LC_CTYPE, 'ko_KR.euc-kr');
 
-            include G5_SHOP_PATH.'/kcp/pp_ax_hub.php';
+            include G5_SHOP_PATH . '/kcp/pp_ax_hub.php';
 
             // locale 설정 초기화
             setlocale(LC_CTYPE, '');
@@ -169,7 +169,7 @@ $sql = " update {$g5['g5_shop_order_table']}
                 od_coupon = '0',
                 od_send_coupon = '0',
                 od_status = '취소',
-                od_shop_memo = concat(od_shop_memo,\"\\n주문자 본인 직접 취소 - ".G5_TIME_YMDHIS." (취소이유 : {$cancel_memo})\")
+                od_shop_memo = concat(od_shop_memo,\"\\n주문자 본인 직접 취소 - " . G5_TIME_YMDHIS . " (취소이유 : {$cancel_memo})\")
             where od_id = '$od_id' ";
 sql_query($sql);
 
@@ -177,4 +177,4 @@ sql_query($sql);
 if ($od['od_receipt_point'] > 0)
     insert_point($member['mb_id'], $od['od_receipt_point'], "주문번호 $od_id 본인 취소");
 
-goto_url(G5_SHOP_URL."/orderinquiryview.php?od_id=$od_id&amp;uid=$uid");
+goto_url(G5_SHOP_URL . "/orderinquiryview.php?od_id=$od_id&amp;uid=$uid");

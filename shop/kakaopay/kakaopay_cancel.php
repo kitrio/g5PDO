@@ -14,16 +14,15 @@ $cancelFlag = "true";
 // $cancelFlag를 "true"로 변경하는 condition 판단은 개별적으로
 // 수행하여 주십시오.
 
-if($cancelFlag == "true")
-{
+if ($cancelFlag == "true") {
 
-    if( isset($is_noti_pay) && $is_noti_pay ){
+    if (isset($is_noti_pay) && $is_noti_pay) {
         return;
     }
 
-    include_once(G5_SHOP_PATH.'/settle_kakaopay.inc.php');
+    include_once(G5_SHOP_PATH . '/settle_kakaopay.inc.php');
 
-    if( get_session('ss_order_id') && $tno ){
+    if (get_session('ss_order_id') && $tno) {
 
         $ini_oid = preg_replace('/[^a-z0-9_\-]/i', '', get_session('ss_order_id'));
         $tno = preg_replace('/[^a-z0-9_\-]/i', '', $tno);
@@ -31,17 +30,17 @@ if($cancelFlag == "true")
         $sql = "select oid from {$g5['g5_shop_inicis_log_table']} where oid = '$ini_oid' and P_TID = '$tno' ";
 
         $exists_log = sql_fetch($sql);
-        
-        if( $exists_log['oid'] ){
+
+        if ($exists_log['oid']) {
             $sql = " update {$g5['g5_shop_inicis_log_table']}
                         set P_STATUS  = 'cancel',
-                        P_AUTH_DT = '".preg_replace('/[^0-9]/', '', G5_TIME_YMDHIS)."' where oid = '$ini_oid' and P_TID = '$tno' ";
+                        P_AUTH_DT = '" . preg_replace('/[^0-9]/', '', G5_TIME_YMDHIS) . "' where oid = '$ini_oid' and P_TID = '$tno' ";
         } else {
             $sql = " insert into {$g5['g5_shop_inicis_log_table']}
                         set oid = '$ini_oid',
                             P_TID     = '$tno',
                             P_STATUS  = 'cancel',
-                            P_AUTH_DT = '".preg_replace('/[^0-9]/', '', G5_TIME_YMDHIS)."' ";
+                            P_AUTH_DT = '" . preg_replace('/[^0-9]/', '', G5_TIME_YMDHIS) . "' ";
         }
 
         sql_query($sql, false);
@@ -50,10 +49,10 @@ if($cancelFlag == "true")
     $db_check = 1;
     $cancel_msg = "DB FAIL";
 
-    if( $is_admin ){
-        $tmp = sql_fetch("select * from `{$g5['g5_shop_order_table']}` where od_tno = '".trim($_REQUEST['TID'])."' ");
+    if ($is_admin) {
+        $tmp = sql_fetch("select * from `{$g5['g5_shop_order_table']}` where od_tno = '" . trim($_REQUEST['TID']) . "' ");
 
-        if( $tmp['od_pg'] === 'KAKAOPAY' ){
+        if ($tmp['od_pg'] === 'KAKAOPAY') {
             $tno = trim($_REQUEST['TID']);
 
             $db_check = 0;
@@ -70,7 +69,7 @@ if($cancelFlag == "true")
         'msg' => $cancel_msg          // 취소사유
     );
 
-    $response = inicis_tid_cancel($args); 
+    $response = inicis_tid_cancel($args);
     $result = json_decode($response, true);
 
     if (isset($result['resultCode'])) {

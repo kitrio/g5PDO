@@ -9,8 +9,8 @@ if ($is_admin != 'super') {
 $g5['title'] = '메뉴 추가';
 require_once G5_PATH . '/head.sub.php';
 
-$new    = isset($_GET['new']) ? clean_xss_tags($_GET['new'], 1, 1) : '';
-$code   = isset($_GET['code']) ? (string)preg_replace('/[^0-9a-zA-Z]/', '', $_GET['code']) : '';
+$new = isset($_GET['new']) ? clean_xss_tags($_GET['new'], 1, 1) : '';
+$code = isset($_GET['code']) ? (string)preg_replace('/[^0-9a-zA-Z]/', '', $_GET['code']) : '';
 
 // 코드
 if ($new == 'new' || !$code) {
@@ -21,124 +21,124 @@ if ($new == 'new' || !$code) {
 
 ?>
 
-<div id="menu_frm" class="new_win">
-    <h1><?php echo $g5['title']; ?></h1>
+    <div id="menu_frm" class="new_win">
+        <h1><?php echo $g5['title']; ?></h1>
 
-    <form name="fmenuform" id="fmenuform" class="new_win_con">
+        <form name="fmenuform" id="fmenuform" class="new_win_con">
 
-        <div class="new_win_desc">
-            <label for="me_type">대상선택</label>
-            <select name="me_type" id="me_type">
-                <option value="">직접입력</option>
-                <option value="group">게시판그룹</option>
-                <option value="board">게시판</option>
-                <option value="content">내용관리</option>
-            </select>
-        </div>
+            <div class="new_win_desc">
+                <label for="me_type">대상선택</label>
+                <select name="me_type" id="me_type">
+                    <option value="">직접입력</option>
+                    <option value="group">게시판그룹</option>
+                    <option value="board">게시판</option>
+                    <option value="content">내용관리</option>
+                </select>
+            </div>
 
-        <div id="menu_result"></div>
+            <div id="menu_result"></div>
 
-    </form>
+        </form>
 
-</div>
+    </div>
 
-<script>
-    $(function() {
+    <script>
+      $(function () {
         $("#menu_result").load(
-            "./menu_form_search.php"
+          "./menu_form_search.php"
         );
 
         function link_checks_all_chage() {
 
-            var $links = $(opener.document).find("#menulist input[name='me_link[]']"),
-                $o_link = $(".td_mngsmall input[name='link[]']"),
-                hrefs = [],
-                menu_exist = false;
+          var $links = $(opener.document).find("#menulist input[name='me_link[]']"),
+            $o_link = $(".td_mngsmall input[name='link[]']"),
+            hrefs = [],
+            menu_exist = false;
 
-            if ($links.length) {
-                $links.each(function(index) {
-                    hrefs.push($(this).val());
-                });
+          if ($links.length) {
+            $links.each(function (index) {
+              hrefs.push($(this).val());
+            });
 
-                $o_link.each(function(index) {
-                    if ($.inArray($(this).val(), hrefs) != -1) {
-                        $(this).closest("tr").find("td:eq( 0 )").addClass("exist_menu_link");
-                        menu_exist = true;
-                    }
-                });
-            }
+            $o_link.each(function (index) {
+              if ($.inArray($(this).val(), hrefs) != -1) {
+                $(this).closest("tr").find("td:eq( 0 )").addClass("exist_menu_link");
+                menu_exist = true;
+              }
+            });
+          }
 
-            if (menu_exist) {
-                $(".menu_exists_tip").show();
-            } else {
-                $(".menu_exists_tip").hide();
-            }
+          if (menu_exist) {
+            $(".menu_exists_tip").show();
+          } else {
+            $(".menu_exists_tip").hide();
+          }
         }
 
         function menu_result_change(type) {
 
-            var dfd = new $.Deferred();
+          var dfd = new $.Deferred();
 
-            $("#menu_result").empty().load(
-                "./menu_form_search.php", {
-                    type: type
-                },
-                function() {
-                    dfd.resolve('Finished');
-                }
-            );
+          $("#menu_result").empty().load(
+            "./menu_form_search.php", {
+              type: type
+            },
+            function () {
+              dfd.resolve('Finished');
+            }
+          );
 
-            return dfd.promise();
+          return dfd.promise();
         }
 
-        $("#me_type").on("change", function() {
-            var type = $(this).val();
+        $("#me_type").on("change", function () {
+          var type = $(this).val();
 
-            var promise = menu_result_change(type);
+          var promise = menu_result_change(type);
 
-            promise.done(function(message) {
-                link_checks_all_chage(type);
-            });
+          promise.done(function (message) {
+            link_checks_all_chage(type);
+          });
 
         });
 
-        $(document).on("click", "#add_manual", function() {
-            var me_name = $.trim($("#me_name").val());
-            var me_link = $.trim($("#me_link").val());
+        $(document).on("click", "#add_manual", function () {
+          var me_name = $.trim($("#me_name").val());
+          var me_link = $.trim($("#me_link").val());
 
-            add_menu_list(me_name, me_link, "<?php echo $code; ?>");
+          add_menu_list(me_name, me_link, "<?php echo $code; ?>");
         });
 
-        $(document).on("click", ".add_select", function() {
-            var me_name = $.trim($(this).siblings("input[name='subject[]']").val());
-            var me_link = $.trim($(this).siblings("input[name='link[]']").val());
+        $(document).on("click", ".add_select", function () {
+          var me_name = $.trim($(this).siblings("input[name='subject[]']").val());
+          var me_link = $.trim($(this).siblings("input[name='link[]']").val());
 
-            add_menu_list(me_name, me_link, "<?php echo $code; ?>");
+          add_menu_list(me_name, me_link, "<?php echo $code; ?>");
         });
-    });
+      });
 
-    function htmlEscape(str) {
+      function htmlEscape(str) {
         return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
 
-    function add_menu_list(name, link, code) {
+      function add_menu_list(name, link, code) {
         var $menulist = $("#menulist", opener.document);
         var ms = new Date().getTime();
         var sub_menu_class;
-        <?php if ($new == 'new') { ?>
-            sub_menu_class = " class=\"td_category\"";
-        <?php } else { ?>
-            sub_menu_class = " class=\"td_category sub_menu_class\"";
-        <?php } ?>
-        
+          <?php if ($new == 'new') { ?>
+        sub_menu_class = " class=\"td_category\"";
+          <?php } else { ?>
+        sub_menu_class = " class=\"td_category sub_menu_class\"";
+          <?php } ?>
+
         name = htmlEscape(name);
         link = htmlEscape(link);
-        
+
         var list = "<tr class=\"menu_list menu_group_<?php echo $code; ?>\">";
         list += "<td" + sub_menu_class + ">";
         list += "<label for=\"me_name_" + ms + "\"  class=\"sound_only\">메뉴<strong class=\"sound_only\"> 필수</strong></label>";
@@ -175,9 +175,9 @@ if ($new == 'new' || !$code) {
         list += "</select>";
         list += "</td>";
         list += "<td class=\"td_mng\">";
-        <?php if ($new == 'new') { ?>
-            list += "<button type=\"button\" class=\"btn_add_submenu btn_03\">추가</button>\n";
-        <?php } ?>
+          <?php if ($new == 'new') { ?>
+        list += "<button type=\"button\" class=\"btn_add_submenu btn_03\">추가</button>\n";
+          <?php } ?>
         list += "<button type=\"button\" class=\"btn_del_menu btn_02\">삭제</button>";
         list += "</td>";
         list += "</tr>";
@@ -185,27 +185,27 @@ if ($new == 'new' || !$code) {
         var $menu_last = null;
 
         if (code)
-            $menu_last = $menulist.find("tr.menu_group_" + code + ":last");
+          $menu_last = $menulist.find("tr.menu_group_" + code + ":last");
         else
-            $menu_last = $menulist.find("tr.menu_list:last");
+          $menu_last = $menulist.find("tr.menu_list:last");
 
         if ($menu_last.length > 0) {
-            $menu_last.after(list);
+          $menu_last.after(list);
         } else {
-            if ($menulist.find("#empty_menu_list").length > 0)
-                $menulist.find("#empty_menu_list").remove();
+          if ($menulist.find("#empty_menu_list").length > 0)
+            $menulist.find("#empty_menu_list").remove();
 
-            $menulist.find("table tbody").append(list);
+          $menulist.find("table tbody").append(list);
         }
 
-        $menulist.find("tr.menu_list").each(function(index) {
-            $(this).removeClass("bg0 bg1")
-                .addClass("bg" + (index % 2));
+        $menulist.find("tr.menu_list").each(function (index) {
+          $(this).removeClass("bg0 bg1")
+            .addClass("bg" + (index % 2));
         });
 
         window.close();
-    }
-</script>
+      }
+    </script>
 
 <?php
 require_once G5_PATH . '/tail.sub.php';

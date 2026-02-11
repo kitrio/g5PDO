@@ -8,29 +8,29 @@ if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return;
 .'(배송업체명^택배조회URL^연락처)'
 */
 define('G5_DELIVERY_COMPANY',
-     '(경동택배^https://kdexp.com/service/delivery/etc/delivery.do?barcode=^1899-5368)'
-    .'(대신택배^https://www.ds3211.co.kr/freight/internalFreightSearch.ht?billno=^043-222-4582)'
-    .'(로젠택배^https://www.ilogen.com/m/personal/trace.pop/^1588-9988)'
-    .'(우체국^https://m.epost.go.kr/postal/mobile/mobile.trace.RetrieveDomRigiTraceList.comm?ems_gubun=E&sid1=^1588-1300)'
-    .'(한진택배^https://www.hanjin.co.kr/kor/CMS/DeliveryMgr/WaybillResult.do?mCode=MN038&schLang=KR&wblnumText2=^1588-0011)'
-    .'(롯데택배^https://www.lotteglogis.com/open/tracking?invno=^1588-2121)'
-    .'(CJ대한통운^https://trace.cjlogistics.com/next/tracking.html?wblNo=^1588-1255)'
-    .'(GS25편의점택배^https://www.cvsnet.co.kr/invoice/tracking.do?invoice_no=^1577-1287)'
-    .'(합동택배^https://hdexp.co.kr/deliverySearch2.hd?barcode=^1899-3392)'
-    .'(CU편의점택배^https://www.cupost.co.kr/postbox/delivery/localResult.cupost?invoice_no=^1577-1287)'
-    .'(천일택배^http://www.chunil.co.kr/HTrace/HTrace.jsp?transNo=^1877-6606)'
-    .'(건영택배^https://www.kunyoung.com/goods/goods_01.php?mulno=^031-460-2700)'
-    .'(우리택배^http://www.honamlogis.co.kr/04estimate/songjang_list.php?c_search1=^031-376-6070)'
-    .'(일양로지스^https://www.ilyanglogis.com/functionality/popup_result.asp?hawb_no=^1588-0002)'
-    .'(EMS^https://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.comm?POST_CODE=^1588-1300)'
-    .'(DHL^https://www.dhl.com/kr-ko/home/tracking.html?tracking-id=^1588-1588-0001)'
-    .'(FedEx^https://www.fedex.com/fedextrack/?trknbr=^02-3496-7777)'
-    .'(UPS^https://www.fedex.com/fedextrack/?trknbr=^02-3496-7777)'
+    '(경동택배^https://kdexp.com/service/delivery/etc/delivery.do?barcode=^1899-5368)'
+    . '(대신택배^https://www.ds3211.co.kr/freight/internalFreightSearch.ht?billno=^043-222-4582)'
+    . '(로젠택배^https://www.ilogen.com/m/personal/trace.pop/^1588-9988)'
+    . '(우체국^https://m.epost.go.kr/postal/mobile/mobile.trace.RetrieveDomRigiTraceList.comm?ems_gubun=E&sid1=^1588-1300)'
+    . '(한진택배^https://www.hanjin.co.kr/kor/CMS/DeliveryMgr/WaybillResult.do?mCode=MN038&schLang=KR&wblnumText2=^1588-0011)'
+    . '(롯데택배^https://www.lotteglogis.com/open/tracking?invno=^1588-2121)'
+    . '(CJ대한통운^https://trace.cjlogistics.com/next/tracking.html?wblNo=^1588-1255)'
+    . '(GS25편의점택배^https://www.cvsnet.co.kr/invoice/tracking.do?invoice_no=^1577-1287)'
+    . '(합동택배^https://hdexp.co.kr/deliverySearch2.hd?barcode=^1899-3392)'
+    . '(CU편의점택배^https://www.cupost.co.kr/postbox/delivery/localResult.cupost?invoice_no=^1577-1287)'
+    . '(천일택배^http://www.chunil.co.kr/HTrace/HTrace.jsp?transNo=^1877-6606)'
+    . '(건영택배^https://www.kunyoung.com/goods/goods_01.php?mulno=^031-460-2700)'
+    . '(우리택배^http://www.honamlogis.co.kr/04estimate/songjang_list.php?c_search1=^031-376-6070)'
+    . '(일양로지스^https://www.ilyanglogis.com/functionality/popup_result.asp?hawb_no=^1588-0002)'
+    . '(EMS^https://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.comm?POST_CODE=^1588-1300)'
+    . '(DHL^https://www.dhl.com/kr-ko/home/tracking.html?tracking-id=^1588-1588-0001)'
+    . '(FedEx^https://www.fedex.com/fedextrack/?trknbr=^02-3496-7777)'
+    . '(UPS^https://www.fedex.com/fedextrack/?trknbr=^02-3496-7777)'
 );
 
-include_once(G5_LIB_PATH.'/shop.data.lib.php');
-include_once(G5_LIB_PATH.'/shop.lib.php');
-include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+include_once(G5_LIB_PATH . '/shop.data.lib.php');
+include_once(G5_LIB_PATH . '/shop.lib.php');
+include_once(G5_LIB_PATH . '/thumbnail.lib.php');
 
 //==============================================================================
 // 쇼핑몰 미수금 등의 주문정보
@@ -54,7 +54,7 @@ $info['od_misu']            // 미수금액
 //==============================================================================
 
 // 매출전표 url 설정
-if($default['de_card_test']) {
+if ($default['de_card_test']) {
     define('G5_BILL_RECEIPT_URL', 'https://testadmin8.kcp.co.kr/assist/bill.BillActionNew.do?cmd=');
     define('G5_CASH_RECEIPT_URL', 'https://testadmin8.kcp.co.kr/Modules/Service/Cash/Cash_Bill_Common_View.jsp?term_id=PGNW');
 } else {
@@ -74,7 +74,7 @@ define('G5_CART_STOCK_LIMIT', 3);
 // 코인 잔액이 설정 금액보다 작을 때는 주문시 SMS 발송 안함
 define('G5_ICODE_COIN', 100);
 
-include_once(G5_LIB_PATH.'/shop.uri.lib.php');
+include_once(G5_LIB_PATH . '/shop.uri.lib.php');
 
 add_replace('get_pretty_url', 'add_pretty_shop_url', 10, 5);
 add_replace('false_short_url_clean', 'shop_short_url_clean', 10, 4);

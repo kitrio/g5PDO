@@ -18,36 +18,36 @@ $msg = '';
 if ($_POST['act_button'] == "선택수정") {
     for ($i = 0; $i < count($_POST['chk']); $i++) {
         // 실제 번호를 넘김
-        $k = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+        $k = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
         $post_mb_certify = (isset($_POST['mb_certify'][$k]) && $_POST['mb_certify'][$k]) ? clean_xss_tags($_POST['mb_certify'][$k], 1, 1, 20) : '';
-        $post_mb_level = isset($_POST['mb_level'][$k]) ? (int) $_POST['mb_level'][$k] : 0;
+        $post_mb_level = isset($_POST['mb_level'][$k]) ? (int)$_POST['mb_level'][$k] : 0;
         $post_mb_intercept_date = (isset($_POST['mb_intercept_date'][$k]) && $_POST['mb_intercept_date'][$k]) ? clean_xss_tags($_POST['mb_intercept_date'][$k], 1, 1, 8) : '';
-        $post_mb_mailling = isset($_POST['mb_mailling'][$k]) ? (int) $_POST['mb_mailling'][$k] : 0;
-        $post_mb_sms = isset($_POST['mb_sms'][$k]) ? (int) $_POST['mb_sms'][$k] : 0;
-        $post_mb_open = isset($_POST['mb_open'][$k]) ? (int) $_POST['mb_open'][$k] : 0;
+        $post_mb_mailling = isset($_POST['mb_mailling'][$k]) ? (int)$_POST['mb_mailling'][$k] : 0;
+        $post_mb_sms = isset($_POST['mb_sms'][$k]) ? (int)$_POST['mb_sms'][$k] : 0;
+        $post_mb_open = isset($_POST['mb_open'][$k]) ? (int)$_POST['mb_open'][$k] : 0;
 
         $agree_items = [];
         // 광고성 이메일 수신동의 일자 추가
-        $post_mb_mailling_default = isset($_POST['mb_mailling_default'][$k]) ? (int) $_POST['mb_mailling_default'][$k] : 0;
+        $post_mb_mailling_default = isset($_POST['mb_mailling_default'][$k]) ? (int)$_POST['mb_mailling_default'][$k] : 0;
         $sql_mailling_date = "";
         if ($post_mb_mailling_default != $post_mb_mailling) {
-            $sql_mailling_date =  " , mb_mailling_date = '".G5_TIME_YMDHIS."' ";
+            $sql_mailling_date = " , mb_mailling_date = '" . G5_TIME_YMDHIS . "' ";
             $agree_items[] = "광고성 이메일 수신(" . ($post_mb_mailling == 1 ? "동의" : "철회") . ")";
         }
 
         // 광고성 SMS/카카오톡 수신동의 일자 추가
-        $post_mb_sms_default = isset($_POST['mb_sms_default'][$k]) ? (int) $_POST['mb_sms_default'][$k] : 0;
+        $post_mb_sms_default = isset($_POST['mb_sms_default'][$k]) ? (int)$_POST['mb_sms_default'][$k] : 0;
         $sql_sms_date = "";
         if ($post_mb_sms_default != $post_mb_sms) {
-            $sql_sms_date =  " , mb_sms_date = '".G5_TIME_YMDHIS."' ";
+            $sql_sms_date = " , mb_sms_date = '" . G5_TIME_YMDHIS . "' ";
             $agree_items[] = "광고성 SMS/카카오톡 수신(" . ($post_mb_sms == 1 ? "동의" : "철회") . ")";
         }
 
         // 동의 로그 추가
         $sql_agree_log = "";
         if (!empty($agree_items)) {
-            $agree_log = "[".G5_TIME_YMDHIS.", 회원관리 선택수정] " . implode(' | ', $agree_items) . "\n";
+            $agree_log = "[" . G5_TIME_YMDHIS . ", 회원관리 선택수정] " . implode(' | ', $agree_items) . "\n";
             $sql_agree_log .= " , mb_agree_log = CONCAT('{$agree_log}', IFNULL(mb_agree_log, ''))";
         }
 
@@ -61,7 +61,7 @@ if ($_POST['act_button'] == "선택수정") {
             $msg .= $mb['mb_id'] . ' : 로그인 중인 관리자는 수정 할 수 없습니다.\\n';
         } else {
             if ($post_mb_certify) {
-                $mb_adult = isset($_POST['mb_adult'][$k]) ? (int) $_POST['mb_adult'][$k] : 0;
+                $mb_adult = isset($_POST['mb_adult'][$k]) ? (int)$_POST['mb_adult'][$k] : 0;
             } else {
                 $mb_adult = 0;
             }
@@ -84,7 +84,7 @@ if ($_POST['act_button'] == "선택수정") {
 } elseif ($_POST['act_button'] == "선택삭제") {
     for ($i = 0; $i < count($_POST['chk']); $i++) {
         // 실제 번호를 넘김
-        $k = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+        $k = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
         $mb_datas[] = $mb = get_member($_POST['mb_id'][$k]);
 

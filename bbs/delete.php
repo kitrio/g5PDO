@@ -11,7 +11,7 @@ if (!($token && $delete_token == $token))
 
 $count_write = $count_comment = 0;
 
-@include_once($board_skin_path.'/delete.head.skin.php');
+@include_once($board_skin_path . '/delete.head.skin.php');
 
 if ($is_admin == 'super') // 최고관리자 통과
     ;
@@ -32,7 +32,7 @@ else if ($is_admin == 'group') { // 그룹관리자
         alert('자신의 글이 아니므로 삭제할 수 없습니다.');
 } else {
     if ($write['mb_id'])
-        alert('로그인 후 삭제하세요.', G5_BBS_URL.'/login.php?url='.urlencode(get_pretty_url($bo_table, $wr_id)));
+        alert('로그인 후 삭제하세요.', G5_BBS_URL . '/login.php?url=' . urlencode(get_pretty_url($bo_table, $wr_id)));
     else if (!check_password($wr_password, $write['wr_password']))
         alert('비밀번호가 틀리므로 삭제할 수 없습니다.');
 }
@@ -58,22 +58,20 @@ $sql = " select count(*) as cnt from $write_table
             and wr_is_comment = 1 ";
 $row = sql_fetch($sql);
 if ($row['cnt'] >= $board['bo_count_delete'] && !$is_admin)
-    alert('이 글과 관련된 코멘트가 존재하므로 삭제 할 수 없습니다.\\n\\n코멘트가 '.$board['bo_count_delete'].'건 이상 달린 원글은 삭제할 수 없습니다.');
+    alert('이 글과 관련된 코멘트가 존재하므로 삭제 할 수 없습니다.\\n\\n코멘트가 ' . $board['bo_count_delete'] . '건 이상 달린 원글은 삭제할 수 없습니다.');
 
 
 // 사용자 코드 실행
-@include_once($board_skin_path.'/delete.skin.php');
+@include_once($board_skin_path . '/delete.skin.php');
 
 
 // 나라오름님 수정 : 원글과 코멘트수가 정상적으로 업데이트 되지 않는 오류를 잡아 주셨습니다.
 //$sql = " select wr_id, mb_id, wr_comment from $write_table where wr_parent = '$write[wr_id]' order by wr_id ";
 $sql = " select wr_id, mb_id, wr_is_comment, wr_content from $write_table where wr_parent = '{$write['wr_id']}' order by wr_id ";
 $result = sql_query($sql);
-while ($row = sql_fetch_array($result))
-{
+while ($row = sql_fetch_array($result)) {
     // 원글이라면
-    if (!$row['wr_is_comment'])
-    {
+    if (!$row['wr_is_comment']) {
         // 원글 포인트 삭제
         if (!delete_point($row['mb_id'], $bo_table, $row['wr_id'], '쓰기'))
             insert_point($row['mb_id'], $board['bo_write_point'] * (-1), "{$board['bo_subject']} {$row['wr_id']} 글삭제");
@@ -83,12 +81,12 @@ while ($row = sql_fetch_array($result))
         $result2 = sql_query($sql2);
         while ($row2 = sql_fetch_array($result2)) {
 
-            $delete_file = run_replace('delete_file_path', G5_DATA_PATH.'/file/'.$bo_table.'/'.str_replace('../', '', $row2['bf_file']), $row2);
-            if( file_exists($delete_file) ){
+            $delete_file = run_replace('delete_file_path', G5_DATA_PATH . '/file/' . $bo_table . '/' . str_replace('../', '', $row2['bf_file']), $row2);
+            if (file_exists($delete_file)) {
                 @unlink($delete_file);
             }
             // 썸네일삭제
-            if(preg_match("/\.({$config['cf_image_extension']})$/i", $row2['bf_file'])) {
+            if (preg_match("/\.({$config['cf_image_extension']})$/i", $row2['bf_file'])) {
                 delete_board_thumbnail($bo_table, $row2['bf_file']);
             }
         }
@@ -100,9 +98,7 @@ while ($row = sql_fetch_array($result))
         sql_query(" delete from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '{$row['wr_id']}' ");
 
         $count_write++;
-    }
-    else
-    {
+    } else {
         // 코멘트 포인트 삭제
         if (!delete_point($row['mb_id'], $bo_table, $row['wr_id'], '댓글'))
             insert_point($row['mb_id'], $board['bo_comment_point'] * (-1), "{$board['bo_subject']} {$write['wr_id']}-{$row['wr_id']} 댓글삭제");
@@ -136,10 +132,10 @@ sql_query(" update {$g5['board_table']} set bo_notice = '$bo_notice' where bo_ta
 if ($count_write > 0 || $count_comment > 0)
     sql_query(" update {$g5['board_table']} set bo_count_write = bo_count_write - '$count_write', bo_count_comment = bo_count_comment - '$count_comment' where bo_table = '$bo_table' ");
 
-@include_once($board_skin_path.'/delete.tail.skin.php');
+@include_once($board_skin_path . '/delete.tail.skin.php');
 
 delete_cache_latest($bo_table);
 
 run_event('bbs_delete', $write, $board);
 
-goto_url(short_url_clean(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;page='.$page.$qstr));
+goto_url(short_url_clean(G5_HTTP_BBS_URL . '/board.php?bo_table=' . $bo_table . '&amp;page=' . $page . $qstr));

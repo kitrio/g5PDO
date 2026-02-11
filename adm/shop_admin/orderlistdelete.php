@@ -20,21 +20,20 @@ $od_receipt_point = isset($_POST['od_receipt_point']) ? clean_xss_tags($_POST['o
 $od_receipt_coupon = isset($_POST['od_receipt_coupon']) ? clean_xss_tags($_POST['od_receipt_coupon'], 1, 1) : '';
 $search = isset($_POST['search']) ? get_search_string($_POST['search']) : '';
 
-for ($i=0; $i<$count_post_chk; $i++)
-{
+for ($i = 0; $i < $count_post_chk; $i++) {
     // 실제 번호를 넘김
-    $k     = isset($_POST['chk'][$i]) ? $_POST['chk'][$i] : 0;
+    $k = isset($_POST['chk'][$i]) ? $_POST['chk'][$i] : 0;
     $od_id = isset($_POST['od_id'][$k]) ? safe_replace_regex($_POST['od_id'][$k], 'od_id') : '';
 
     $od = sql_fetch(" select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' ");
     if (!$od) continue;
 
     // 주문상태가 주문이 아니면 건너뜀
-    if($od['od_status'] != '주문') continue;
+    if ($od['od_status'] != '주문') continue;
 
     $data = serialize($od);
 
-    $sql = " insert {$g5['g5_shop_order_delete_table']} set de_key = '$od_id', de_data = '".addslashes($data)."', mb_id = '{$member['mb_id']}', de_ip = '{$_SERVER['REMOTE_ADDR']}', de_datetime = '".G5_TIME_YMDHIS."' ";
+    $sql = " insert {$g5['g5_shop_order_delete_table']} set de_key = '$od_id', de_data = '" . addslashes($data) . "', mb_id = '{$member['mb_id']}', de_ip = '{$_SERVER['REMOTE_ADDR']}', de_datetime = '" . G5_TIME_YMDHIS . "' ";
     sql_query($sql, true);
 
     // cart 테이블의 상품 상태를 삭제로 변경
@@ -45,7 +44,7 @@ for ($i=0; $i<$count_post_chk; $i++)
     sql_query($sql);
 }
 
-$qstr  = "sort1=$sort1&amp;sort2=$sort2&amp;sel_field=$sel_field&amp;search=$search";
+$qstr = "sort1=$sort1&amp;sort2=$sort2&amp;sel_field=$sel_field&amp;search=$search";
 $qstr .= "&amp;od_status=$search_od_status";
 $qstr .= "&amp;od_settle_case=$od_settle_case";
 $qstr .= "&amp;od_misu=$od_misu";

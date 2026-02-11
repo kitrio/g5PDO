@@ -35,7 +35,7 @@ $check_keys = array(
 
 foreach ($check_keys as $key => $val) {
     if ($val === 'int') {
-        $posts[$key] = isset($_POST[$key]) ? (int) $_POST[$key] : 0;
+        $posts[$key] = isset($_POST[$key]) ? (int)$_POST[$key] : 0;
     } elseif ($val === 'str') {
         $posts[$key] = isset($_POST[$key]) ? clean_xss_tags($_POST[$key], 1, 1) : 0;
     } else {

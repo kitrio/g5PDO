@@ -26,7 +26,7 @@ $result = sql_query($sql);
 $total_count = sql_num_rows($result);
 
 $rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+$total_page = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) {
     $page = 1;
 } // 페이지가 없으면 첫 페이지 (1 페이지)
@@ -44,55 +44,58 @@ require_once G5_PLUGIN_PATH . '/jquery-ui/datepicker.php';
 $colspan = 3;
 ?>
 
-<script>
-    $(function() {
+    <script>
+      $(function () {
         $("#fr_date, #to_date").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: "yy-mm-dd",
-            showButtonPanel: true,
-            yearRange: "c-99:c+99",
-            maxDate: "+0d"
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: "yy-mm-dd",
+          showButtonPanel: true,
+          yearRange: "c-99:c+99",
+          maxDate: "+0d"
         });
-    });
-</script>
+      });
+    </script>
 
-<div class="local_ov01 local_ov">
-    <?php echo $listall ?>
-    <span class="btn_ov01"><span class="ov_txt">건수</span><span class="ov_num"> <?php echo number_format($total_count) ?>개</span></span>
-</div>
-
-<form name="fsearch" id="fsearch" class="local_sch02 local_sch" method="get">
-    <div class="sch_last">
-        <strong>기간별검색</strong>
-        <input type="text" name="fr_date" value="<?php echo $fr_date ?>" id="fr_date" class="frm_input" size="11" maxlength="10">
-        <label for="fr_date" class="sound_only">시작일</label>
-        ~
-        <input type="text" name="to_date" value="<?php echo $to_date ?>" id="to_date" class="frm_input" size="11" maxlength="10">
-        <label for="to_date" class="sound_only">종료일</label>
-        <input type="submit" class="btn_sch2" value="검색">
+    <div class="local_ov01 local_ov">
+        <?php echo $listall ?>
+        <span class="btn_ov01"><span class="ov_txt">건수</span><span
+                    class="ov_num"> <?php echo number_format($total_count) ?>개</span></span>
     </div>
-</form>
 
-<form name="fpopularrank" id="fpopularrank" method="post">
-    <input type="hidden" name="sst" value="<?php echo $sst ?>">
-    <input type="hidden" name="sod" value="<?php echo $sod ?>">
-    <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
-    <input type="hidden" name="stx" value="<?php echo $stx ?>">
-    <input type="hidden" name="page" value="<?php echo $page ?>">
-    <input type="hidden" name="token" value="<?php echo isset($token) ? $token : ''; ?>">
+    <form name="fsearch" id="fsearch" class="local_sch02 local_sch" method="get">
+        <div class="sch_last">
+            <strong>기간별검색</strong>
+            <input type="text" name="fr_date" value="<?php echo $fr_date ?>" id="fr_date" class="frm_input" size="11"
+                   maxlength="10">
+            <label for="fr_date" class="sound_only">시작일</label>
+            ~
+            <input type="text" name="to_date" value="<?php echo $to_date ?>" id="to_date" class="frm_input" size="11"
+                   maxlength="10">
+            <label for="to_date" class="sound_only">종료일</label>
+            <input type="submit" class="btn_sch2" value="검색">
+        </div>
+    </form>
 
-    <div class="tbl_head01 tbl_wrap">
-        <table>
-            <caption><?php echo $g5['title']; ?> 목록</caption>
-            <thead>
+    <form name="fpopularrank" id="fpopularrank" method="post">
+        <input type="hidden" name="sst" value="<?php echo $sst ?>">
+        <input type="hidden" name="sod" value="<?php echo $sod ?>">
+        <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
+        <input type="hidden" name="stx" value="<?php echo $stx ?>">
+        <input type="hidden" name="page" value="<?php echo $page ?>">
+        <input type="hidden" name="token" value="<?php echo isset($token) ? $token : ''; ?>">
+
+        <div class="tbl_head01 tbl_wrap">
+            <table>
+                <caption><?php echo $g5['title']; ?> 목록</caption>
+                <thead>
                 <tr>
                     <th scope="col">순위</th>
                     <th scope="col">검색어</th>
                     <th scope="col">검색회수</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <?php
                 for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     $word = get_text($row['pp_word']);
@@ -110,11 +113,11 @@ $colspan = 3;
                     echo '<tr><td colspan="' . $colspan . '" class="empty_table">자료가 없습니다.</td></tr>';
                 }
                 ?>
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 
-</form>
+    </form>
 
 <?php
 echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page=");

@@ -26,25 +26,6 @@ class Hook
      * @var int
      */
     protected static $id = '0';
-
-    /**
-     * Callbacks.
-     *
-     * @since 1.0.3
-     *
-     * @var array
-     */
-    protected $callbacks = array();
-
-    /**
-     * Number of actions executed.
-     *
-     * @since 1.0.3
-     *
-     * @var array
-     */
-    protected $actions = array('count' => 0);
-
     /**
      * Current action hook.
      *
@@ -53,7 +34,30 @@ class Hook
      * @var string|false
      */
     protected static $current = false;
-
+    /**
+     * Instances.
+     *
+     * @since 1.0.0
+     *
+     * @var array
+     */
+    private static $instances = array();
+    /**
+     * Callbacks.
+     *
+     * @since 1.0.3
+     *
+     * @var array
+     */
+    protected $callbacks = array();
+    /**
+     * Number of actions executed.
+     *
+     * @since 1.0.3
+     *
+     * @var array
+     */
+    protected $actions = array('count' => 0);
     /**
      * Method to use the singleton pattern and just create an instance.
      *
@@ -64,22 +68,13 @@ class Hook
     protected $singleton = 'getInstance';
 
     /**
-     * Instances.
-     *
-     * @since 1.0.0
-     *
-     * @var array
-     */
-    private static $instances = array();
-
-    /**
      * Get instance.
-     *
-     * @since 1.0.0
      *
      * @param int $id
      *
      * @return object → instance
+     * @since 1.0.0
+     *
      */
     // 이부분 수정
     /*
@@ -93,6 +88,31 @@ class Hook
         return self::$instances[self::$id] = new self;
     }
     */
+    /**
+     * Attach custom function to action hook.
+     *
+     * @param string $tag → action hook name
+     * @param callable $func → function to attach to action hook
+     * @param int $priority → order in which the action is executed
+     * @param int $args → number of arguments accepted
+     *
+     * @return bool
+     * @since 1.0.3
+     *
+     */
+    public static function addAction($tag, $func, $priority = 8, $args = 0)
+    {
+        $that = self::getInstance(self::$id);
+
+        $that->callbacks[$tag][$priority][] = array(
+            'function' => $func,
+            'arguments' => $args,
+        );
+
+        return true;
+    }
+
+
 
     public static function getInstance($id = '0')
     {
@@ -107,37 +127,13 @@ class Hook
     }
 
     /**
-     * Attach custom function to action hook.
-     *
-     * @since 1.0.3
-     *
-     * @param string   $tag      → action hook name
-     * @param callable $func     → function to attach to action hook
-     * @param int      $priority → order in which the action is executed
-     * @param int      $args     → number of arguments accepted
-     *
-     * @return bool
-     */
-    public static function addAction($tag, $func, $priority = 8, $args = 0)
-    {
-        $that = self::getInstance(self::$id);
-
-        $that->callbacks[$tag][$priority][] = array(
-            'function' => $func,
-            'arguments' => $args,
-        );
-
-        return true;
-    }
-
-    /**
      * Add actions hooks from array.
-     *
-     * @since 1.0.3
      *
      * @param array $actions
      *
      * @return bool
+     * @since 1.0.3
+     *
      */
     public static function addActions($actions)
     {
@@ -155,25 +151,25 @@ class Hook
      * pattern and create a single instance of the class. If it does not
      * exist it will create a new object.
      *
+     * @param string $tag → action hook name
+     * @param mixed $args → optional arguments
+     * @param bool $remove → delete hook after executing actions
+     *
+     * @return returns the output of the last action or false
      * @see setSingletonName() for change the method name.
      *
      * @since 1.0.3
      *
-     * @param string $tag    → action hook name
-     * @param mixed  $args   → optional arguments
-     * @param bool   $remove → delete hook after executing actions
-     *
-     * @return returns the output of the last action or false
      */
     public static function doAction($tag, $args = array(), $remove = true)
     {
         $that = self::getInstance(self::$id);
-        
+
         self::$current = $tag;
 
         $that->actions['count']++;
 
-        if (! array_key_exists($tag, $that->actions)) {
+        if (!array_key_exists($tag, $that->actions)) {
             $that->actions[$tag] = 0;
         }
 
@@ -195,56 +191,36 @@ class Hook
     }
 
     /**
-     * Set method name for use singleton pattern.
-     *
-     * @since 1.0.0
-     *
-     * @param string $method → singleton method name
-     */
-    public static function setSingletonName($method)
-    {
-        $that = self::getInstance(self::$id);
-
-        $that->singleton = $method;
-    }
-
-    /**
-     * Returns the current action hook.
-     *
-     * @since 1.0.3
-     *
-     * @return string|false → current action hook
-     */
-    public static function current()
-    {
-        return self::$current;
-    }
-
-    /**
-     * Check if there is a certain action hook.
-     *
-     * @since 1.0.7
+     * Get actions for hook
      *
      * @param string $tag → action hook name
+     * @param bool $remove → delete hook after executing actions
      *
-     * @return bool
+     * @return object|false → returns the calling function
+     * @since 1.0.3
+     *
      */
-    public static function isAction($tag)
+    protected function getActions($tag, $remove)
     {
-        $that = self::getInstance(self::$id);
+        if (isset($this->callbacks[$tag])) {
+            $actions = $this->callbacks[$tag];
+            if ($remove) {
+                unset($this->callbacks[$tag]);
+            }
+        }
 
-        return isset($that->callbacks[$tag]);
+        return (isset($actions)) ? $actions : array();
     }
 
     /**
      * Run action hook.
      *
-     * @since 1.0.3
-     *
      * @param string $action → action hook
-     * @param int    $args   → arguments
+     * @param int $args → arguments
      *
      * @return callable|false → returns the calling function
+     * @since 1.0.3
+     *
      */
     protected function runAction($action, $args)
     {
@@ -256,7 +232,7 @@ class Hook
 
         $args = $this->getArguments($argsNumber, $args);
 
-        if (! ($class && $method) && function_exists($function)) {
+        if (!($class && $method) && function_exists($function)) {
             return call_user_func($function, $args);
         } elseif ($obj = call_user_func(array($class, $this->singleton))) {
             if ($obj !== false) {
@@ -272,36 +248,14 @@ class Hook
     }
 
     /**
-     * Get actions for hook
-     *
-     * @since 1.0.3
-     *
-     * @param string $tag    → action hook name
-     * @param bool   $remove → delete hook after executing actions
-     *
-     * @return object|false → returns the calling function
-     */
-    protected function getActions($tag, $remove)
-    {
-        if (isset($this->callbacks[$tag])) {
-            $actions = $this->callbacks[$tag];
-            if ($remove) {
-                unset($this->callbacks[$tag]);
-            }
-        }
-
-        return (isset($actions)) ? $actions : array();
-    }
-
-    /**
      * Get arguments for action.
      *
-     * @since 1.0.3
-     *
-     * @param int   $argsNumber → arguments number
-     * @param mixed $arguments  → arguments
+     * @param int $argsNumber → arguments number
+     * @param mixed $arguments → arguments
      *
      * @return array → arguments
+     * @since 1.0.3
+     *
      */
     protected function getArguments($argsNumber, $arguments)
     {
@@ -321,5 +275,47 @@ class Hook
         }
 
         return array();
+    }
+
+    /**
+     * Set method name for use singleton pattern.
+     *
+     * @param string $method → singleton method name
+     * @since 1.0.0
+     *
+     */
+    public static function setSingletonName($method)
+    {
+        $that = self::getInstance(self::$id);
+
+        $that->singleton = $method;
+    }
+
+    /**
+     * Returns the current action hook.
+     *
+     * @return string|false → current action hook
+     * @since 1.0.3
+     *
+     */
+    public static function current()
+    {
+        return self::$current;
+    }
+
+    /**
+     * Check if there is a certain action hook.
+     *
+     * @param string $tag → action hook name
+     *
+     * @return bool
+     * @since 1.0.7
+     *
+     */
+    public static function isAction($tag)
+    {
+        $that = self::getInstance(self::$id);
+
+        return isset($that->callbacks[$tag]);
     }
 }

@@ -1,80 +1,80 @@
-jQuery(function($){
+jQuery(function ($) {
 
-	$.fn.shop_select_to_html = function(option) {
-		
-		var defaults = {
-			menu_down_icon : '<i class="fa fa-chevron-circle-down" aria-hidden="true"></i>'
-		}
+  $.fn.shop_select_to_html = function (option) {
 
-		if (typeof option == 'string') {
-		} else if(typeof option == 'object'){
-			defaults = $.extend({}, defaults, option);
-		}
+    var defaults = {
+      menu_down_icon: '<i class="fa fa-chevron-circle-down" aria-hidden="true"></i>'
+    }
 
-		// Hide native select
-		this.hide();
+    if (typeof option == 'string') {
+    } else if (typeof option == 'object') {
+      defaults = $.extend({}, defaults, option);
+    }
 
-		this.each(function() {
-			var $select = $(this);
+    // Hide native select
+    this.hide();
 
-			if (!$select.next().hasClass('shop_select_to_html')) {
-				create_html_select($select);
-			}
-		});
+    this.each(function () {
+      var $select = $(this);
 
-		function create_html_select($select) {
+      if (!$select.next().hasClass('shop_select_to_html')) {
+        create_html_select($select);
+      }
+    });
 
-			$select.after($('<div></div>')
-			.addClass('shop_select_to_html')
-			.addClass($select.attr('class') || '')
-			.addClass($select.attr('disabled') ? 'disabled' : '')
-			// .attr('tabindex', $select.attr('disabled') ? null : '0')
-			.html('<span class="category_title current"></span><div class="menulist"></div>')
-			);
+    function create_html_select($select) {
 
-			var $dropdown = $select.next(),
-				$options = $select.find('option'),
-				$selected = $select.find('option:selected'),
-				list_next_num = 8,
-				menuhtmls = [];
+      $select.after($('<div></div>')
+        .addClass('shop_select_to_html')
+        .addClass($select.attr('class') || '')
+        .addClass($select.attr('disabled') ? 'disabled' : '')
+        // .attr('tabindex', $select.attr('disabled') ? null : '0')
+        .html('<span class="category_title current"></span><div class="menulist"></div>')
+      );
 
-			$dropdown.find('.current').html($selected.data('display') || $selected.text()+defaults.menu_down_icon);
-			
-			var $ul_el = $('<ul></ul>'),
-				options_length = $options.length;
+      var $dropdown = $select.next(),
+        $options = $select.find('option'),
+        $selected = $select.find('option:selected'),
+        list_next_num = 8,
+        menuhtmls = [];
 
-			if( options_length > list_next_num ){
-				$ul_el.addClass("wide");
-			}
+      $dropdown.find('.current').html($selected.data('display') || $selected.text() + defaults.menu_down_icon);
 
-			$options.each(function(i) {
-				var $option = $(this),
-					display = $option.data('display'),
-					data_url = $(this).attr("data-url");
+      var $ul_el = $('<ul></ul>'),
+        options_length = $options.length;
 
-				$ul_el.append($('<li></li>')
-					.attr('data-value', $option.val())
-					.attr('data-display', (display || null))
-					.addClass('option' +
-					($option.is(':selected') ? ' selected' : '') +
-					($option.is(':disabled') ? ' disabled' : ''))
-					.html('<a href="'+data_url+'">'+$option.text()+'</a>')
-				);
+      if (options_length > list_next_num) {
+        $ul_el.addClass("wide");
+      }
 
-				if( i && (i % list_next_num === 0) ){
-					menuhtmls.push($ul_el[0].outerHTML);
-					$ul_el = $('<ul></ul>').addClass("wide left-border");
-				}
+      $options.each(function (i) {
+        var $option = $(this),
+          display = $option.data('display'),
+          data_url = $(this).attr("data-url");
 
-				if( i == ($options.length - 1) ){
-					menuhtmls.push($ul_el[0].outerHTML);
-				}
-			});
+        $ul_el.append($('<li></li>')
+          .attr('data-value', $option.val())
+          .attr('data-display', (display || null))
+          .addClass('option' +
+            ($option.is(':selected') ? ' selected' : '') +
+            ($option.is(':disabled') ? ' disabled' : ''))
+          .html('<a href="' + data_url + '">' + $option.text() + '</a>')
+        );
 
-			$dropdown.find('.menulist').html(menuhtmls.join(''));
+        if (i && (i % list_next_num === 0)) {
+          menuhtmls.push($ul_el[0].outerHTML);
+          $ul_el = $('<ul></ul>').addClass("wide left-border");
+        }
 
-		}
+        if (i == ($options.length - 1)) {
+          menuhtmls.push($ul_el[0].outerHTML);
+        }
+      });
 
-		return this;
-	};
+      $dropdown.find('.menulist').html(menuhtmls.join(''));
+
+    }
+
+    return this;
+  };
 });

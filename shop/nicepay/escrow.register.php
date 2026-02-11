@@ -1,9 +1,9 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-if($od['od_pg'] != 'nicepay') return;
+if ($od['od_pg'] != 'nicepay') return;
 
-include_once(G5_SHOP_PATH.'/settle_nicepay.inc.php');
+include_once(G5_SHOP_PATH . '/settle_nicepay.inc.php');
 
 if (!$escrow_numb) {
     // 송장번호가 없으면 등록이 안된다.
@@ -12,23 +12,23 @@ if (!$escrow_numb) {
 
 $mid = $default['de_nicepay_mid'];
 $tid = $escrow_tno;                             // 거래 번호
-$reqType = '03';					                // 요청타입 (배송등록 03)
-$deliveryCoNm = $escrow_corp;			        // 배송업체명
-$buyerAddr = $od['od_b_addr1'].($od['od_b_addr2'] ? ' ' : '').$od['od_b_addr2'];				// 배송지 주소
-$invoiceNum = $escrow_numb;				        // 송장번호
-$registerName = $default['de_admin_company_name'];			    // 등록자이름 (영카트 회사명으로 지정)
-$confirmMail = 1;			                    // 구매결정 메일발송 여부 (1은 발송, 2는 미발송)
-$charSet = 'utf-8';					            // 응답파라미터 인코딩 방식
-$escrowRequestURL = "https://webapi.nicepay.co.kr/webapi/escrow_process.jsp"; 	//에스크로 요청 URL
+$reqType = '03';                                    // 요청타입 (배송등록 03)
+$deliveryCoNm = $escrow_corp;                    // 배송업체명
+$buyerAddr = $od['od_b_addr1'] . ($od['od_b_addr2'] ? ' ' : '') . $od['od_b_addr2'];                // 배송지 주소
+$invoiceNum = $escrow_numb;                        // 송장번호
+$registerName = $default['de_admin_company_name'];                // 등록자이름 (영카트 회사명으로 지정)
+$confirmMail = 1;                                // 구매결정 메일발송 여부 (1은 발송, 2는 미발송)
+$charSet = 'utf-8';                                // 응답파라미터 인코딩 방식
+$escrowRequestURL = "https://webapi.nicepay.co.kr/webapi/escrow_process.jsp";    //에스크로 요청 URL
 
 /*
 *******************************************************
 * <해쉬암호화> (수정하지 마세요)
 * SHA-256 해쉬암호화는 거래 위변조를 막기위한 방법입니다. 
 *******************************************************
-*/ 
+*/
 $ediDate = preg_replace('/[^0-9]/', '', G5_TIME_YMDHIS);
-$signData = bin2hex(hash('sha256', $tid.$mid.$reqType.$ediDate.$default['de_nicepay_key'], true));
+$signData = bin2hex(hash('sha256', $tid . $mid . $reqType . $ediDate . $default['de_nicepay_key'], true));
 
 $response = "";
 
@@ -72,6 +72,6 @@ if (isset($nice_result['ResultCode']) && $nice_result['ResultCode'] === 'C000') 
  **********************/
 
 $resultCode = $nice_result['ResultCode'];        // 결과코드 ("00"이면 지불 성공)
-$resultMsg  = $nice_result['ResultMsg'];          // 결과내용 (지불결과에 대한 설명)
-$dlv_date   = $nice_result['ProcessDate'];
-$dlv_time   = $nice_result['ProcessTime'];
+$resultMsg = $nice_result['ResultMsg'];          // 결과내용 (지불결과에 대한 설명)
+$dlv_date = $nice_result['ProcessDate'];
+$dlv_time = $nice_result['ProcessTime'];

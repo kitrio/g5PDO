@@ -9,8 +9,8 @@ include_once("./_common.php");
 
 /* Start session and load lib */
 //session_start();
-require_once(G5_SNS_PATH.'/twitter/twitteroauth/twitteroauth.php');
-require_once(G5_SNS_PATH.'/twitter/twitterconfig.php');
+require_once(G5_SNS_PATH . '/twitter/twitteroauth/twitteroauth.php');
+require_once(G5_SNS_PATH . '/twitter/twitterconfig.php');
 
 //print_r2($_SESSION); print_r2($_REQUEST); exit;
 
@@ -44,10 +44,10 @@ exit;
 */
 
 $g5['title'] = '트위터 콜백';
-include_once(G5_PATH.'/head.sub.php');
+include_once(G5_PATH . '/head.sub.php');
 
 if (200 == $connection->http_code) {
-    $content  = $connection->get('account/verify_credentials');
+    $content = $connection->get('account/verify_credentials');
     $sns_name = $content->name;
     $sns_user = $content->screen_name;
 
@@ -84,4 +84,4 @@ EOT;
 
 }
 
-include_once(G5_PATH.'/tail.sub.php');
+include_once(G5_PATH . '/tail.sub.php');

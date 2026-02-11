@@ -33,23 +33,23 @@ $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
 $rows = G5_IS_MOBILE ? $config['cf_mobile_page_rows'] : $config['cf_new_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+$total_page = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 $group_select = '<label for="gr_id" class="sound_only">그룹</label><select name="gr_id" id="gr_id"><option value="">전체그룹';
 $sql = " select gr_id, gr_subject from {$g5['group_table']} order by gr_id ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++) {
-    $group_select .= "<option value=\"".$row['gr_id']."\">".$row['gr_subject'];
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
+    $group_select .= "<option value=\"" . $row['gr_id'] . "\">" . $row['gr_subject'];
 }
 $group_select .= '</select>';
 
 $list = array();
 $sql = " select a.*, b.bo_subject, b.bo_mobile_subject, c.gr_subject, c.gr_id {$sql_common} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++) {
-    $tmp_write_table = $g5['write_prefix'].$row['bo_table'];
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
+    $tmp_write_table = $g5['write_prefix'] . $row['bo_table'];
 
     if ($row['wr_id'] == $row['wr_parent']) {
 
@@ -61,19 +61,19 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
         $name = get_sideview($row2['mb_id'], get_text(cut_str($row2['wr_name'], $config['cf_cut_name'])), $row2['wr_email'], $row2['wr_homepage']);
         // 당일인 경우 시간으로 표시함
-        $datetime = substr($row2['wr_datetime'],0,10);
+        $datetime = substr($row2['wr_datetime'], 0, 10);
         $datetime2 = $row2['wr_datetime'];
         if ($datetime == G5_TIME_YMD) {
-            $datetime2 = substr($datetime2,11,5);
+            $datetime2 = substr($datetime2, 11, 5);
         } else {
-            $datetime2 = substr($datetime2,5,5);
+            $datetime2 = substr($datetime2, 5, 5);
         }
 
     } else {
 
         // 코멘트
         $comment = '[코] ';
-        $comment_link = '#c_'.$row['wr_id'];
+        $comment_link = '#c_' . $row['wr_id'];
         $row2 = sql_fetch(" select * from {$tmp_write_table} where wr_id = '{$row['wr_parent']}' ");
         $row3 = sql_fetch(" select mb_id, wr_name, wr_email, wr_homepage, wr_datetime from {$tmp_write_table} where wr_id = '{$row['wr_id']}' ");
         $list[$i] = $row2;
@@ -85,12 +85,12 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
         $name = get_sideview($row3['mb_id'], get_text(cut_str($row3['wr_name'], $config['cf_cut_name'])), $row3['wr_email'], $row3['wr_homepage']);
         // 당일인 경우 시간으로 표시함
-        $datetime = substr($row3['wr_datetime'],0,10);
+        $datetime = substr($row3['wr_datetime'], 0, 10);
         $datetime2 = $row3['wr_datetime'];
         if ($datetime == G5_TIME_YMD) {
-            $datetime2 = substr($datetime2,11,5);
+            $datetime2 = substr($datetime2, 11, 5);
         } else {
-            $datetime2 = substr($datetime2,5,5);
+            $datetime2 = substr($datetime2, 5, 5);
         }
 
     }
@@ -110,6 +110,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 
 $write_pages = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "?gr_id=$gr_id&amp;view=$view&amp;mb_id=$mb_id&amp;page=");
 
-include_once($new_skin_path.'/new.skin.php');
+include_once($new_skin_path . '/new.skin.php');
 
 include_once('./_tail.php');

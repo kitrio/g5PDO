@@ -1,11 +1,11 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-include_once(G5_PHPMAILER_PATH.'/PHPMailerAutoload.php');
+include_once(G5_PHPMAILER_PATH . '/PHPMailerAutoload.php');
 
 // 메일 보내기 (파일 여러개 첨부 가능)
 // type : text=0, html=1, text+html=2
-function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc="", $bcc="")
+function mailer($fname, $fmail, $to, $subject, $content, $type = 0, $file = "", $cc = "", $bcc = "")
 {
     global $config;
     global $g5;
@@ -17,8 +17,8 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
         $content = nl2br($content);
 
     $result = run_replace('mailer', $fname, $fmail, $to, $subject, $content, $type, $file, $cc, $bcc);
-    
-    if( is_array($result) && isset($result['return']) ){
+
+    if (is_array($result) && isset($result['return'])) {
         return $result['return'];
     }
 
@@ -29,7 +29,7 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
         if (defined('G5_SMTP') && G5_SMTP) {
             $mail->IsSMTP(); // telling the class to use SMTP
             $mail->Host = G5_SMTP; // SMTP server
-            if(defined('G5_SMTP_PORT') && G5_SMTP_PORT)
+            if (defined('G5_SMTP_PORT') && G5_SMTP_PORT)
                 $mail->Port = G5_SMTP_PORT;
         }
         $mail->CharSet = 'UTF-8';
@@ -55,7 +55,7 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
         if (!($mail_send_result = $mail->send())) {
             throw new Exception($mail->ErrorInfo);
         }
-        
+
     } catch (Exception $e) {
         error_log("Mail sending error: " . $e->getMessage());
     }
@@ -69,7 +69,7 @@ function mailer($fname, $fmail, $to, $subject, $content, $type=0, $file="", $cc=
 function attach_file($filename, $tmp_name)
 {
     // 서버에 업로드 되는 파일은 확장자를 주지 않는다. (보안 취약점)
-    $dest_file = G5_DATA_PATH.'/tmp/'.str_replace('/', '_', $tmp_name);
+    $dest_file = G5_DATA_PATH . '/tmp/' . str_replace('/', '_', $tmp_name);
     move_uploaded_file($tmp_name, $dest_file);
     $tmpfile = array("name" => $filename, "path" => $dest_file);
     return $tmpfile;

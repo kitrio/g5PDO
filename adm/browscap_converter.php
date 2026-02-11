@@ -32,8 +32,8 @@ if (!$rows) {
 }
 
 $sql_common = " from {$g5['visit_table']} where vi_agent <> '' and ( vi_browser = '' or vi_os = '' or vi_device = '' ) ";
-$sql_order  = " order by vi_id desc ";
-$sql_limit  = " limit 0, " . strval($rows) . " ";
+$sql_order = " order by vi_id desc ";
+$sql_limit = " limit 0, " . strval($rows) . " ";
 
 $sql = " select count(vi_id) as cnt $sql_common ";
 $row = sql_fetch($sql);

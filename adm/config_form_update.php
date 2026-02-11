@@ -168,7 +168,7 @@ for ($i = 1; $i <= 10; $i++) {
 
 foreach ($check_keys as $k => $v) {
     if ($v === 'int') {
-        $_POST[$k] = isset($_POST[$k]) ? (int) $_POST[$k] : 0;
+        $_POST[$k] = isset($_POST[$k]) ? (int)$_POST[$k] : 0;
     } else {
         if (in_array($k, array('cf_analytics', 'cf_add_meta', 'cf_add_script', 'cf_stipulation', 'cf_privacy'))) {
             $_POST[$k] = isset($_POST[$k]) ? $_POST[$k] : '';
@@ -186,7 +186,7 @@ if ($_POST['cf_cert_use'] && !$_POST['cf_cert_ipin'] && !$_POST['cf_cert_hp'] &&
 if (!$_POST['cf_cert_use']) {
     $_POST['cf_cert_ipin'] = '';
     $_POST['cf_cert_hp'] = '';
-   $_POST['cf_cert_simple'] = '';
+    $_POST['cf_cert_simple'] = '';
 }
 
 // 관리자가 자동등록방지를 사용해야 할 경우 ( 기본환경설정에서 최고관리자, 방문자분석 스크립트, 추가 메타태그, 추가 script, css 변경시 )
@@ -316,7 +316,7 @@ $sql = " update {$g5['config_table']}
                 cf_cert_ipin = '{$_POST['cf_cert_ipin']}',
                 cf_cert_hp = '{$_POST['cf_cert_hp']}',
                 cf_cert_simple = '{$_POST['cf_cert_simple']}',
-                cf_cert_use_seed = '".(int)$_POST['cf_cert_use_seed']."',
+                cf_cert_use_seed = '" . (int)$_POST['cf_cert_use_seed'] . "',
                 cf_cert_kg_cd = '{$_POST['cf_cert_kg_cd']}',
                 cf_cert_kg_mid = '" . trim($_POST['cf_cert_kg_mid']) . "',
                 cf_cert_kcb_cd = '{$_POST['cf_cert_kcb_cd']}',

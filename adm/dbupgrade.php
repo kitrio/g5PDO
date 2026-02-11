@@ -10,7 +10,7 @@ include_once('./admin.head.php');
 $is_check = false;
 
 //소셜 로그인 관련 필드 및 구글 리챕챠 필드 추가
-if(!isset($config['cf_social_login_use'])) {
+if (!isset($config['cf_social_login_use'])) {
     sql_query("ALTER TABLE `{$g5['config_table']}`
                 ADD `cf_social_login_use` tinyint(4) NOT NULL DEFAULT '0' AFTER `cf_googl_shorturl_apikey`,
                 ADD `cf_google_clientid` varchar(100) NOT NULL DEFAULT '' AFTER `cf_twitter_secret`,
@@ -30,7 +30,7 @@ if(!isset($config['cf_social_login_use'])) {
 }
 
 //소셜 로그인 관련 필드 카카오 클라이언트 시크릿 추가
-if(!isset($config['cf_kakao_client_secret'])) {
+if (!isset($config['cf_kakao_client_secret'])) {
     sql_query("ALTER TABLE `{$g5['config_table']}`
                 ADD `cf_kakao_client_secret` varchar(100) NOT NULL DEFAULT '' AFTER `cf_kakao_rest_key`
     ", true);
@@ -39,7 +39,7 @@ if(!isset($config['cf_kakao_client_secret'])) {
 }
 
 // 회원 이미지 관련 필드 추가
-if(!isset($config['cf_member_img_size'])) {
+if (!isset($config['cf_member_img_size'])) {
     sql_query("ALTER TABLE `{$g5['config_table']}`
                 ADD `cf_member_img_size` int(11) NOT NULL DEFAULT '0' AFTER `cf_member_icon_height`,
                 ADD `cf_member_img_width` int(11) NOT NULL DEFAULT '0' AFTER `cf_member_img_size`,
@@ -53,7 +53,7 @@ if(!isset($config['cf_member_img_size'])) {
 }
 
 // 소셜 로그인 관리 테이블 없을 경우 생성
-if( isset($g5['social_profile_table']) && !sql_query(" DESC {$g5['social_profile_table']} ", false)) {
+if (isset($g5['social_profile_table']) && !sql_query(" DESC {$g5['social_profile_table']} ", false)) {
     sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['social_profile_table']}` (
                   `mp_no` int(11) NOT NULL AUTO_INCREMENT,
                   `mb_id` varchar(255) NOT NULL DEFAULT '',
@@ -83,8 +83,8 @@ while ($row = sql_fetch_array($result)) {
 
     $sql = " SHOW COLUMNS FROM {$write_table} LIKE 'wr_seo_title' ";
     $row = sql_fetch($sql);
-    
-    if( !$row ){
+
+    if (!$row) {
         sql_query("ALTER TABLE `{$write_table}`
                     ADD `wr_seo_title` varchar(200) NOT NULL DEFAULT '' AFTER `wr_content`,
                     ADD INDEX `wr_seo_title` (`wr_seo_title`);
@@ -98,7 +98,7 @@ while ($row = sql_fetch_array($result)) {
 $sql = " SHOW COLUMNS FROM `{$g5['content_table']}` LIKE 'co_seo_title' ";
 $row = sql_fetch($sql);
 
-if( !$row ){
+if (!$row) {
     sql_query("ALTER TABLE `{$g5['content_table']}`
                 ADD `co_seo_title` varchar(200) NOT NULL DEFAULT '' AFTER `co_content`,
                 ADD INDEX `co_seo_title` (`co_seo_title`);
@@ -112,10 +112,10 @@ $result = sql_query($sql);
 
 while ($row = sql_fetch_array($result)) {
 
-    if( ! $row['co_seo_title']){
-        
+    if (!$row['co_seo_title']) {
+
         $co_seo_title = exist_seo_title_recursive('content', generate_seo_title($row['co_subject']), $g5['content_table'], $row['co_id']);
-        
+
         $sql = " update {$g5['content_table']}
                     set co_seo_title = '$co_seo_title'
                   where co_id = '{$row['co_id']}' ";
@@ -128,7 +128,7 @@ while ($row = sql_fetch_array($result)) {
 $sql = " SHOW COLUMNS FROM `{$g5['memo_table']}` LIKE 'me_send_id' ";
 $row = sql_fetch($sql);
 
-if( !$row ){
+if (!$row) {
     sql_query("ALTER TABLE `{$g5['memo_table']}`
                 ADD `me_send_id` INT(11) NOT NULL DEFAULT '0',
                 ADD `me_type` ENUM('send','recv') NOT NULL DEFAULT 'recv',
@@ -140,7 +140,7 @@ if( !$row ){
 }
 
 // 읽지 않은 메모 수 칼럼
-if(!isset($member['mb_memo_cnt'])) {
+if (!isset($member['mb_memo_cnt'])) {
     sql_query(" ALTER TABLE `{$g5['member_table']}`
                 ADD `mb_memo_cnt` int(11) NOT NULL DEFAULT '0' AFTER `mb_memo_call`", true);
 
@@ -148,11 +148,11 @@ if(!isset($member['mb_memo_cnt'])) {
 }
 
 // 스크랩 읽은 수 추가
-if(!isset($member['mb_scrap_cnt'])) {
+if (!isset($member['mb_scrap_cnt'])) {
     sql_query(" ALTER TABLE `{$g5['member_table']}`
                 ADD `mb_scrap_cnt` int(11) NOT NULL DEFAULT '0' AFTER `mb_memo_cnt`", true);
 
-	$is_check = true;
+    $is_check = true;
 }
 
 // 짧은 URL 주소를 사용 여부 필드 추가
@@ -160,7 +160,7 @@ if (!isset($config['cf_bbs_rewrite'])) {
     sql_query(" ALTER TABLE `{$g5['config_table']}`
                     ADD `cf_bbs_rewrite` tinyint(4) NOT NULL DEFAULT '0' AFTER `cf_link_target` ", true);
 
-	$is_check = true;
+    $is_check = true;
 }
 
 // 파일테이블에 추가 칼럼
@@ -168,7 +168,7 @@ if (!isset($config['cf_bbs_rewrite'])) {
 $sql = " SHOW COLUMNS FROM `{$g5['board_file_table']}` LIKE 'bf_fileurl' ";
 $row = sql_fetch($sql);
 
-if( !$row ) {
+if (!$row) {
     sql_query(" ALTER TABLE `{$g5['board_file_table']}` 
                 ADD COLUMN `bf_fileurl` VARCHAR(255) NOT NULL DEFAULT '' AFTER `bf_content`,
                 ADD COLUMN `bf_thumburl` VARCHAR(255) NOT NULL DEFAULT '' AFTER `bf_fileurl`,
@@ -179,7 +179,7 @@ if( !$row ) {
 
 if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
     // 임시저장 테이블이 없을 경우 생성
-    if(!sql_query(" DESC {$g5['g5_shop_post_log_table']} ", false)) {
+    if (!sql_query(" DESC {$g5['g5_shop_post_log_table']} ", false)) {
         sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['g5_shop_post_log_table']}` (
                     `log_id` int(11) NOT NULL AUTO_INCREMENT,
                     `oid` bigint(20) unsigned NOT NULL,
@@ -196,8 +196,8 @@ if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
     }
 
     $result = sql_query("describe `{$g5['g5_shop_post_log_table']}`");
-    while ($row = sql_fetch_array($result)){
-        if( isset($row['Field']) && $row['Field'] === 'ol_msg' && $row['Type'] === 'varchar(255)' ){
+    while ($row = sql_fetch_array($result)) {
+        if (isset($row['Field']) && $row['Field'] === 'ol_msg' && $row['Type'] === 'varchar(255)') {
             sql_query("ALTER TABLE `{$g5['g5_shop_post_log_table']}` MODIFY ol_msg TEXT NOT NULL;", false);
             sql_query("ALTER TABLE `{$g5['g5_shop_post_log_table']}` DROP PRIMARY KEY;", false);
             sql_query("ALTER TABLE `{$g5['g5_shop_post_log_table']}` ADD `log_id` int(11) NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`log_id`);", false);
@@ -219,8 +219,8 @@ if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
 $sql = " SHOW COLUMNS FROM `{$g5['auth_table']}` LIKE 'au_menu' ";
 $row = sql_fetch($sql);
 if (
-    stripos($row['Type'], 'varchar') !== false
-    && (int) preg_replace('/[^0-9]/', '', $row['Type']) < 50
+        stripos($row['Type'], 'varchar') !== false
+        && (int)preg_replace('/[^0-9]/', '', $row['Type']) < 50
 ) {
     sql_query(" ALTER TABLE `{$g5['auth_table']}` CHANGE `au_menu` `au_menu` VARCHAR(50) NOT NULL; ", true);
 
@@ -242,7 +242,7 @@ if (!isset($config['cf_id'])) {
                     ADD COLUMN `cf_id` INT(11) NOT NULL AUTO_INCREMENT FIRST,
                     ADD PRIMARY KEY (`cf_id`); ", true);
 
-	$is_check = true;
+    $is_check = true;
 }
 
 // login 테이블 auto id key 추가
@@ -254,13 +254,13 @@ if (!isset($row['lo_id'])) {
                     ADD PRIMARY KEY (`lo_id`),
                     ADD UNIQUE KEY `lo_ip_unique` (`lo_ip`) ", true);
 
-	$is_check = true;
+    $is_check = true;
 }
 
 // visit 테이블 auto id key 로 변경
 $result = sql_query("describe `{$g5['visit_table']}`");
-while ($row = sql_fetch_array($result)){
-    if (isset($row['Field']) && $row['Field'] === 'vi_id' && (isset($row['Default']) && $row['Default'] == 0)){
+while ($row = sql_fetch_array($result)) {
+    if (isset($row['Field']) && $row['Field'] === 'vi_id' && (isset($row['Default']) && $row['Default'] == 0)) {
         sql_query("ALTER TABLE `{$g5['visit_table']}`
                     CHANGE COLUMN `vi_id` `vi_id` INT(11) NOT NULL AUTO_INCREMENT;
         ", false);
@@ -270,17 +270,16 @@ while ($row = sql_fetch_array($result)){
 }
 
 // SMS5 테이블 G5_TABLE_PREFIX 적용
-if($g5['sms5_prefix'] != 'sms5_' && sql_num_rows(sql_query("show tables like 'sms5_config'")))
-{
-    $tables = array('config','write','history','book','book_group','form','form_group');
+if ($g5['sms5_prefix'] != 'sms5_' && sql_num_rows(sql_query("show tables like 'sms5_config'"))) {
+    $tables = array('config', 'write', 'history', 'book', 'book_group', 'form', 'form_group');
 
-    foreach($tables as $name){
+    foreach ($tables as $name) {
         $old_table = 'sms5_' . $name;
         $new_table = $g5['sms5_prefix'] . $name;
 
         // 기존 테이블이 있고, G5_TABLE_PREFIX 적용 테이블이 없을 경우 → 테이블명 변경
-        if(sql_num_rows(sql_query("SHOW TABLES LIKE '{$old_table}' "))){
-            if(!sql_num_rows(sql_query("SHOW TABLES LIKE '{$new_table}' "))){
+        if (sql_num_rows(sql_query("SHOW TABLES LIKE '{$old_table}' "))) {
+            if (!sql_num_rows(sql_query("SHOW TABLES LIKE '{$new_table}' "))) {
                 sql_query("RENAME TABLE {$old_table} TO {$new_table}", false);
             }
         }
@@ -292,9 +291,9 @@ if($g5['sms5_prefix'] != 'sms5_' && sql_num_rows(sql_query("show tables like 'sm
 // 광고성 정보 수신 동의 사용 필드 추가
 if (!isset($config['cf_use_promotion'])) {
     sql_query(
-        " ALTER TABLE `{$g5['config_table']}`
+            " ALTER TABLE `{$g5['config_table']}`
             ADD `cf_use_promotion` tinyint(1) NOT NULL DEFAULT '0' AFTER `cf_privacy` ",
-        true
+            true
     );
 
     $is_check = true;
@@ -303,7 +302,7 @@ if (!isset($config['cf_use_promotion'])) {
 // 광고성 정보 수신 동의 여부 필드 추가 + 메일 / SMS 수신 일자 추가
 if (!isset($member['mb_marketing_agree'])) {
     sql_query(
-        " ALTER TABLE `{$g5['member_table']}`
+            " ALTER TABLE `{$g5['member_table']}`
                 ADD `mb_marketing_agree` tinyint(1) NOT NULL DEFAULT '0' AFTER  `mb_scrap_cnt`,
                 ADD `mb_marketing_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `mb_marketing_agree`,
                 ADD `mb_thirdparty_agree` tinyint(1) NOT NULL DEFAULT '0' AFTER  `mb_marketing_date`,
@@ -311,7 +310,7 @@ if (!isset($member['mb_marketing_agree'])) {
                 ADD `mb_agree_log` TEXT NOT NULL AFTER `mb_thirdparty_date`,
                 ADD `mb_mailling_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `mb_mailling`,
                 ADD `mb_sms_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `mb_sms` ",
-        true
+            true
     );
 
     $is_check = true;
@@ -322,11 +321,11 @@ $is_check = run_replace('admin_dbupgrade', $is_check);
 $db_upgrade_msg = $is_check ? 'DB 업그레이드가 완료되었습니다.' : '더 이상 업그레이드 할 내용이 없습니다.<br>현재 DB 업그레이드가 완료된 상태입니다.';
 ?>
 
-<div class="local_desc01 local_desc">
-    <p>
-        <?php echo $db_upgrade_msg; ?>
-    </p>
-</div>
+    <div class="local_desc01 local_desc">
+        <p>
+            <?php echo $db_upgrade_msg; ?>
+        </p>
+    </div>
 
 <?php
-include_once ('./admin.tail.php');
+include_once('./admin.tail.php');

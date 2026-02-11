@@ -2,8 +2,8 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<title><?php echo $config['cf_title']; ?> - <?php echo $from_name; ?> 의 상품 추천 메일</title>
+    <meta charset="utf-8">
+    <title><?php echo $config['cf_title']; ?> - <?php echo $from_name; ?> 의 상품 추천 메일</title>
 </head>
 
 <?php
@@ -20,13 +20,14 @@ $ft_a_st = 'display:block;padding:30px 0;background:#484848;color:#fff;text-alig
 <div style="margin:30px auto;width:600px;border:10px solid #f7f7f7">
     <div style="border:1px solid #dedede">
         <h1 style="margin:0 0 20px;padding:30px 30px 20px;background:#f7f7f7;color:#555;font-size:1.4em">
-            <?php echo $config['cf_title'];?> - 상품 추천 메일
+            <?php echo $config['cf_title']; ?> - 상품 추천 메일
         </h1>
 
         <p style="<?php echo $cont_st; ?>"><b><?php echo $from_name; ?></b> 님께서 추천하신 상품입니다.</p>
 
         <div style="margin:0 0 10px;text-align:center">
-            <a href="<?php echo shop_item_url($it_id); ?>" target="_blank" style="display:inline-block;margin:0 0 10px"><?php echo $it_mimg; ?></a><br>
+            <a href="<?php echo shop_item_url($it_id); ?>" target="_blank"
+               style="display:inline-block;margin:0 0 10px"><?php echo $it_mimg; ?></a><br>
             <?php echo $it_name; ?>
         </div>
 

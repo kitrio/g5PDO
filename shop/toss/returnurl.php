@@ -12,7 +12,7 @@ if (isset($_REQUEST['mode']) && $_REQUEST['mode'] === 'fail') {
 
 $g5['title'] = '토스페이먼츠 결제인증 완료처리';
 $g5['body_script'] = ' onload="setTossResult();"';
-include_once(G5_PATH.'/head.sub.php');
+include_once(G5_PATH . '/head.sub.php');
 
 // 토스페이먼츠 결제인증 성공시 인증키 주문 임시데이터에 업데이트
 $paymentKey = isset($_REQUEST['paymentKey']) ? trim($_REQUEST['paymentKey']) : '';
@@ -36,32 +36,32 @@ $data_new = base64_encode(serialize($data));
 $sql = " update {$g5['g5_shop_order_data_table']} set dt_data = '$data_new' where od_id = '$orderId' limit 1 ";
 sql_query($sql);
 
-if(isset($data['pp_id']) && $data['pp_id']) {
-    $order_action_url = G5_HTTPS_SHOP_URL.'/personalpayformupdate.php';
+if (isset($data['pp_id']) && $data['pp_id']) {
+    $order_action_url = G5_HTTPS_SHOP_URL . '/personalpayformupdate.php';
 } else {
-    $order_action_url = G5_HTTPS_SHOP_URL.'/orderformupdate.php';
+    $order_action_url = G5_HTTPS_SHOP_URL . '/orderformupdate.php';
 }
 ?>
 
 <?php
 $exclude = array();
 
-echo '<form name="forderform" method="post" action="'.$order_action_url.'" autocomplete="off">'.PHP_EOL;
+echo '<form name="forderform" method="post" action="' . $order_action_url . '" autocomplete="off">' . PHP_EOL;
 
 echo make_order_field($data, $exclude);
 
-echo '</form>'.PHP_EOL;
+echo '</form>' . PHP_EOL;
 ?>
 
-<script type="text/javascript">
-function setTossResult() {
-    try {
-        document.forderform.submit();
-    } catch (e) {
-        alert(e.message);
-    }
-}
-</script>
+    <script type="text/javascript">
+      function setTossResult() {
+        try {
+          document.forderform.submit();
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+    </script>
 
 <?php
-include_once(G5_PATH.'/tail.sub.php');
+include_once(G5_PATH . '/tail.sub.php');

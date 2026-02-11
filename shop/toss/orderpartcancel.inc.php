@@ -1,10 +1,10 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-if($od['od_pg'] != 'toss') return;
+if ($od['od_pg'] != 'toss') return;
 
 // 토스 공통 설정
-require_once(G5_SHOP_PATH.'/toss/toss.inc.php');
+require_once(G5_SHOP_PATH . '/toss/toss.inc.php');
 
 if (empty($mod_memo)) {
     alert('취소사유를 입력해 주세요.');

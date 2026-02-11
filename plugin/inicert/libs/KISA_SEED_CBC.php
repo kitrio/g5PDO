@@ -10,7 +10,8 @@
 if (!defined('_KISA_COMMON_LIB')) {
     define('_KISA_COMMON_LIB', 1);
 
-    function isLittleEndian() {
+    function isLittleEndian()
+    {
         $testint = 0x00FF;
         $p = pack('S', $testint);
         return $testint === current(unpack('v', $p));
@@ -21,83 +22,94 @@ if (!defined('_KISA_COMMON_LIB')) {
         define('_KISA_COMMON_IS_LITTLE_ENDIAN', $_kisa_common_is_little_endian);
     }
 
-    class Common {
+    class Common
+    {
 
-        static function arraycopy(&$dst, &$src, $length) {
+        static function arraycopy(&$dst, &$src, $length)
+        {
             for ($i = 0; $i < $length; $i++) {
                 $dst[$i] = $src[$i];
             }
         }
 
-        static function arraycopy_offset(&$dst, $dst_offset, &$src, $src_offset, $length) {
+        static function arraycopy_offset(&$dst, $dst_offset, &$src, $src_offset, $length)
+        {
             for ($i = 0; $i < $length; $i++) {
                 $dst[$dst_offset + $i] = $src[$src_offset + $i];
             }
         }
 
-        static function arraycopy_system(&$src, $src_offset, &$dst, $dst_offset, $length) {
+        static function arraycopy_system(&$src, $src_offset, &$dst, $dst_offset, $length)
+        {
             for ($i = 0; $i < $length; $i++) {
                 $dst[$dst_offset + $i] = $src[$src_offset + $i];
             }
         }
 
-        static function arrayinit(&$dst, $value, $length) {
+        static function arrayinit(&$dst, $value, $length)
+        {
             for ($i = 0; $i < $length; $i++) {
                 $dst[$i] = $value;
             }
         }
 
-        static function arrayinit_offset(&$dst, $dst_offset, $value, $length) {
+        static function arrayinit_offset(&$dst, $dst_offset, $value, $length)
+        {
             for ($i = 0; $i < $length; $i++) {
                 $dst[$dst_offset + $i] = $value;
             }
         }
 
-        static function memcpy_byte2int(&$dst, &$src, $length) {
-            $iLen = (int) ($length / 4);
+        static function memcpy_byte2int(&$dst, &$src, $length)
+        {
+            $iLen = (int)($length / 4);
             for ($i = 0; $i < $iLen; $i++) {
                 Common::byte_to_int($dst, $i, $src, $i * 4);
             }
         }
 
-        static function memcpy_int2int(&$dst, &$src, $src_offset, $length) {
-            $iLen = (int) ($length / 4);
+        static function memcpy_int2int(&$dst, &$src, $src_offset, $length)
+        {
+            $iLen = (int)($length / 4);
             for ($i = 0; $i < $iLen; $i++) {
                 $dst[$i] = $src[$src_offset + $i];
             }
         }
 
-        static function set_byte_for_int(&$dst, $b_offset, $value) {
+        static function set_byte_for_int(&$dst, $b_offset, $value)
+        {
             if (_KISA_COMMON_IS_LITTLE_ENDIAN == true) {
                 $shift_value = (3 - $b_offset % 4) * 8;
                 $mask_value = 0x0ff << $shift_value;
                 $mask_value2 = ~$mask_value;
                 $value2 = ($value & 0x0ff) << $shift_value;
-                $dst[(int) ($b_offset / 4)] = ($dst[(int) ($b_offset / 4)] & $mask_value2) | ($value2 & $mask_value);
+                $dst[(int)($b_offset / 4)] = ($dst[(int)($b_offset / 4)] & $mask_value2) | ($value2 & $mask_value);
             } else {
                 $shift_value = ($b_offset % 4) * 8;
                 $mask_value = 0x0ff << $shift_value;
                 $mask_value2 = ~$mask_value;
                 $value2 = ($value & 0x0ff) << $shift_value;
-                $dst[(int) ($b_offset / 4)] = ($dst[(int) ($b_offset / 4)] & $mask_value2) | ($value2 & $mask_value);
+                $dst[(int)($b_offset / 4)] = ($dst[(int)($b_offset / 4)] & $mask_value2) | ($value2 & $mask_value);
             }
         }
 
-        static function get_byte_for_int(&$src, $b_offset) {
+        static function get_byte_for_int(&$src, $b_offset)
+        {
             if (_KISA_COMMON_IS_LITTLE_ENDIAN == true) {
                 $shift_value = (3 - $b_offset % 4) * 8;
                 $mask_value = 0x0ff << $shift_value;
-                $value = ($src[(int) ($b_offset / 4)] & $mask_value) >> $shift_value;
+                $value = ($src[(int)($b_offset / 4)] & $mask_value) >> $shift_value;
                 return $value & 0x0ff;
             } else {
                 $shift_value = ($b_offset % 4) * 8;
                 $mask_value = 0x0ff << $shift_value;
-                $value = ($src[(int) ($b_offset / 4)] & $mask_value) >> $shift_value;
+                $value = ($src[(int)($b_offset / 4)] & $mask_value) >> $shift_value;
                 return $value & 0x0ff;
             }
         }
 
-        static function byte_to_int(&$dst, $dst_offset, &$src, $src_offset) {
+        static function byte_to_int(&$dst, $dst_offset, &$src, $src_offset)
+        {
 
             if (_KISA_COMMON_IS_LITTLE_ENDIAN == true) {
                 $dst[$dst_offset] = ((0x0ff & $src[$src_offset]) << 24) | ((0x0ff & $src[$src_offset + 1]) << 16) | ((0x0ff & $src[$src_offset + 2]) << 8) | ((0x0ff & $src[$src_offset + 3]));
@@ -106,7 +118,8 @@ if (!defined('_KISA_COMMON_LIB')) {
             }
         }
 
-        static function get_byte_to_int(&$src, $src_offset) {
+        static function get_byte_to_int(&$src, $src_offset)
+        {
             if (_KISA_COMMON_IS_LITTLE_ENDIAN == true) {
                 return ((0x0ff & $src[$src_offset]) << 24) | ((0x0ff & $src[$src_offset + 1]) << 16) | ((0x0ff & $src[$src_offset + 2]) << 8) | ((0x0ff & $src[$src_offset + 3]));
             } else {
@@ -114,11 +127,13 @@ if (!defined('_KISA_COMMON_LIB')) {
             }
         }
 
-        static function int_to_byte(&$dst, $dst_offset, &$src, $src_offset) {
+        static function int_to_byte(&$dst, $dst_offset, &$src, $src_offset)
+        {
             Common::int_to_byte_unit($dst, $dst_offset, $src[$src_offset]);
         }
 
-        static function int_to_byte_unit(&$dst, $dst_offset, $src) {
+        static function int_to_byte_unit(&$dst, $dst_offset, $src)
+        {
             if (_KISA_COMMON_IS_LITTLE_ENDIAN == true) {
                 $dst[$dst_offset] = (($src >> 24) & 0x0ff);
                 $dst[$dst_offset + 1] = (($src >> 16) & 0x0ff);
@@ -132,7 +147,8 @@ if (!defined('_KISA_COMMON_LIB')) {
             }
         }
 
-        static function URShift($x, $n) {
+        static function URShift($x, $n)
+        {
             if ($n == 0)
                 return $x;
             if ($n >= 32)
@@ -142,7 +158,8 @@ if (!defined('_KISA_COMMON_LIB')) {
             return $v & $v_mask;
         }
 
-        static function intToUnsigned($x) {
+        static function intToUnsigned($x)
+        {
             if ($x >= 0)
                 return $x;
             return $x + pow(2, 32);
@@ -155,7 +172,8 @@ if (!defined('_KISA_COMMON_LIB')) {
 if (!defined('_KISA_ENC_DEC_')) {
     define('_KISA_ENC_DEC_', '1');
 
-    class KISA_ENC_DEC {
+    class KISA_ENC_DEC
+    {
 
         const KISA_DECRYPT = 0;
         const KISA_ENCRYPT = 1;
@@ -167,11 +185,13 @@ if (!defined('_KISA_ENC_DEC_')) {
 if (!defined('_KISA_SEED_KEY_')) {
     define('_KISA_SEED_KEY_', '1');
 
-    class KISA_SEED_KEY {
+    class KISA_SEED_KEY
+    {
 
         var $key_data = null;
 
-        function __construct() {
+        function __construct()
+        {
             $this->key_data = array_pad(array(), 32, 0);
         }
 
@@ -182,7 +202,8 @@ if (!defined('_KISA_SEED_KEY_')) {
 if (!defined('_KISA_SEED_INFO_')) {
     define('_KISA_SEED_INFO_', '1');
 
-    class KISA_SEED_INFO {
+    class KISA_SEED_INFO
+    {
 
         var $encrypt = 0;
         var $ivec = null;
@@ -192,7 +213,8 @@ if (!defined('_KISA_SEED_INFO_')) {
         var $cbc_last_block = null;
         var $last_block_flag = 0;
 
-        function __construct() {
+        function __construct()
+        {
             $this->ivec = array_pad(array(), 4, 0);
             $this->seed_key = new KISA_SEED_KEY();
             $this->cbc_buffer = array_pad(array(), 4, 0);
@@ -210,8 +232,11 @@ if (!defined('_KISA_LR_VAR')) {
     define('LR_R1', 3);
 }
 
-class KISA_SEED_CBC {
+class KISA_SEED_CBC
+{
 
+    const BLOCK_SIZE_SEED = 16;
+    const BLOCK_SIZE_SEED_INT = 4;
     static $SS0 = array(
         0x02989a1a8, 0x005858184, 0x016c6d2d4, 0x013c3d3d0, 0x014445054, 0x01d0d111c, 0x02c8ca0ac, 0x025052124,
         0x01d4d515c, 0x003434340, 0x018081018, 0x01e0e121c, 0x011415150, 0x03cccf0fc, 0x00acac2c8, 0x023436360,
@@ -348,54 +373,6 @@ class KISA_SEED_CBC {
         0x007333437, 0x0c7e3e427, 0x004202424, 0x084a0a424, 0x0cbc3c80b, 0x043535013, 0x00a02080a, 0x087838407,
         0x0c9d1d819, 0x04c404c0c, 0x083838003, 0x08f838c0f, 0x0cec2cc0e, 0x00b33383b, 0x04a42480a, 0x087b3b437
     );
-
-    const BLOCK_SIZE_SEED = 16;
-    const BLOCK_SIZE_SEED_INT = 4;
-
-    static function GetB0($A) {
-        return 0x000000ff & $A;
-    }
-
-    static function GetB1($A) {
-        return 0x000000ff & ( $A >> 8 );
-    }
-
-    static function GetB2($A) {
-        return 0x000000ff & ( $A >> 16 );
-    }
-
-    static function GetB3($A) {
-        return 0x000000ff & ( $A >> 24 );
-    }
-
-    static function Round(&$x, $i7, $i6, $i5, $i4, $i3, $i2, $i1, $i0, $key, $key_offset) {
-        $x[$i1] = ($x[$i1] + ((KISA_SEED_CBC::$F1[$x[$i0]] ^ $key[$key_offset + 0]) & 0x0ff)) & 0x0ff;
-        $x[$i3] = ($x[$i3] ^ ((KISA_SEED_CBC::$F0[$x[$i2]] + $key[$key_offset + 1]) & 0x0ff)) & 0x0ff;
-        $x[$i5] = ($x[$i5] + ((KISA_SEED_CBC::$F1[$x[$i4]] ^ $key[$key_offset + 2]) & 0x0ff)) & 0x0ff;
-        $x[$i7] = ($x[$i7] ^ ((KISA_SEED_CBC::$F0[$x[$i6]] + $key[$key_offset + 3]) & 0x0ff)) & 0x0ff;
-    }
-
-    static function SeedRound(&$T, &$LR, $L0, $L1, $R0, $R1, &$K, $K_offset) {
-        $T[0] = $LR[$R0] ^ $K[$K_offset + 0];
-        $T[1] = $LR[$R1] ^ $K[$K_offset + 1];
-        $T[1] ^= $T[0];
-        $T[1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^
-                KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
-        $T[0] = ($T[0] + $T[1]) & 0x0ffffffff;
-        $T[0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^
-                KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
-        $T[1] = ($T[1] + $T[0]) & 0x0ffffffff;
-        $T[1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^
-                KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
-        $T[0] = ($T[0] + $T[1]) & 0x0ffffffff;
-        $LR[$L0] ^= $T[0];
-        $LR[$L1] ^= $T[1];
-    }
-
-    static function EndianChange($dwS) {
-        return ((((($dwS) << (8)) | ((($dwS) >> (32 - (8))) & 0x000000ff)) & 0x00ff00ff) | (((($dwS) << (24)) | ((($dwS) >> (32 - (24))) & 0x00ffffff)) & 0xff00ff00) );
-    }
-
     static $KC0 = 0x9e3779b9;
     static $KC1 = 0x3c6ef373;
     static $KC2 = 0x78dde6e6;
@@ -417,180 +394,71 @@ class KISA_SEED_CBC {
     static $ABCD_C = 2;
     static $ABCD_D = 3;
 
-    static function RoundKeyUpdate0(&$T, &$K, $K_offset, &$ABCD, $KC) {
-
-        $T[0] = (($ABCD[KISA_SEED_CBC::$ABCD_A] & 0x0ffffffff) + ($ABCD[KISA_SEED_CBC::$ABCD_C] & 0x0ffffffff) - ($KC & 0x0ffffffff)) & 0x0ffffffff;
-        $T[1] = (($ABCD[KISA_SEED_CBC::$ABCD_B] & 0x0ffffffff) + ($KC & 0x0ffffffff) - ($ABCD[KISA_SEED_CBC::$ABCD_D] & 0x0ffffffff)) & 0x0ffffffff;
-        $K[$K_offset + 0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
-        $K[$K_offset + 1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
-        $T[0] = $ABCD[KISA_SEED_CBC::$ABCD_A];
-        $ABCD[KISA_SEED_CBC::$ABCD_A] = (($ABCD[KISA_SEED_CBC::$ABCD_A] >> 8) & 0x00ffffff) ^ ($ABCD[KISA_SEED_CBC::$ABCD_B] << 24);
-        $ABCD[KISA_SEED_CBC::$ABCD_B] = (($ABCD[KISA_SEED_CBC::$ABCD_B] >> 8) & 0x00ffffff) ^ ($T[0] << 24);
+    static function Round(&$x, $i7, $i6, $i5, $i4, $i3, $i2, $i1, $i0, $key, $key_offset)
+    {
+        $x[$i1] = ($x[$i1] + ((KISA_SEED_CBC::$F1[$x[$i0]] ^ $key[$key_offset + 0]) & 0x0ff)) & 0x0ff;
+        $x[$i3] = ($x[$i3] ^ ((KISA_SEED_CBC::$F0[$x[$i2]] + $key[$key_offset + 1]) & 0x0ff)) & 0x0ff;
+        $x[$i5] = ($x[$i5] + ((KISA_SEED_CBC::$F1[$x[$i4]] ^ $key[$key_offset + 2]) & 0x0ff)) & 0x0ff;
+        $x[$i7] = ($x[$i7] ^ ((KISA_SEED_CBC::$F0[$x[$i6]] + $key[$key_offset + 3]) & 0x0ff)) & 0x0ff;
     }
 
-    // 0xFFFFFFFF 를 & 연산 시키는 이유: 64bit OS에 설치된 PHP의 정수형 데이터 타입의 크기 차이로 인한 오버플로우 처리 오류 
-    static function RoundKeyUpdate1(&$T, &$K, $K_offset, &$ABCD, $KC) {
-        $T[0] = (($ABCD[KISA_SEED_CBC::$ABCD_A] & 0xFFFFFFFF) + ($ABCD[KISA_SEED_CBC::$ABCD_C] & 0xFFFFFFFF) - ($KC & 0xFFFFFFFF)) & 0x0ffffffff;
-        $T[1] = (($ABCD[KISA_SEED_CBC::$ABCD_B] & 0xFFFFFFFF) + ($KC & 0xFFFFFFFF) - ($ABCD[KISA_SEED_CBC::$ABCD_D] & 0xFFFFFFFF)) & 0x0ffffffff;
-        $K[$K_offset + 0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
-        $K[$K_offset + 1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
-        $T[0] = $ABCD[KISA_SEED_CBC::$ABCD_C];
-        $ABCD[KISA_SEED_CBC::$ABCD_C] = (($ABCD[KISA_SEED_CBC::$ABCD_C] << 8) & 0xFFFFFFFF) ^ (($ABCD[KISA_SEED_CBC::$ABCD_D] >> 24) & 0x000000ff);
-        $ABCD[KISA_SEED_CBC::$ABCD_D] = (($ABCD[KISA_SEED_CBC::$ABCD_D] << 8) & 0xFFFFFFFF) ^ (($T[0] >> 24) & 0x000000ff);
-    }
-
-    static function BLOCK_XOR_CBC(&$OUT_VALUE, $OUT_VALUE_offset, &$IN_VALUE1, $IN_VALUE1_offset, &$IN_VALUE2, $IN_VALUE2_offset) {
-        $OUT_VALUE[$OUT_VALUE_offset + 0] = ($IN_VALUE1_offset < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 0] : 0) ^ ($IN_VALUE2_offset < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 0] : 0);
-        $OUT_VALUE[$OUT_VALUE_offset + 1] = ($IN_VALUE1_offset + 1 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 1] : 0) ^ ($IN_VALUE2_offset + 1 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 1] : 0);
-        $OUT_VALUE[$OUT_VALUE_offset + 2] = ($IN_VALUE1_offset + 2 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 2] : 0) ^ ($IN_VALUE2_offset + 2 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 2] : 0);
-        $OUT_VALUE[$OUT_VALUE_offset + 3] = ($IN_VALUE1_offset + 3 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 3] : 0) ^ ($IN_VALUE2_offset + 3 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 3] : 0);
-    }
-
-    static function KISA_SEED_Encrypt_Block_forCBC(&$in, $in_offset, &$out, $out_offset, &$ks) {
-
-        $LR = array_pad(array(), 4, 0);  // Iuput/output values at each rounds
-        $T = array_pad(array(), 2, 0);  // Temporary variables for round function F
-        $K = &$ks->key_data;     // Pointer of round keys
-
-        $LR[LR_L0] = $in[$in_offset + 0];
-        $LR[LR_L1] = $in[$in_offset + 1];
-        $LR[LR_R0] = $in[$in_offset + 2];
-        $LR[LR_R1] = $in[$in_offset + 3];
-
-        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
-            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
-            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
-            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
-            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
-        }
-
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 0);    // Round 1
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 2);    // Round 2
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 4);    // Round 3
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 6);    // Round 4
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 8);    // Round 5
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 10);    // Round 6
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 12);    // Round 7
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 14);    // Round 8
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 16);    // Round 9
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 18);    // Round 10
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 20);    // Round 11
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 22);    // Round 12
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 24);    // Round 13
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 26);    // Round 14
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 28);    // Round 15
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 30);    // Round 16
-
-        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
-            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
-            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
-            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
-            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
-        }
-
-        $out[$out_offset + 0] = $LR[LR_R0];
-        $out[$out_offset + 1] = $LR[LR_R1];
-        $out[$out_offset + 2] = $LR[LR_L0];
-        $out[$out_offset + 3] = $LR[LR_L1];
-    }
-
-    static function KISA_SEED_Decrypt_Block_forCBC(&$in, $in_offset, &$out, $out_offset, &$ks) {
-        $LR = array_pad(array(), 4, 0);  // Iuput/output values at each rounds
-        $T = array_pad(array(), 2, 0);  // Temporary variables for round function F
-        $K = &$ks->key_data;    // Pointer of round keys
-
-        $LR[LR_L0] = $in[$in_offset + 0];
-        $LR[LR_L1] = $in[$in_offset + 1];
-        $LR[LR_R0] = $in[$in_offset + 2];
-        $LR[LR_R1] = $in[$in_offset + 3];
-
-        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
-            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
-            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
-            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
-            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
-        }
-
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 30);    // Round 1
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 28);    // Round 2
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 26);    // Round 3
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 24);    // Round 4
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 22);    // Round 5
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 20);    // Round 6
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 18);    // Round 7
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 16);    // Round 8
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 14);    // Round 9
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 12);    // Round 10
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 10);    // Round 11
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 8);    // Round 12
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 6);    // Round 13
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 4);    // Round 14
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 2);    // Round 15
-        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 0);    // Round 16
-
-        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
-            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
-            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
-            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
-            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
-        }
-
-        $out[$out_offset + 0] = $LR[LR_R0];
-        $out[$out_offset + 1] = $LR[LR_R1];
-        $out[$out_offset + 2] = $LR[LR_L0];
-        $out[$out_offset + 3] = $LR[LR_L1];
-    }
-
-    static function chartoint32_for_SEED_CBC(&$in, $inLen) {
+    static function SEED_CBC_Encrypt(&$pbszUserKey, &$pbszIV, &$message, $message_offset, $message_length)
+    {
+        $info = new KISA_SEED_INFO();
+        $outbuf = null;
         $data = null;
-        $len = 0;
-        $i = 0;
+        $cdata = null;
+        $outlen = 0;
+        $nRetOutLeng = 0;
+        $nPaddingLeng = 0;
 
-        if ($inLen % 4 > 0)
-            $len = (0x0ff & ((int) ($inLen / 4))) + 1;
-        else
-            $len = (0x0ff & ((int) ($inLen / 4)));
+        $pbszPlainText = array_pad(array(), $message_length, 0);
+        Common::arraycopy_system($message, $message_offset, $pbszPlainText, 0, $message_length);
+        $nPlainTextLen = count($pbszPlainText);
 
-        $data = array_pad(array(), $len, 0);
-        for ($i = 0; $i < $len; $i++) {
-            Common::byte_to_int($data, $i, $in, $i * 4);
-        }
-        return $data;
-    }
 
-    static function int32tochar_for_SEED_CBC(&$in, $inLen) {
+        $nPlainTextPadding = (KISA_SEED_CBC::BLOCK_SIZE_SEED - ($nPlainTextLen % KISA_SEED_CBC::BLOCK_SIZE_SEED));
+        $newpbszPlainText = array_pad(array(), $nPlainTextLen + $nPlainTextPadding, 0);
+        Common::arraycopy($newpbszPlainText, $pbszPlainText, $nPlainTextLen);
+
+        $pbszCipherText = array_pad(array(), count($newpbszPlainText), 0);
+
+        KISA_SEED_CBC::SEED_CBC_init($info, KISA_ENC_DEC::KISA_ENCRYPT, $pbszUserKey, $pbszIV);
+
+        $outlen = (((int)($nPlainTextLen / 16)) + 1) * 4;
+
+
+        $outbuf = array_pad(array(), $outlen, 0);
+
+        $data = KISA_SEED_CBC::chartoint32_for_SEED_CBC($newpbszPlainText, $nPlainTextLen);
+        KISA_SEED_CBC::SEED_CBC_Process($info, $data, $nPlainTextLen, $outbuf, $nRetOutLeng);
+
+        KISA_SEED_CBC::SEED_CBC_Close($info, $outbuf, $nRetOutLeng, $nPaddingLeng);
+
+
+        $cdata = KISA_SEED_CBC::int32tochar_for_SEED_CBC($outbuf, $nRetOutLeng + $nPaddingLeng);
+        Common::arraycopy($pbszCipherText, $cdata, $nRetOutLeng + $nPaddingLeng);
+
         $data = null;
-        $i = 0;
+        $cdata = null;
+        $outbuf = null;
 
-        $data = array_pad(array(), $inLen, 0);
-        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
-            for ($i = 0; $i < $inLen; $i++) {
-                $data[$i] = 0x0ff & ($in[(int) ($i / 4)] >> (($i % 4) * 8));
-            }
-        } else {
-            for ($i = 0; $i < $inLen; $i++) {
-                $data[$i] = 0x0ff & ($in[(int) ($i / 4)] >> ((3 - ($i % 4)) * 8));
-            }
-        }
-
-        return $data;
+        return $pbszCipherText;
     }
 
-    // 0xFFFFFFFF 를 & 연산 시키는 이유: 64bit OS에 설치된 PHP의 정수형 데이터 타입의 크기 차이로 인한 오버플로우 처리 오류 
-    static function SEED_CBC_init(&$pInfo, $enc, &$pbszUserKey, &$pbszIV) {
+    static function SEED_CBC_init(&$pInfo, $enc, &$pbszUserKey, &$pbszIV)
+    {
         $ABCD = array_pad(array(), 4, 0);   // Iuput/output values at each rounds
         $T = array_pad(array(), 2, 0);    // Temporary variable
         $K = null;
 
         if (null == $pInfo ||
-                null == $pbszUserKey ||
-                null == $pbszIV)
+            null == $pbszUserKey ||
+            null == $pbszIV)
             return 0;
 
 
         $K = &$pInfo->seed_key->key_data;  // Pointer of round keys
-
-
 
 
         $pInfo->encrypt = $enc;
@@ -628,14 +496,83 @@ class KISA_SEED_CBC {
         $T[0] = (($ABCD[KISA_SEED_CBC::$ABCD_A] & 0xFFFFFFFF) + ($ABCD[KISA_SEED_CBC::$ABCD_C] & 0xFFFFFFFF) - KISA_SEED_CBC::$KC15) & 0x0ffffffff;
         $T[1] = (($ABCD[KISA_SEED_CBC::$ABCD_B] & 0xFFFFFFFF) - ($ABCD[KISA_SEED_CBC::$ABCD_D] & 0xFFFFFFFF) + KISA_SEED_CBC::$KC15) & 0x0ffffffff;
         $K[30] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^ // K_16,0
-                KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
+            KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
         $K[31] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^ // K_16,1
-                KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
+            KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
 
         return 1;
     }
 
-    static function SEED_CBC_Process(&$pInfo, &$in, $inLen, &$out, &$outLen) {
+    static function EndianChange($dwS)
+    {
+        return ((((($dwS) << (8)) | ((($dwS) >> (32 - (8))) & 0x000000ff)) & 0x00ff00ff) | (((($dwS) << (24)) | ((($dwS) >> (32 - (24))) & 0x00ffffff)) & 0xff00ff00));
+    }
+
+    static function RoundKeyUpdate0(&$T, &$K, $K_offset, &$ABCD, $KC)
+    {
+
+        $T[0] = (($ABCD[KISA_SEED_CBC::$ABCD_A] & 0x0ffffffff) + ($ABCD[KISA_SEED_CBC::$ABCD_C] & 0x0ffffffff) - ($KC & 0x0ffffffff)) & 0x0ffffffff;
+        $T[1] = (($ABCD[KISA_SEED_CBC::$ABCD_B] & 0x0ffffffff) + ($KC & 0x0ffffffff) - ($ABCD[KISA_SEED_CBC::$ABCD_D] & 0x0ffffffff)) & 0x0ffffffff;
+        $K[$K_offset + 0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
+        $K[$K_offset + 1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
+        $T[0] = $ABCD[KISA_SEED_CBC::$ABCD_A];
+        $ABCD[KISA_SEED_CBC::$ABCD_A] = (($ABCD[KISA_SEED_CBC::$ABCD_A] >> 8) & 0x00ffffff) ^ ($ABCD[KISA_SEED_CBC::$ABCD_B] << 24);
+        $ABCD[KISA_SEED_CBC::$ABCD_B] = (($ABCD[KISA_SEED_CBC::$ABCD_B] >> 8) & 0x00ffffff) ^ ($T[0] << 24);
+    }
+
+    static function GetB0($A)
+    {
+        return 0x000000ff & $A;
+    }
+
+    static function GetB1($A)
+    {
+        return 0x000000ff & ($A >> 8);
+    }
+
+    static function GetB2($A)
+    {
+        return 0x000000ff & ($A >> 16);
+    }
+
+    // 0xFFFFFFFF 를 & 연산 시키는 이유: 64bit OS에 설치된 PHP의 정수형 데이터 타입의 크기 차이로 인한 오버플로우 처리 오류 
+
+    static function GetB3($A)
+    {
+        return 0x000000ff & ($A >> 24);
+    }
+
+    static function RoundKeyUpdate1(&$T, &$K, $K_offset, &$ABCD, $KC)
+    {
+        $T[0] = (($ABCD[KISA_SEED_CBC::$ABCD_A] & 0xFFFFFFFF) + ($ABCD[KISA_SEED_CBC::$ABCD_C] & 0xFFFFFFFF) - ($KC & 0xFFFFFFFF)) & 0x0ffffffff;
+        $T[1] = (($ABCD[KISA_SEED_CBC::$ABCD_B] & 0xFFFFFFFF) + ($KC & 0xFFFFFFFF) - ($ABCD[KISA_SEED_CBC::$ABCD_D] & 0xFFFFFFFF)) & 0x0ffffffff;
+        $K[$K_offset + 0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
+        $K[$K_offset + 1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
+        $T[0] = $ABCD[KISA_SEED_CBC::$ABCD_C];
+        $ABCD[KISA_SEED_CBC::$ABCD_C] = (($ABCD[KISA_SEED_CBC::$ABCD_C] << 8) & 0xFFFFFFFF) ^ (($ABCD[KISA_SEED_CBC::$ABCD_D] >> 24) & 0x000000ff);
+        $ABCD[KISA_SEED_CBC::$ABCD_D] = (($ABCD[KISA_SEED_CBC::$ABCD_D] << 8) & 0xFFFFFFFF) ^ (($T[0] >> 24) & 0x000000ff);
+    }
+
+    static function chartoint32_for_SEED_CBC(&$in, $inLen)
+    {
+        $data = null;
+        $len = 0;
+        $i = 0;
+
+        if ($inLen % 4 > 0)
+            $len = (0x0ff & ((int)($inLen / 4))) + 1;
+        else
+            $len = (0x0ff & ((int)($inLen / 4)));
+
+        $data = array_pad(array(), $len, 0);
+        for ($i = 0; $i < $len; $i++) {
+            Common::byte_to_int($data, $i, $in, $i * 4);
+        }
+        return $data;
+    }
+
+    static function SEED_CBC_Process(&$pInfo, &$in, $inLen, &$out, &$outLen)
+    {
 
         $nCurrentCount = KISA_SEED_CBC::BLOCK_SIZE_SEED;
         $pdwXOR = null;
@@ -644,9 +581,9 @@ class KISA_SEED_CBC {
         $pdwXOR_offset = 0;
 
         if (null == $pInfo ||
-                null == $in ||
-                null == $out ||
-                0 > $inLen)
+            null == $in ||
+            null == $out ||
+            0 > $inLen)
             return 0;
 
         if (KISA_ENC_DEC::KISA_ENCRYPT == $pInfo->encrypt) {
@@ -695,7 +632,133 @@ class KISA_SEED_CBC {
         return 1;
     }
 
-    static function SEED_CBC_Close(&$pInfo, &$out, $out_offset, &$outLen) {
+    static function BLOCK_XOR_CBC(&$OUT_VALUE, $OUT_VALUE_offset, &$IN_VALUE1, $IN_VALUE1_offset, &$IN_VALUE2, $IN_VALUE2_offset)
+    {
+        $OUT_VALUE[$OUT_VALUE_offset + 0] = ($IN_VALUE1_offset < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 0] : 0) ^ ($IN_VALUE2_offset < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 0] : 0);
+        $OUT_VALUE[$OUT_VALUE_offset + 1] = ($IN_VALUE1_offset + 1 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 1] : 0) ^ ($IN_VALUE2_offset + 1 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 1] : 0);
+        $OUT_VALUE[$OUT_VALUE_offset + 2] = ($IN_VALUE1_offset + 2 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 2] : 0) ^ ($IN_VALUE2_offset + 2 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 2] : 0);
+        $OUT_VALUE[$OUT_VALUE_offset + 3] = ($IN_VALUE1_offset + 3 < count($IN_VALUE1) ? $IN_VALUE1[$IN_VALUE1_offset + 3] : 0) ^ ($IN_VALUE2_offset + 3 < count($IN_VALUE2) ? $IN_VALUE2[$IN_VALUE2_offset + 3] : 0);
+    }
+
+    static function KISA_SEED_Encrypt_Block_forCBC(&$in, $in_offset, &$out, $out_offset, &$ks)
+    {
+
+        $LR = array_pad(array(), 4, 0);  // Iuput/output values at each rounds
+        $T = array_pad(array(), 2, 0);  // Temporary variables for round function F
+        $K = &$ks->key_data;     // Pointer of round keys
+
+        $LR[LR_L0] = $in[$in_offset + 0];
+        $LR[LR_L1] = $in[$in_offset + 1];
+        $LR[LR_R0] = $in[$in_offset + 2];
+        $LR[LR_R1] = $in[$in_offset + 3];
+
+        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
+            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
+            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
+            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
+            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
+        }
+
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 0);    // Round 1
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 2);    // Round 2
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 4);    // Round 3
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 6);    // Round 4
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 8);    // Round 5
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 10);    // Round 6
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 12);    // Round 7
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 14);    // Round 8
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 16);    // Round 9
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 18);    // Round 10
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 20);    // Round 11
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 22);    // Round 12
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 24);    // Round 13
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 26);    // Round 14
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 28);    // Round 15
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 30);    // Round 16
+
+        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
+            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
+            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
+            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
+            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
+        }
+
+        $out[$out_offset + 0] = $LR[LR_R0];
+        $out[$out_offset + 1] = $LR[LR_R1];
+        $out[$out_offset + 2] = $LR[LR_L0];
+        $out[$out_offset + 3] = $LR[LR_L1];
+    }
+
+    // 0xFFFFFFFF 를 & 연산 시키는 이유: 64bit OS에 설치된 PHP의 정수형 데이터 타입의 크기 차이로 인한 오버플로우 처리 오류 
+
+    static function SeedRound(&$T, &$LR, $L0, $L1, $R0, $R1, &$K, $K_offset)
+    {
+        $T[0] = $LR[$R0] ^ $K[$K_offset + 0];
+        $T[1] = $LR[$R1] ^ $K[$K_offset + 1];
+        $T[1] ^= $T[0];
+        $T[1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^
+            KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
+        $T[0] = ($T[0] + $T[1]) & 0x0ffffffff;
+        $T[0] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[0]) & 0x0ff] ^
+            KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[0]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[0]) & 0x0ff];
+        $T[1] = ($T[1] + $T[0]) & 0x0ffffffff;
+        $T[1] = KISA_SEED_CBC::$SS0[KISA_SEED_CBC::GetB0($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS1[KISA_SEED_CBC::GetB1($T[1]) & 0x0ff] ^
+            KISA_SEED_CBC::$SS2[KISA_SEED_CBC::GetB2($T[1]) & 0x0ff] ^ KISA_SEED_CBC::$SS3[KISA_SEED_CBC::GetB3($T[1]) & 0x0ff];
+        $T[0] = ($T[0] + $T[1]) & 0x0ffffffff;
+        $LR[$L0] ^= $T[0];
+        $LR[$L1] ^= $T[1];
+    }
+
+    static function KISA_SEED_Decrypt_Block_forCBC(&$in, $in_offset, &$out, $out_offset, &$ks)
+    {
+        $LR = array_pad(array(), 4, 0);  // Iuput/output values at each rounds
+        $T = array_pad(array(), 2, 0);  // Temporary variables for round function F
+        $K = &$ks->key_data;    // Pointer of round keys
+
+        $LR[LR_L0] = $in[$in_offset + 0];
+        $LR[LR_L1] = $in[$in_offset + 1];
+        $LR[LR_R0] = $in[$in_offset + 2];
+        $LR[LR_R1] = $in[$in_offset + 3];
+
+        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
+            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
+            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
+            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
+            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
+        }
+
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 30);    // Round 1
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 28);    // Round 2
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 26);    // Round 3
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 24);    // Round 4
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 22);    // Round 5
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 20);    // Round 6
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 18);    // Round 7
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 16);    // Round 8
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 14);    // Round 9
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 12);    // Round 10
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 10);    // Round 11
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 8);    // Round 12
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 6);    // Round 13
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 4);    // Round 14
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_L0, LR_L1, LR_R0, LR_R1, $K, 2);    // Round 15
+        KISA_SEED_CBC::SeedRound($T, $LR, LR_R0, LR_R1, LR_L0, LR_L1, $K, 0);    // Round 16
+
+        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
+            $LR[LR_L0] = KISA_SEED_CBC::EndianChange($LR[LR_L0]);
+            $LR[LR_L1] = KISA_SEED_CBC::EndianChange($LR[LR_L1]);
+            $LR[LR_R0] = KISA_SEED_CBC::EndianChange($LR[LR_R0]);
+            $LR[LR_R1] = KISA_SEED_CBC::EndianChange($LR[LR_R1]);
+        }
+
+        $out[$out_offset + 0] = $LR[LR_R0];
+        $out[$out_offset + 1] = $LR[LR_R1];
+        $out[$out_offset + 2] = $LR[LR_L0];
+        $out[$out_offset + 3] = $LR[LR_L1];
+    }
+
+    static function SEED_CBC_Close(&$pInfo, &$out, $out_offset, &$outLen)
+    {
         $nPaddngLeng = null;
         $i = null;
         $outLen = 0;
@@ -727,50 +790,27 @@ class KISA_SEED_CBC {
         return 1;
     }
 
-    static function SEED_CBC_Encrypt(&$pbszUserKey, &$pbszIV, &$message, $message_offset, $message_length) {
-        $info = new KISA_SEED_INFO();
-        $outbuf = null;
+    static function int32tochar_for_SEED_CBC(&$in, $inLen)
+    {
         $data = null;
-        $cdata = null;
-        $outlen = 0;
-        $nRetOutLeng = 0;
-        $nPaddingLeng = 0;
+        $i = 0;
 
-        $pbszPlainText = array_pad(array(), $message_length, 0);
-        Common::arraycopy_system($message, $message_offset, $pbszPlainText, 0, $message_length);
-        $nPlainTextLen = count($pbszPlainText);
+        $data = array_pad(array(), $inLen, 0);
+        if (_KISA_COMMON_IS_LITTLE_ENDIAN == false) {
+            for ($i = 0; $i < $inLen; $i++) {
+                $data[$i] = 0x0ff & ($in[(int)($i / 4)] >> (($i % 4) * 8));
+            }
+        } else {
+            for ($i = 0; $i < $inLen; $i++) {
+                $data[$i] = 0x0ff & ($in[(int)($i / 4)] >> ((3 - ($i % 4)) * 8));
+            }
+        }
 
-
-        $nPlainTextPadding = (KISA_SEED_CBC::BLOCK_SIZE_SEED - ($nPlainTextLen % KISA_SEED_CBC::BLOCK_SIZE_SEED));
-        $newpbszPlainText = array_pad(array(), $nPlainTextLen + $nPlainTextPadding, 0);
-        Common::arraycopy($newpbszPlainText, $pbszPlainText, $nPlainTextLen);
-
-        $pbszCipherText = array_pad(array(), count($newpbszPlainText), 0);
-
-        KISA_SEED_CBC::SEED_CBC_init($info, KISA_ENC_DEC::KISA_ENCRYPT, $pbszUserKey, $pbszIV);
-
-        $outlen = ( ((int) ($nPlainTextLen / 16)) + 1 ) * 4;
-
-
-        $outbuf = array_pad(array(), $outlen, 0);
-
-        $data = KISA_SEED_CBC::chartoint32_for_SEED_CBC($newpbszPlainText, $nPlainTextLen);
-        KISA_SEED_CBC::SEED_CBC_Process($info, $data, $nPlainTextLen, $outbuf, $nRetOutLeng);
-
-        KISA_SEED_CBC::SEED_CBC_Close($info, $outbuf, $nRetOutLeng, $nPaddingLeng);
-
-
-        $cdata = KISA_SEED_CBC::int32tochar_for_SEED_CBC($outbuf, $nRetOutLeng + $nPaddingLeng);
-        Common::arraycopy($pbszCipherText, $cdata, $nRetOutLeng + $nPaddingLeng);
-
-        $data = null;
-        $cdata = null;
-        $outbuf = null;
-
-        return $pbszCipherText;
+        return $data;
     }
 
-    static function SEED_CBC_Decrypt(&$pbszUserKey, &$pbszIV, &$message, $message_offset, $message_length) {
+    static function SEED_CBC_Decrypt(&$pbszUserKey, &$pbszIV, &$message, $message_offset, $message_length)
+    {
 
         $info = new KISA_SEED_INFO();
         $outbuf = null;

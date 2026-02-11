@@ -30,14 +30,14 @@ class PHPExcel_Calculation_Token_Stack
     /**
      *  The parser stack for formulae
      *
-     *  @var mixed[]
+     * @var mixed[]
      */
     private $stack = array();
 
     /**
      *  Count of entries in the parser stack
      *
-     *  @var integer
+     * @var integer
      */
     private $count = 0;
 
@@ -54,15 +54,15 @@ class PHPExcel_Calculation_Token_Stack
     /**
      * Push a new entry onto the stack
      *
-     * @param  mixed  $type
-     * @param  mixed  $value
-     * @param  mixed  $reference
+     * @param mixed $type
+     * @param mixed $value
+     * @param mixed $reference
      */
     public function push($type, $value, $reference = null)
     {
         $this->stack[$this->count++] = array(
-            'type'      => $type,
-            'value'     => $value,
+            'type' => $type,
+            'value' => $value,
             'reference' => $reference
         );
         if ($type == 'Function') {
@@ -89,7 +89,7 @@ class PHPExcel_Calculation_Token_Stack
     /**
      * Return an entry from the stack without removing it
      *
-     * @param   integer  $n  number indicating how far back in the stack we want to look
+     * @param integer $n number indicating how far back in the stack we want to look
      * @return  mixed
      */
     public function last($n = 1)

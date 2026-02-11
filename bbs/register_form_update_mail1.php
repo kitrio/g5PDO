@@ -6,8 +6,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<title>회원가입 축하 메일</title>
+    <meta charset="utf-8">
+    <title>회원가입 축하 메일</title>
 </head>
 
 <body>
@@ -28,9 +28,11 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
         </p>
 
         <?php if ($config['cf_use_email_certify']) { ?>
-        <a href="<?php echo $certify_href ?>" target="_blank" style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">메일인증</a>
+            <a href="<?php echo $certify_href ?>" target="_blank"
+               style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">메일인증</a>
         <?php } else { ?>
-        <a href="<?php echo G5_URL ?>" target="_blank" style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">사이트바로가기</a>
+            <a href="<?php echo G5_URL ?>" target="_blank"
+               style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">사이트바로가기</a>
         <?php } ?>
     </div>
 </div>

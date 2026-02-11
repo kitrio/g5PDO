@@ -30,7 +30,7 @@ require_once './admin.tail.php';
 flush();
 ob_flush();
 
-$ma_id = isset($_POST['ma_id']) ? (int) $_POST['ma_id'] : 0;
+$ma_id = isset($_POST['ma_id']) ? (int)$_POST['ma_id'] : 0;
 $select_member_list = isset($_POST['ma_list']) ? trim($_POST['ma_list']) : '';
 
 //print_r2($_POST); EXIT;
@@ -81,6 +81,6 @@ for ($i = 0; $i < count($member_list); $i++) {
 }
 ?>
 <script>
-    document.all.cont.innerHTML += "<br><br>총 <?php echo number_format($cnt) ?>건 발송<br><br><font color=crimson><b>[끝]</b></font>";
-    document.body.scrollTop += 1000;
+  document.all.cont.innerHTML += "<br><br>총 <?php echo number_format($cnt) ?>건 발송<br><br><font color=crimson><b>[끝]</b></font>";
+  document.body.scrollTop += 1000;
 </script>

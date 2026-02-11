@@ -9,4 +9,4 @@ $token = _token();
 
 set_session($ss_name, $token);
 
-die(json_encode(array('token'=>$token)));
+die(json_encode(array('token' => $token)));

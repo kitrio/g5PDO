@@ -123,18 +123,18 @@ abstract class PHPExcel_Chart_Properties
         return $angle * 60000;
     }
 
-    protected function getTrueAlpha($alpha)
-    {
-        return (string) 100 - $alpha . '000';
-    }
-
     protected function setColorProperties($color, $alpha, $type)
     {
         return array(
-            'type' => (string) $type,
-            'value' => (string) $color,
-            'alpha' => (string) $this->getTrueAlpha($alpha)
+            'type' => (string)$type,
+            'value' => (string)$color,
+            'alpha' => (string)$this->getTrueAlpha($alpha)
         );
+    }
+
+    protected function getTrueAlpha($alpha)
+    {
+        return (string)100 - $alpha . '000';
     }
 
     protected function getLineStyleArrowSize($array_selector, $array_kay_selector)
@@ -195,7 +195,7 @@ abstract class PHPExcel_Chart_Properties
                     'sx' => '102000',
                     'sy' => '102000'
                 )
-                ,
+            ,
                 'blur' => '63500',
                 'distance' => '38100',
                 'algn' => 'ctr',
@@ -349,12 +349,12 @@ abstract class PHPExcel_Chart_Properties
 
     protected function getArrayElementsValue($properties, $elements)
     {
-        $reference = & $properties;
+        $reference = &$properties;
         if (!is_array($elements)) {
             return $reference[$elements];
         } else {
             foreach ($elements as $keys) {
-                $reference = & $reference[$keys];
+                $reference = &$reference[$keys];
             }
             return $reference;
         }

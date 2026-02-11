@@ -2,17 +2,17 @@
 // 코멘트 삭제
 include_once('./_common.php');
 
-$comment_id = isset($_REQUEST['comment_id']) ? (int) $_REQUEST['comment_id'] : 0;
+$comment_id = isset($_REQUEST['comment_id']) ? (int)$_REQUEST['comment_id'] : 0;
 $token = isset($_REQUEST['token']) ? clean_xss_tags($_REQUEST['token']) : 0;
 
-$delete_comment_token = get_session('ss_delete_comment_'.$comment_id.'_token');
-set_session('ss_delete_comment_'.$comment_id.'_token', '');
+$delete_comment_token = get_session('ss_delete_comment_' . $comment_id . '_token');
+set_session('ss_delete_comment_' . $comment_id . '_token', '');
 
 if (!($token && $delete_comment_token == $token))
     alert('토큰 에러로 삭제 불가합니다.');
 
 // 4.1
-@include_once($board_skin_path.'/delete_comment.head.skin.php');
+@include_once($board_skin_path . '/delete_comment.head.skin.php');
 
 $write = sql_fetch(" select * from {$write_table} where wr_id = '{$comment_id}' ");
 
@@ -82,11 +82,11 @@ sql_query(" update {$g5['board_table']} set bo_count_comment = bo_count_comment 
 sql_query(" delete from {$g5['board_new_table']} where bo_table = '{$bo_table}' and wr_id = '{$comment_id}' ");
 
 // 사용자 코드 실행
-@include_once($board_skin_path.'/delete_comment.skin.php');
-@include_once($board_skin_path.'/delete_comment.tail.skin.php');
+@include_once($board_skin_path . '/delete_comment.skin.php');
+@include_once($board_skin_path . '/delete_comment.tail.skin.php');
 
 delete_cache_latest($bo_table);
 
 run_event('bbs_delete_comment', $comment_id, $board);
 
-goto_url(short_url_clean(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$write['wr_parent'].'&amp;page='.$page. $qstr));
+goto_url(short_url_clean(G5_HTTP_BBS_URL . '/board.php?bo_table=' . $bo_table . '&amp;wr_id=' . $write['wr_parent'] . '&amp;page=' . $page . $qstr));

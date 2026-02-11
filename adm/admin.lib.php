@@ -359,7 +359,7 @@ function help($help = "")
 {
     global $g5;
 
-    $str  = '<span class="frm_info">' . str_replace("\n", "<br>", $help) . '</span>';
+    $str = '<span class="frm_info">' . str_replace("\n", "<br>", $help) . '</span>';
 
     return $str;
 }
@@ -421,14 +421,15 @@ function get_sanitize_input($s, $is_html = false)
     return $s;
 }
 
-function domain_mail_host($is_at=true){
+function domain_mail_host($is_at = true)
+{
     list($domain_host,) = explode(':', $_SERVER['HTTP_HOST']);
 
     if ('www.' === substr($domain_host, 0, 4)) {
         $domain_host = substr($domain_host, 4);
     }
 
-    return $is_at ? '@'.$domain_host : $domain_host;
+    return $is_at ? '@' . $domain_host : $domain_host;
 }
 
 function check_log_folder($log_path, $is_delete = true)
@@ -491,13 +492,14 @@ function check_admin_token()
     return true;
 }
 
-function admin_csrf_token_key($is_must=0){
+function admin_csrf_token_key($is_must = 0)
+{
     global $member;
 
     $key = '';
 
-    if($is_must || !((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'))){
-        $key = md5((isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '').(defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '').$member['mb_id'].$_SERVER['DOCUMENT_ROOT']);
+    if ($is_must || !((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'))) {
+        $key = md5((isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') . (defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '') . $member['mb_id'] . $_SERVER['DOCUMENT_ROOT']);
     }
 
     return run_replace('admin_csrf_token_key', $key, $is_must);
@@ -555,7 +557,7 @@ function admin_check_xss_params($params)
         if (is_array($value)) {
             admin_check_xss_params($value);
         } else if (
-            (preg_match('/<\s?[^\>]*\/?\s?>/i', $value) && (preg_match('/script.*?\/script/ius', $value) || preg_match('/on[a-z]+=*/ius', $value))) || preg_match('/^(?=.*token\()(?=.*xmlhttprequest\()(?=.*send\().*$/im', $value) || 
+            (preg_match('/<\s?[^\>]*\/?\s?>/i', $value) && (preg_match('/script.*?\/script/ius', $value) || preg_match('/on[a-z]+=*/ius', $value))) || preg_match('/^(?=.*token\()(?=.*xmlhttprequest\()(?=.*send\().*$/im', $value) ||
             (preg_match('/(on[a-z]+|focus)=.*/ius', $value) && preg_match('/(eval|atob|fetch|expression|exec|prompt)(\s*)\((.*)\)/ius', $value))) {
             alert('요청 쿼리에 잘못된 스크립트문장이 있습니다.\\nXSS 공격일수도 있습니다.', G5_URL);
             die();

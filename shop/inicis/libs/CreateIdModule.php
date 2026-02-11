@@ -1,8 +1,10 @@
 <?php
 
-class CreateIdModule {
+class CreateIdModule
+{
 
-    function makeTid($payMetod, $mid, $mobileType) {
+    function makeTid($payMetod, $mid, $mobileType)
+    {
         date_default_timezone_set('Asia/Seoul');
         $date = new DateTime();
 
@@ -19,7 +21,7 @@ class CreateIdModule {
         list($usec, $sec) = explode(" ", microtime());
         $time = date("YmdHis", $sec) . intval(round($usec * 1000));
         if (strlen($time) == 17) {
-            
+
         } elseif (strlen($time) == 16) {
             $time = $time . "0";
         } else {
@@ -33,7 +35,8 @@ class CreateIdModule {
         return $tid;
     }
 
-    function getPGID($payMethod) {
+    function getPGID($payMethod)
+    {
         $pgid = "";
 
         if ($payMethod == "Card") {
@@ -81,7 +84,8 @@ class CreateIdModule {
     }
 
     //랜덤 숫자 생성
-    function makeRandNum() {
+    function makeRandNum()
+    {
         $strNum = "";
         $randNum = rand(0, 300);
 

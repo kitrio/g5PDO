@@ -28,9 +28,9 @@ $fluctuation_amplitude = 5; // 파동&진폭 원래대로 151029 15:00
 
 #noise
 //$white_noise_density=0; // no white noise
-$white_noise_density=1/6;
+$white_noise_density = 1 / 6;
 //$black_noise_density=0; // no black noise
-$black_noise_density=1/20;
+$black_noise_density = 1 / 20;
 
 # increase safety by prevention of spaces between symbols
 $no_spaces = false;

@@ -12,18 +12,17 @@ else
 
 check_admin_token();
 
-$fm_id = isset($_REQUEST['fm_id']) ? (int) $_REQUEST['fm_id'] : 0;
-$fa_id = isset($_REQUEST['fa_id']) ? (int) $_REQUEST['fa_id'] : 0;
+$fm_id = isset($_REQUEST['fm_id']) ? (int)$_REQUEST['fm_id'] : 0;
+$fa_id = isset($_REQUEST['fa_id']) ? (int)$_REQUEST['fa_id'] : 0;
 $fa_subject = isset($_POST['fa_subject']) ? $_POST['fa_subject'] : '';
 $fa_content = isset($_POST['fa_content']) ? $_POST['fa_content'] : '';
-$fa_order = isset($_POST['fa_order']) ? (int) $_POST['fa_order'] : 0;
+$fa_order = isset($_POST['fa_order']) ? (int)$_POST['fa_order'] : 0;
 
 $sql_common = " fa_subject = '$fa_subject',
                 fa_content = '$fa_content',
                 fa_order = '$fa_order' ";
 
-if ($w == "")
-{
+if ($w == "") {
     $sql = " insert {$g5['faq_table']}
                 set fm_id ='$fm_id',
                     $sql_common ";
@@ -31,19 +30,15 @@ if ($w == "")
 
     $fa_id = sql_insert_id();
     run_event('admin_faq_item_created', $fa_id, $fm_id);
-}
-else if ($w == "u")
-{
+} else if ($w == "u") {
     $sql = " update {$g5['faq_table']}
                 set $sql_common
               where fa_id = '$fa_id' ";
     sql_query($sql);
     run_event('admin_faq_item_updated', $fa_id, $fm_id);
 
-}
-else if ($w == "d")
-{
-	$sql = " delete from {$g5['faq_table']} where fa_id = '$fa_id' ";
+} else if ($w == "d") {
+    $sql = " delete from {$g5['faq_table']} where fa_id = '$fa_id' ";
     sql_query($sql);
     run_event('admin_faq_item_deleted', $fa_id, $fm_id);
 }

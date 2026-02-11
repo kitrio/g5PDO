@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax21="http://payment.domain.webpay.service.kcp.kr/xsd" xmlns:ns="http://webservice.act.webpay.service.kcp.kr" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ax22="http://domain.webpay.service.kcp.kr/xsd" targetNamespace="http://webservice.act.webpay.service.kcp.kr">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:ax21="http://payment.domain.webpay.service.kcp.kr/xsd"
+                  xmlns:ns="http://webservice.act.webpay.service.kcp.kr" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:ax22="http://domain.webpay.service.kcp.kr/xsd"
+                  targetNamespace="http://webservice.act.webpay.service.kcp.kr">
     <wsdl:types>
-        <xs:schema xmlns:ax23="http://domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://payment.domain.webpay.service.kcp.kr/xsd">
+        <xs:schema xmlns:ax23="http://domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="qualified" targetNamespace="http://payment.domain.webpay.service.kcp.kr/xsd">
             <xs:import namespace="http://domain.webpay.service.kcp.kr/xsd"/>
             <xs:complexType name="ApproveReq">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="accessCredentialType" nillable="true" type="ax22:AccessCredentialType"/>
+                    <xs:element minOccurs="0" name="accessCredentialType" nillable="true"
+                                type="ax22:AccessCredentialType"/>
                     <xs:element minOccurs="0" name="baseRequestType" nillable="true" type="ax22:BaseRequestType"/>
                     <xs:element minOccurs="0" name="escrow" type="xs:boolean"/>
                     <xs:element minOccurs="0" name="orderID" nillable="true" type="xs:string"/>
@@ -24,7 +34,8 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax24="http://payment.domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://webservice.act.webpay.service.kcp.kr">
+        <xs:schema xmlns:ax24="http://payment.domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="qualified" targetNamespace="http://webservice.act.webpay.service.kcp.kr">
             <xs:import namespace="http://payment.domain.webpay.service.kcp.kr/xsd"/>
             <xs:element name="approve">
                 <xs:complexType>
@@ -41,7 +52,8 @@
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://domain.webpay.service.kcp.kr/xsd">
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+                   targetNamespace="http://domain.webpay.service.kcp.kr/xsd">
             <xs:complexType name="AccessCredentialType">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="accessLicense" nillable="true" type="xs:string"/>
@@ -68,7 +80,8 @@
                     <xs:element minOccurs="0" name="responseType" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="timestamp" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="version" nillable="true" type="xs:string"/>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="warningList" nillable="true" type="ax22:ErrorType"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="warningList" nillable="true"
+                                type="ax22:ErrorType"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="ErrorType">

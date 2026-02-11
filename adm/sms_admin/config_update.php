@@ -20,7 +20,7 @@ $cf_icode_server_port = isset($_REQUEST['cf_icode_server_port']) ? clean_xss_tag
 $cf_icode_token_key = isset($_REQUEST['cf_icode_token_key']) ? clean_xss_tags($_REQUEST['cf_icode_token_key'], 1, 1) : '';
 
 // 회신번호 체크
-if(!check_vaild_callback($cf_phone))
+if (!check_vaild_callback($cf_phone))
     alert('회신번호가 올바르지 않습니다.');
 
 $userinfo = get_icode_userinfo($cf_icode_id, $cf_icode_pw);
@@ -29,14 +29,14 @@ $cf_icode_server_port = isset($cf_icode_server_port) ? preg_replace('/[^0-9]/', 
 if ($userinfo['code'] == '202')
     alert('아이코드 아이디와 패스워드가 맞지 않습니다.');
 
-$res = sql_fetch("select * from ".$g5['sms5_config_table']." limit 1");
+$res = sql_fetch("select * from " . $g5['sms5_config_table'] . " limit 1");
 
 if (!$res)
     $sql = "insert into ";
 else
     $sql = "update ";
 
-$sql .= $g5['sms5_config_table']." set cf_phone='$cf_phone' ";
+$sql .= $g5['sms5_config_table'] . " set cf_phone='$cf_phone' ";
 
 sql_query($sql);
 

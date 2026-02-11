@@ -7,7 +7,7 @@ $g5_debug['php']['begin_time'] = $begin_time = get_microtime();
 
 $files = glob(G5_ADMIN_PATH . '/css/admin_extend_*');
 if (is_array($files)) {
-    foreach ((array) $files as $k => $css_file) {
+    foreach ((array)$files as $k => $css_file) {
 
         $fileinfo = pathinfo($css_file);
         $ext = $fileinfo['extension'];
@@ -74,9 +74,9 @@ function print_menu2($key, $no = '')
 }
 
 $adm_menu_cookie = array(
-    'container' => '',
-    'gnb'       => '',
-    'btn_gnb'   => '',
+        'container' => '',
+        'gnb' => '',
+        'btn_gnb' => '',
 );
 
 if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
@@ -87,26 +87,26 @@ if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
 ?>
 
 <script>
-    var g5_admin_csrf_token_key = "<?php echo (function_exists('admin_csrf_token_key')) ? admin_csrf_token_key() : ''; ?>";
-    var tempX = 0;
-    var tempY = 0;
+  var g5_admin_csrf_token_key = "<?php echo (function_exists('admin_csrf_token_key')) ? admin_csrf_token_key() : ''; ?>";
+  var tempX = 0;
+  var tempY = 0;
 
-    function imageview(id, w, h) {
+  function imageview(id, w, h) {
 
-        menu(id);
+    menu(id);
 
-        var el_id = document.getElementById(id);
+    var el_id = document.getElementById(id);
 
-        //submenu = eval(name+".style");
-        submenu = el_id.style;
-        submenu.left = tempX - (w + 11);
-        submenu.top = tempY - (h / 2);
+    //submenu = eval(name+".style");
+    submenu = el_id.style;
+    submenu.left = tempX - (w + 11);
+    submenu.top = tempY - (h / 2);
 
-        selectBoxVisible();
+    selectBoxVisible();
 
-        if (el_id.style.display != 'none')
-            selectBoxHidden(id);
-    }
+    if (el_id.style.display != 'none')
+      selectBoxHidden(id);
+  }
 </script>
 
 <div id="to_content"><a href="#container">본문 바로가기</a></div>
@@ -115,18 +115,25 @@ if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
     <h1><?php echo $config['cf_title'] ?></h1>
     <div id="hd_top">
         <button type="button" id="btn_gnb" class="btn_gnb_close <?php echo $adm_menu_cookie['btn_gnb']; ?>">메뉴</button>
-        <div id="logo"><a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>"><img src="<?php echo G5_ADMIN_URL ?>/img/logo.png" alt="<?php echo get_text($config['cf_title']); ?> 관리자"></a></div>
+        <div id="logo"><a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>"><img
+                        src="<?php echo G5_ADMIN_URL ?>/img/logo.png"
+                        alt="<?php echo get_text($config['cf_title']); ?> 관리자"></a></div>
 
         <div id="tnb">
             <ul>
                 <?php if (defined('G5_USE_SHOP') && G5_USE_SHOP) { ?>
-                    <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
+                    <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank"
+                                          title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
                 <?php } ?>
-                <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" target="_blank" title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>
+                <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" target="_blank"
+                                      title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>
                 <li class="tnb_li"><a href="<?php echo G5_ADMIN_URL ?>/service.php" class="tnb_service">부가서비스</a></li>
-                <li class="tnb_li"><button type="button" class="tnb_mb_btn">관리자<span class="./img/btn_gnb.png">메뉴열기</span></button>
+                <li class="tnb_li">
+                    <button type="button" class="tnb_mb_btn">관리자<span class="./img/btn_gnb.png">메뉴열기</span></button>
                     <ul class="tnb_mb_area">
-                        <li><a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $member['mb_id'] ?>">관리자정보</a></li>
+                        <li>
+                            <a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $member['mb_id'] ?>">관리자정보</a>
+                        </li>
                         <li id="tnb_logout"><a href="<?php echo G5_BBS_URL ?>/logout.php">로그아웃</a></li>
                     </ul>
                 </li>
@@ -154,9 +161,10 @@ if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
                 }
 
                 $button_title = $menu['menu' . $key][0][1];
-            ?>
+                ?>
                 <li class="gnb_li<?php echo $current_class; ?>">
-                    <button type="button" class="btn_op menu-<?php echo $key; ?> menu-order-<?php echo $jj; ?>" title="<?php echo $button_title; ?>"><?php echo $button_title; ?></button>
+                    <button type="button" class="btn_op menu-<?php echo $key; ?> menu-order-<?php echo $jj; ?>"
+                            title="<?php echo $button_title; ?>"><?php echo $button_title; ?></button>
                     <div class="gnb_oparea_wr">
                         <div class="gnb_oparea">
                             <h3><?php echo $menu['menu' . $key][0][1]; ?></h3>
@@ -164,7 +172,7 @@ if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
                         </div>
                     </div>
                 </li>
-            <?php
+                <?php
                 $jj++;
             }     //end foreach
             ?>
@@ -173,37 +181,38 @@ if (!empty($_COOKIE['g5_admin_btn_gnb'])) {
 
 </header>
 <script>
-    jQuery(function($) {
+  jQuery(function ($) {
 
-        var menu_cookie_key = 'g5_admin_btn_gnb';
+    var menu_cookie_key = 'g5_admin_btn_gnb';
 
-        $(".tnb_mb_btn").click(function() {
-            $(".tnb_mb_area").toggle();
-        });
+    $(".tnb_mb_btn").click(function () {
+      $(".tnb_mb_area").toggle();
+    });
 
-        $("#btn_gnb").click(function() {
+    $("#btn_gnb").click(function () {
 
-            var $this = $(this);
+      var $this = $(this);
 
-            try {
-                if (!$this.hasClass("btn_gnb_open")) {
-                    set_cookie(menu_cookie_key, 1, 60 * 60 * 24 * 365);
-                } else {
-                    delete_cookie(menu_cookie_key);
-                }
-            } catch (err) {}
+      try {
+        if (!$this.hasClass("btn_gnb_open")) {
+          set_cookie(menu_cookie_key, 1, 60 * 60 * 24 * 365);
+        } else {
+          delete_cookie(menu_cookie_key);
+        }
+      } catch (err) {
+      }
 
-            $("#container").toggleClass("container-small");
-            $("#gnb").toggleClass("gnb_small");
-            $this.toggleClass("btn_gnb_open");
-
-        });
-
-        $(".gnb_ul li .btn_op").click(function() {
-            $(this).parent().addClass("on").siblings().removeClass("on");
-        });
+      $("#container").toggleClass("container-small");
+      $("#gnb").toggleClass("gnb_small");
+      $this.toggleClass("btn_gnb_open");
 
     });
+
+    $(".gnb_ul li .btn_op").click(function () {
+      $(this).parent().addClass("on").siblings().removeClass("on");
+    });
+
+  });
 </script>
 
 

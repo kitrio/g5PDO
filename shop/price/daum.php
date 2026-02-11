@@ -2,7 +2,6 @@
 include_once('./_common.php');
 
 
-
 ob_start();
 
 header("Content-Type: text/html; charset=utf-8");
@@ -50,17 +49,16 @@ $gt = ">>>";
 $shop_url = G5_SHOP_URL;
 $data_url = G5_DATA_URL;
 
-$sql =" select * from {$g5['g5_shop_item_table']} where it_use = '1' and it_soldout = '0' order by ca_id";
+$sql = " select * from {$g5['g5_shop_item_table']} where it_use = '1' and it_soldout = '0' order by ca_id";
 $result = sql_query($sql);
 $totcnt = sql_num_rows($result);
 
-echo $lt.'tocnt'.$gt.$totcnt.PHP_EOL;
+echo $lt . 'tocnt' . $gt . $totcnt . PHP_EOL;
 
-for ($i=0; $row=sql_fetch_array($result); $i++)
-{
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
     $cate1 = $cate2 = $cate3 = $cate4 = "";
 
-    $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '".substr($row['ca_id'],0,2)."' ");
+    $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '" . substr($row['ca_id'], 0, 2) . "' ");
     $cate1 = $row2['ca_name'];
     $caid1 = $row2['ca_id'];
 
@@ -68,25 +66,25 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     $caid2 = $caid3 = $caid4 = "";
 
     if (strlen($row['ca_id']) >= 8) {
-        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '".substr($row['ca_id'],0,8)."' ");
+        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '" . substr($row['ca_id'], 0, 8) . "' ");
         $cate4 = $row2['ca_name'];
         $caid4 = $row2['ca_id'];
     }
 
     if (strlen($row['ca_id']) >= 6) {
-        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '".substr($row['ca_id'],0,6)."' ");
+        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '" . substr($row['ca_id'], 0, 6) . "' ");
         $cate3 = $row2['ca_name'];
         $caid3 = $row2['ca_id'];
     }
 
     if (strlen($row['ca_id']) >= 4) {
-        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '".substr($row['ca_id'],0,4)."' ");
+        $row2 = sql_fetch(" select ca_id, ca_name from {$g5['g5_shop_category_table']} where ca_id = '" . substr($row['ca_id'], 0, 4) . "' ");
         $cate2 = $row2['ca_name'];
         $caid2 = $row2['ca_id'];
     }
 
     $point = get_item_point($row);
-    if( $point ){
+    if ($point) {
         $point .= '원';
     }
 
@@ -96,48 +94,47 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     // 상품이미지
     $img_url = get_it_imageurl($row['it_id']);
 
-    $str = "{$lt}begin{$gt}".PHP_EOL;
-    $str .= "{$lt}mapid{$gt}{$row['it_id']}".PHP_EOL;
-    $str .= "{$lt}price{$gt}{$row['it_price']}".PHP_EOL;
-    $str .= "{$lt}pname{$gt}{$row['it_name']}".PHP_EOL;
-    $str .= "{$lt}pgurl{$gt}".shop_item_url($row['it_id']).PHP_EOL;
-    $str .= "{$lt}igurl{$gt}$img_url".PHP_EOL;
-    $str .= "{$lt}cate1{$gt}$cate1".PHP_EOL;
-    $str .= "{$lt}caid1{$gt}$caid1".PHP_EOL;
-    if( $cate2 ){
-        $str .= "{$lt}cate2{$gt}$cate2".PHP_EOL;
+    $str = "{$lt}begin{$gt}" . PHP_EOL;
+    $str .= "{$lt}mapid{$gt}{$row['it_id']}" . PHP_EOL;
+    $str .= "{$lt}price{$gt}{$row['it_price']}" . PHP_EOL;
+    $str .= "{$lt}pname{$gt}{$row['it_name']}" . PHP_EOL;
+    $str .= "{$lt}pgurl{$gt}" . shop_item_url($row['it_id']) . PHP_EOL;
+    $str .= "{$lt}igurl{$gt}$img_url" . PHP_EOL;
+    $str .= "{$lt}cate1{$gt}$cate1" . PHP_EOL;
+    $str .= "{$lt}caid1{$gt}$caid1" . PHP_EOL;
+    if ($cate2) {
+        $str .= "{$lt}cate2{$gt}$cate2" . PHP_EOL;
     }
-    if( $caid2 ){
-        $str .= "{$lt}caid2{$gt}$caid2".PHP_EOL;
+    if ($caid2) {
+        $str .= "{$lt}caid2{$gt}$caid2" . PHP_EOL;
     }
-    if( $cate3 ){
-        $str .= "{$lt}cate3{$gt}$cate3".PHP_EOL;
+    if ($cate3) {
+        $str .= "{$lt}cate3{$gt}$cate3" . PHP_EOL;
     }
-    if( $caid3 ){
-        $str .= "{$lt}caid3{$gt}$caid3".PHP_EOL;
+    if ($caid3) {
+        $str .= "{$lt}caid3{$gt}$caid3" . PHP_EOL;
     }
-    if( $cate4 ){
-        $str .= "{$lt}cate4{$gt}$cate4".PHP_EOL;
+    if ($cate4) {
+        $str .= "{$lt}cate4{$gt}$cate4" . PHP_EOL;
     }
-    if( $caid4 ){
-        $str .= "{$lt}caid4{$gt}$caid4".PHP_EOL;
+    if ($caid4) {
+        $str .= "{$lt}caid4{$gt}$caid4" . PHP_EOL;
     }
-    if( $row['it_model'] ){
-        $str .= "{$lt}model{$gt}{$row['it_model']}".PHP_EOL;
+    if ($row['it_model']) {
+        $str .= "{$lt}model{$gt}{$row['it_model']}" . PHP_EOL;
     }
-    if( $row['it_brand'] ){
-        $str .= "{$lt}brand{$gt}{$row['it_brand']}".PHP_EOL;
+    if ($row['it_brand']) {
+        $str .= "{$lt}brand{$gt}{$row['it_brand']}" . PHP_EOL;
     }
-    if( $row['it_maker'] ){
-        $str .= "{$lt}maker{$gt}{$row['it_maker']}".PHP_EOL;
+    if ($row['it_maker']) {
+        $str .= "{$lt}maker{$gt}{$row['it_maker']}" . PHP_EOL;
     }
-    $str .= "{$lt}point{$gt}$point".PHP_EOL;
-    $str .= "{$lt}deliv{$gt}$deliv".PHP_EOL;
-    $str .= "{$lt}ftend{$gt}".PHP_EOL;
+    $str .= "{$lt}point{$gt}$point" . PHP_EOL;
+    $str .= "{$lt}deliv{$gt}$deliv" . PHP_EOL;
+    $str .= "{$lt}ftend{$gt}" . PHP_EOL;
 
-echo iconv('utf-8', 'euc-kr', $str);
+    echo iconv('utf-8', 'euc-kr', $str);
 }
-
 
 
 $content = ob_get_contents();

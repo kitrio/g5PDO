@@ -5,9 +5,9 @@ require_once './_common.php';
 check_demo();
 
 $post_count_chk = (isset($_POST['chk']) && is_array($_POST['chk'])) ? count($_POST['chk']) : 0;
-$chk            = (isset($_POST['chk']) && is_array($_POST['chk'])) ? $_POST['chk'] : array();
-$act_button     = isset($_POST['act_button']) ? strip_tags($_POST['act_button']) : '';
-$board_table    = (isset($_POST['board_table']) && is_array($_POST['board_table'])) ? $_POST['board_table'] : array();
+$chk = (isset($_POST['chk']) && is_array($_POST['chk'])) ? $_POST['chk'] : array();
+$act_button = isset($_POST['act_button']) ? strip_tags($_POST['act_button']) : '';
+$board_table = (isset($_POST['board_table']) && is_array($_POST['board_table'])) ? $_POST['board_table'] : array();
 
 if (!$post_count_chk) {
     alert($act_button . " 하실 항목을 하나 이상 체크하세요.");
@@ -20,7 +20,7 @@ if ($act_button === "선택수정") {
 
     for ($i = 0; $i < $post_count_chk; $i++) {
         // 실제 번호를 넘김
-        $k = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+        $k = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
         $post_gr_id = isset($_POST['gr_id'][$k]) ? clean_xss_tags($_POST['gr_id'][$k], 1, 1) : '';
         $post_bo_device = isset($_POST['bo_device'][$k]) ? clean_xss_tags($_POST['bo_device'][$k], 1, 1) : '';
@@ -80,7 +80,7 @@ if ($act_button === "선택수정") {
 
     for ($i = 0; $i < $post_count_chk; $i++) {
         // 실제 번호를 넘김
-        $k = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+        $k = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
         // include 전에 $bo_table 값을 반드시 넘겨야 함
         $tmp_bo_table = isset($_POST['board_table'][$k]) ? trim(clean_xss_tags($_POST['board_table'][$k], 1, 1)) : '';

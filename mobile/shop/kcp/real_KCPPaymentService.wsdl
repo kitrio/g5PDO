@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax21="http://payment.domain.webpay.service.kcp.kr/xsd" xmlns:ns="http://webservice.act.webpay.service.kcp.kr" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ax22="http://domain.webpay.service.kcp.kr/xsd" targetNamespace="http://webservice.act.webpay.service.kcp.kr">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:ax21="http://payment.domain.webpay.service.kcp.kr/xsd"
+                  xmlns:ns="http://webservice.act.webpay.service.kcp.kr" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:ax22="http://domain.webpay.service.kcp.kr/xsd"
+                  targetNamespace="http://webservice.act.webpay.service.kcp.kr">
     <wsdl:documentation>
-		KCP Payment Service
-	</wsdl:documentation>
+        KCP Payment Service
+    </wsdl:documentation>
     <wsdl:types>
-        <xs:schema xmlns:ax23="http://domain.webpay.service.kcp.kr/xsd" targetNamespace="http://payment.domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified" elementFormDefault="qualified">
+        <xs:schema xmlns:ax23="http://domain.webpay.service.kcp.kr/xsd"
+                   targetNamespace="http://payment.domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="qualified">
             <xs:import namespace="http://domain.webpay.service.kcp.kr/xsd"/>
             <xs:complexType name="ApproveReq">
                 <xs:sequence>
-                    <xs:element name="accessCredentialType" minOccurs="0" type="ax22:AccessCredentialType" nillable="true"/>
+                    <xs:element name="accessCredentialType" minOccurs="0" type="ax22:AccessCredentialType"
+                                nillable="true"/>
                     <xs:element name="baseRequestType" minOccurs="0" type="ax22:BaseRequestType" nillable="true"/>
                     <xs:element name="escrow" minOccurs="0" type="xs:boolean"/>
                     <xs:element name="orderID" minOccurs="0" type="xs:string" nillable="true"/>
@@ -27,7 +38,9 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax24="http://payment.domain.webpay.service.kcp.kr/xsd" targetNamespace="http://webservice.act.webpay.service.kcp.kr" attributeFormDefault="qualified" elementFormDefault="qualified">
+        <xs:schema xmlns:ax24="http://payment.domain.webpay.service.kcp.kr/xsd"
+                   targetNamespace="http://webservice.act.webpay.service.kcp.kr" attributeFormDefault="qualified"
+                   elementFormDefault="qualified">
             <xs:import namespace="http://payment.domain.webpay.service.kcp.kr/xsd"/>
             <xs:element name="approve">
                 <xs:complexType>
@@ -44,7 +57,8 @@
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-        <xs:schema targetNamespace="http://domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified" elementFormDefault="qualified">
+        <xs:schema targetNamespace="http://domain.webpay.service.kcp.kr/xsd" attributeFormDefault="qualified"
+                   elementFormDefault="qualified">
             <xs:complexType name="AccessCredentialType">
                 <xs:sequence>
                     <xs:element name="accessLicense" minOccurs="0" type="xs:string" nillable="true"/>
@@ -71,7 +85,8 @@
                     <xs:element name="responseType" minOccurs="0" type="xs:string" nillable="true"/>
                     <xs:element name="timestamp" minOccurs="0" type="xs:string" nillable="true"/>
                     <xs:element name="version" minOccurs="0" type="xs:string" nillable="true"/>
-                    <xs:element name="warningList" maxOccurs="unbounded" minOccurs="0" type="ax22:ErrorType" nillable="true"/>
+                    <xs:element name="warningList" maxOccurs="unbounded" minOccurs="0" type="ax22:ErrorType"
+                                nillable="true"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="ErrorType">
@@ -133,10 +148,12 @@
     </wsdl:binding>
     <wsdl:service name="KCPPaymentService">
         <wsdl:port name="KCPPaymentServiceHttpSoap11Endpoint" binding="ns:KCPPaymentServiceSoap11Binding">
-            <soap:address location="https://smpay.kcp.co.kr/services/KCPPaymentService.KCPPaymentServiceHttpSoap11Endpoint/"/>
+            <soap:address
+                    location="https://smpay.kcp.co.kr/services/KCPPaymentService.KCPPaymentServiceHttpSoap11Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="KCPPaymentServiceHttpSoap12Endpoint" binding="ns:KCPPaymentServiceSoap12Binding">
-            <soap12:address location="https://smpay.kcp.co.kr/services/KCPPaymentService.KCPPaymentServiceHttpSoap12Endpoint/"/>
+            <soap12:address
+                    location="https://smpay.kcp.co.kr/services/KCPPaymentService.KCPPaymentServiceHttpSoap12Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="KCPPaymentServiceHttpEndpoint" binding="ns:KCPPaymentServiceHttpBinding">
             <http:address location="https://smpay.kcp.co.kr/services/KCPPaymentService.KCPPaymentServiceHttpEndpoint/"/>

@@ -4,12 +4,12 @@ require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'w');
 
-$po_id = isset($po_id) ? (int) $po_id : 0;
+$po_id = isset($po_id) ? (int)$po_id : 0;
 $po = array(
-    'po_subject' => '',
-    'po_etc' => '',
-    'po_level' => '',
-    'po_point' => '',
+        'po_subject' => '',
+        'po_etc' => '',
+        'po_level' => '',
+        'po_point' => '',
 );
 
 $html_title = '투표';
@@ -31,24 +31,26 @@ $g5['title'] = $html_title;
 require_once './admin.head.php';
 ?>
 
-<form name="fpoll" id="fpoll" action="./poll_form_update.php" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="po_id" value="<?php echo $po_id ?>">
-    <input type="hidden" name="w" value="<?php echo $w ?>">
-    <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
-    <input type="hidden" name="stx" value="<?php echo $stx ?>">
-    <input type="hidden" name="sst" value="<?php echo $sst ?>">
-    <input type="hidden" name="sod" value="<?php echo $sod ?>">
-    <input type="hidden" name="page" value="<?php echo $page ?>">
-    <input type="hidden" name="token" value="">
+    <form name="fpoll" id="fpoll" action="./poll_form_update.php" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="po_id" value="<?php echo $po_id ?>">
+        <input type="hidden" name="w" value="<?php echo $w ?>">
+        <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
+        <input type="hidden" name="stx" value="<?php echo $stx ?>">
+        <input type="hidden" name="sst" value="<?php echo $sst ?>">
+        <input type="hidden" name="sod" value="<?php echo $sod ?>">
+        <input type="hidden" name="page" value="<?php echo $page ?>">
+        <input type="hidden" name="token" value="">
 
-    <div class="tbl_frm01 tbl_wrap">
+        <div class="tbl_frm01 tbl_wrap">
 
-        <table>
-            <caption><?php echo $g5['title']; ?></caption>
-            <tbody>
+            <table>
+                <caption><?php echo $g5['title']; ?></caption>
+                <tbody>
                 <tr>
                     <th scope="row"><label for="po_subject">투표 제목<strong class="sound_only">필수</strong></label></th>
-                    <td><input type="text" name="po_subject" value="<?php echo get_sanitize_input($po['po_subject']); ?>" id="po_subject" required class="required frm_input" size="80" maxlength="125"></td>
+                    <td><input type="text" name="po_subject"
+                               value="<?php echo get_sanitize_input($po['po_subject']); ?>" id="po_subject" required
+                               class="required frm_input" size="80" maxlength="125"></td>
                 </tr>
 
                 <?php
@@ -65,11 +67,16 @@ require_once './admin.head.php';
                     ?>
 
                     <tr>
-                        <th scope="row"><label for="po_poll<?php echo $i ?>">항목 <?php echo $i ?><?php echo $sound_only ?></label></th>
+                        <th scope="row"><label
+                                    for="po_poll<?php echo $i ?>">항목 <?php echo $i ?><?php echo $sound_only ?></label>
+                        </th>
                         <td>
-                            <input type="text" name="po_poll<?php echo $i ?>" value="<?php echo $po_poll ?>" id="po_poll<?php echo $i ?>" <?php echo $required ?> class="frm_input <?php echo $required ?>" maxlength="125">
+                            <input type="text" name="po_poll<?php echo $i ?>" value="<?php echo $po_poll ?>"
+                                   id="po_poll<?php echo $i ?>" <?php echo $required ?>
+                                   class="frm_input <?php echo $required ?>" maxlength="125">
                             <label for="po_cnt<?php echo $i ?>">항목 <?php echo $i ?> 투표수</label>
-                            <input type="text" name="po_cnt<?php echo $i ?>" value="<?php echo $po_cnt; ?>" id="po_cnt<?php echo $i ?>" class="frm_input" size="3">
+                            <input type="text" name="po_cnt<?php echo $i ?>" value="<?php echo $po_cnt; ?>"
+                                   id="po_cnt<?php echo $i ?>" class="frm_input" size="3">
                         </td>
                     </tr>
 
@@ -79,7 +86,8 @@ require_once './admin.head.php';
                     <th scope="row"><label for="po_etc">기타의견</label></th>
                     <td>
                         <?php echo help('기타 의견을 남길 수 있도록 하려면, 간단한 질문을 입력하세요.') ?>
-                        <input type="text" name="po_etc" value="<?php echo get_text($po['po_etc']) ?>" id="po_etc" class="frm_input" size="80" maxlength="125">
+                        <input type="text" name="po_etc" value="<?php echo get_text($po['po_etc']) ?>" id="po_etc"
+                               class="frm_input" size="80" maxlength="125">
                     </td>
                 </tr>
                 <tr>
@@ -93,14 +101,17 @@ require_once './admin.head.php';
                     <th scope="row"><label for="po_point">포인트</label></th>
                     <td>
                         <?php echo help('투표에 참여한 회원에게 포인트를 부여합니다.') ?>
-                        <input type="text" name="po_point" value="<?php echo $po['po_point'] ?>" id="po_point" class="frm_input"> 점
+                        <input type="text" name="po_point" value="<?php echo $po['po_point'] ?>" id="po_point"
+                               class="frm_input"> 점
                     </td>
                 </tr>
 
                 <?php if ($w == 'u') { ?>
                     <tr>
                         <th scope="row">투표사용</th>
-                        <td><input type="checkbox" name="po_use" id="po_use" value="1" <?php if ($po['po_use']) { echo 'checked="checked"'; } ?>> <label for="po_use">사용</label></td>
+                        <td><input type="checkbox" name="po_use" id="po_use" value="1" <?php if ($po['po_use']) {
+                                echo 'checked="checked"';
+                            } ?>> <label for="po_use">사용</label></td>
                     </tr>
                     <tr>
                         <th scope="row">투표등록일</th>
@@ -108,24 +119,28 @@ require_once './admin.head.php';
                     </tr>
                     <tr>
                         <th scope="row"><label for="po_ips">투표참가 IP</label></th>
-                        <td><textarea name="po_ips" id="po_ips" readonly rows="10"><?php echo html_purifier(preg_replace("/\n/", " / ", $po['po_ips'])); ?></textarea></td>
+                        <td><textarea name="po_ips" id="po_ips" readonly
+                                      rows="10"><?php echo html_purifier(preg_replace("/\n/", " / ", $po['po_ips'])); ?></textarea>
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row"><label for="mb_ids">투표참가 회원</label></th>
-                        <td><textarea name="mb_ids" id="mb_ids" readonly rows="10"><?php echo html_purifier(preg_replace("/\n/", " / ", $po['mb_ids'])); ?></textarea></td>
+                        <td><textarea name="mb_ids" id="mb_ids" readonly
+                                      rows="10"><?php echo html_purifier(preg_replace("/\n/", " / ", $po['mb_ids'])); ?></textarea>
+                        </td>
                     </tr>
                 <?php } ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-    </div>
+        </div>
 
-    <div class="btn_fixed_top ">
-        <a href="./poll_list.php?<?php echo $qstr ?>" class="btn_02 btn">목록</a>
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
-    </div>
+        <div class="btn_fixed_top ">
+            <a href="./poll_list.php?<?php echo $qstr ?>" class="btn_02 btn">목록</a>
+            <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        </div>
 
-</form>
+    </form>
 
 <?php
 require_once './admin.tail.php';

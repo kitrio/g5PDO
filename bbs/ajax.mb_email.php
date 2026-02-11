@@ -1,9 +1,9 @@
 <?php
 include_once('./_common.php');
-include_once(G5_LIB_PATH.'/register.lib.php');
+include_once(G5_LIB_PATH . '/register.lib.php');
 
 $mb_email = isset($_POST['reg_mb_email']) ? trim($_POST['reg_mb_email']) : '';
-$mb_id    = isset($_POST['reg_mb_id']) ? trim($_POST['reg_mb_id']) : '';
+$mb_id = isset($_POST['reg_mb_id']) ? trim($_POST['reg_mb_id']) : '';
 
 set_session('ss_check_mb_email', '');
 

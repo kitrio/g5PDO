@@ -1,13 +1,11 @@
 <?php
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
-if ($ca_id)
-{
+if ($ca_id) {
     $str = $bar = "";
     $len = strlen($ca_id) / 2;
-    for ($i=1; $i<=$len; $i++)
-    {
-        $code = substr($ca_id,0,$i*2);
+    for ($i = 1; $i <= $len; $i++) {
+        $code = substr($ca_id, 0, $i * 2);
 
         $sql = " select ca_name from {$g5['g5_shop_category_table']} where ca_id = '$code' ";
         $row = sql_fetch($sql);
@@ -20,16 +18,15 @@ if ($ca_id)
             $sct_bg = 'sct_bg';
         else $sct_bg = '';
 
-        $str .= $bar.'<a href="'.shop_category_url($code).'" class="'.$sct_here.' '.$sct_bg.'">'.$row['ca_name'].'</a>';
+        $str .= $bar . '<a href="' . shop_category_url($code) . '" class="' . $sct_here . ' ' . $sct_bg . '">' . $row['ca_name'] . '</a>';
     }
-}
-else
+} else
     $str = $g5['title'];
 
 //if ($it_id) $str .= " > $it[it_name]";
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">', 0);
 ?>
 
 <div id="sct_location">

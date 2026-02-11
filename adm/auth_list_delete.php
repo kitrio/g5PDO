@@ -23,7 +23,7 @@ if ((isset($_POST['mb_id']) && !is_array($_POST['mb_id'])) || (isset($_POST['au_
 
 for ($i = 0; $i < $count; $i++) {
     // 실제 번호를 넘김
-    $k = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+    $k = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
     $mb_id = isset($_POST['mb_id'][$k]) ? preg_replace('/[^a-zA-Z0-9_]/', '', $_POST['mb_id'][$k]) : '';
     $au_menu = isset($_POST['au_menu'][$k]) ? preg_replace('/[^a-zA-Z0-9_]/', '', $_POST['au_menu'][$k]) : '';

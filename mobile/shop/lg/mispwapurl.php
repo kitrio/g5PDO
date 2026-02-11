@@ -2,9 +2,9 @@
 // 해당 페이지는 사용자가 ISP{국민/BC) 카드 결제를 성공하였을 때, 사용자에게 보여지는 페이지입니다.
 include_once('./_common.php');
 
-$LGD_OID    = clean_xss_tags($_GET['LGD_OID'], 1, 1);
+$LGD_OID = clean_xss_tags($_GET['LGD_OID'], 1, 1);
 
-echo "LGD_OID = ".$LGD_OID;
+echo "LGD_OID = " . $LGD_OID;
 
 // 결제성공시에만, 고객사에서 생성한 주문번호 (LGD_OID)를 해당페이지로 전송합니다.
 // LGD_KVPMISPNOTEURL 에서 수신한  결제결과값과  연동하여  사용자에게 보여줄  결제완료화면을 구성하시기 바라며,

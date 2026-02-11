@@ -4,20 +4,20 @@ require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'r');
 
-$ma_id = isset($_REQUEST['ma_id']) ? (int) $_REQUEST['ma_id'] : 0;
+$ma_id = isset($_REQUEST['ma_id']) ? (int)$_REQUEST['ma_id'] : 0;
 
 $ma_last_option = "";
 
 $sql_common = " from {$g5['member_table']} ";
 $sql_where = " where (1) ";
 
-$mb_id1         = isset($_POST['mb_id1'])       ? (int) $_POST['mb_id1'] : 1;
-$mb_id1_from    = isset($_POST['mb_id1_from'])  ? clean_xss_tags($_POST['mb_id1_from'], 1, 1, 30) : '';
-$mb_id1_to      = isset($_POST['mb_id1_to'])    ? clean_xss_tags($_POST['mb_id1_to'], 1, 1, 30) : '';
-$mb_email       = isset($_POST['mb_email'])     ? clean_xss_tags($_POST['mb_email'], 1, 1, 100) : '';
-$mb_mailling    = isset($_POST['mb_mailling'])  ? clean_xss_tags($_POST['mb_mailling'], 1, 1, 100) : '';
-$mb_level_from  = isset($_POST['mb_level_from'])? (int) $_POST['mb_level_from'] : 1;
-$mb_level_to    = isset($_POST['mb_level_to'])  ? (int) $_POST['mb_level_to'] : 10;
+$mb_id1 = isset($_POST['mb_id1']) ? (int)$_POST['mb_id1'] : 1;
+$mb_id1_from = isset($_POST['mb_id1_from']) ? clean_xss_tags($_POST['mb_id1_from'], 1, 1, 30) : '';
+$mb_id1_to = isset($_POST['mb_id1_to']) ? clean_xss_tags($_POST['mb_id1_to'], 1, 1, 30) : '';
+$mb_email = isset($_POST['mb_email']) ? clean_xss_tags($_POST['mb_email'], 1, 1, 100) : '';
+$mb_mailling = isset($_POST['mb_mailling']) ? clean_xss_tags($_POST['mb_mailling'], 1, 1, 100) : '';
+$mb_level_from = isset($_POST['mb_level_from']) ? (int)$_POST['mb_level_from'] : 1;
+$mb_level_to = isset($_POST['mb_level_to']) ? (int)$_POST['mb_level_to'] : 10;
 
 // 회원ID ..에서 ..까지
 if ($mb_id1 != 1) {
@@ -81,14 +81,14 @@ $g5['title'] = "메일발송 대상 회원";
 require_once './admin.head.php';
 ?>
 
-<form name="fmailselectlist" id="fmailselectlist" method="post" action="./mail_select_update.php">
-    <input type="hidden" name="token" value="">
-    <input type="hidden" name="ma_id" value="<?php echo get_text($ma_id); ?>">
+    <form name="fmailselectlist" id="fmailselectlist" method="post" action="./mail_select_update.php">
+        <input type="hidden" name="token" value="">
+        <input type="hidden" name="ma_id" value="<?php echo get_text($ma_id); ?>">
 
-    <div class="tbl_head01 tbl_wrap">
-        <table>
-            <caption><?php echo $g5['title']; ?> 목록</caption>
-            <thead>
+        <div class="tbl_head01 tbl_wrap">
+            <table>
+                <caption><?php echo $g5['title']; ?> 목록</caption>
+                <thead>
                 <tr>
                     <th scope="col">번호</th>
                     <th scope="col">회원아이디</th>
@@ -96,8 +96,8 @@ require_once './admin.head.php';
                     <th scope="col">닉네임</th>
                     <th scope="col">E-mail</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <?php
                 $sql = " select mb_id, mb_name, mb_nick, mb_email, mb_datetime $sql_common $sql_where order by mb_id ";
                 $result = sql_query($sql);
@@ -119,17 +119,17 @@ require_once './admin.head.php';
                         <td><?php echo $row['mb_email'] ?></td>
                     </tr>
                 <?php } ?>
-            </tbody>
-        </table>
-        <textarea name="ma_list" style="display:none"><?php echo html_purifier($ma_list); ?></textarea>
-    </div>
+                </tbody>
+            </table>
+            <textarea name="ma_list" style="display:none"><?php echo html_purifier($ma_list); ?></textarea>
+        </div>
 
-    <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="메일보내기" class="btn_submit">
-        <a href="./mail_select_form.php?ma_id=<?php echo $ma_id ?>">뒤로</a>
-    </div>
+        <div class="btn_confirm01 btn_confirm">
+            <input type="submit" value="메일보내기" class="btn_submit">
+            <a href="./mail_select_form.php?ma_id=<?php echo $ma_id ?>">뒤로</a>
+        </div>
 
-</form>
+    </form>
 
 <?php
 require_once './admin.tail.php';

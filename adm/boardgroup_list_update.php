@@ -8,9 +8,9 @@ auth_check_menu($auth, $sub_menu, 'w');
 
 check_admin_token();
 
-$post_chk       = isset($_POST['chk']) ? (array) $_POST['chk'] : array();
-$post_group_id  = isset($_POST['group_id']) ? (array) $_POST['group_id'] : array();
-$act_button     = isset($_POST['act_button']) ? $_POST['act_button'] : '';
+$post_chk = isset($_POST['chk']) ? (array)$_POST['chk'] : array();
+$post_group_id = isset($_POST['group_id']) ? (array)$_POST['group_id'] : array();
+$act_button = isset($_POST['act_button']) ? $_POST['act_button'] : '';
 
 $chk_count = count($post_chk);
 
@@ -19,13 +19,13 @@ if (!$chk_count) {
 }
 
 for ($i = 0; $i < $chk_count; $i++) {
-    $k              = isset($post_chk[$i]) ? (int) $post_chk[$i] : 0;
-    $gr_id          = preg_replace('/[^a-z0-9_]/i', '', $post_group_id[$k]);
-    $gr_subject     = isset($_POST['gr_subject'][$k]) ? strip_tags(clean_xss_attributes($_POST['gr_subject'][$k])) : '';
-    $gr_admin       = isset($_POST['gr_admin'][$k]) ? strip_tags(clean_xss_attributes($_POST['gr_admin'][$k])) : '';
-    $gr_device      = isset($_POST['gr_device'][$k]) ? clean_xss_tags($_POST['gr_device'][$k], 1, 1, 10) : '';
-    $gr_use_access  = isset($_POST['gr_use_access'][$k]) ? (int) $_POST['gr_use_access'][$k] : 0;
-    $gr_order       = isset($_POST['gr_order'][$k]) ? (int) $_POST['gr_order'][$k] : 0;
+    $k = isset($post_chk[$i]) ? (int)$post_chk[$i] : 0;
+    $gr_id = preg_replace('/[^a-z0-9_]/i', '', $post_group_id[$k]);
+    $gr_subject = isset($_POST['gr_subject'][$k]) ? strip_tags(clean_xss_attributes($_POST['gr_subject'][$k])) : '';
+    $gr_admin = isset($_POST['gr_admin'][$k]) ? strip_tags(clean_xss_attributes($_POST['gr_admin'][$k])) : '';
+    $gr_device = isset($_POST['gr_device'][$k]) ? clean_xss_tags($_POST['gr_device'][$k], 1, 1, 10) : '';
+    $gr_use_access = isset($_POST['gr_use_access'][$k]) ? (int)$_POST['gr_use_access'][$k] : 0;
+    $gr_order = isset($_POST['gr_order'][$k]) ? (int)$_POST['gr_order'][$k] : 0;
 
     if ($act_button == '선택수정') {
         $sql = " update {$g5['group_table']}

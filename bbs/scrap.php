@@ -4,8 +4,8 @@ include_once('./_common.php');
 if (!$is_member)
     alert_close('회원만 조회하실 수 있습니다.');
 
-$g5['title'] = get_text($member['mb_nick']).'님의 스크랩';
-include_once(G5_PATH.'/head.sub.php');
+$g5['title'] = get_text($member['mb_nick']) . '님의 스크랩';
+include_once(G5_PATH . '/head.sub.php');
 
 $sql_common = " from {$g5['scrap_table']} where mb_id = '{$member['mb_id']}' ";
 $sql_order = " order by ms_id desc ";
@@ -15,7 +15,7 @@ $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
 $rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+$total_page = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
@@ -26,7 +26,7 @@ $sql = " select *
             $sql_order
             limit $from_record, $rows ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++) {
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
 
     $list[$i] = $row;
 
@@ -51,9 +51,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     $list[$i]['opener_href_wr_id'] = get_pretty_url($row['bo_table'], $row['wr_id']);
     $list[$i]['bo_subject'] = $row2['bo_subject'];
     $list[$i]['subject'] = $subject;
-    $list[$i]['del_href'] = './scrap_delete.php?ms_id='.$row['ms_id'].'&amp;page='.$page;
+    $list[$i]['del_href'] = './scrap_delete.php?ms_id=' . $row['ms_id'] . '&amp;page=' . $page;
 }
 
-include_once($member_skin_path.'/scrap.skin.php');
+include_once($member_skin_path . '/scrap.skin.php');
 
-include_once(G5_PATH.'/tail.sub.php');
+include_once(G5_PATH . '/tail.sub.php');

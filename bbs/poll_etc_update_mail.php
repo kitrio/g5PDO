@@ -6,8 +6,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<title>설문조사 기타의견 메일</title>
+    <meta charset="utf-8">
+    <title>설문조사 기타의견 메일</title>
 </head>
 
 <body>

@@ -11,11 +11,12 @@
  */
 include_once("./_common.php");
 
-if( !function_exists('json_encode') ) {
+if (!function_exists('json_encode')) {
     @include_once("./JSON.php");
-    function json_encode($data) {
+    function json_encode($data)
+    {
         $json = new Services_JSON();
-        return( $json->encode($data) );
+        return ($json->encode($data));
     }
 }
 
@@ -23,24 +24,24 @@ if( !function_exists('json_encode') ) {
 
 $ym = date('ym', G5_SERVER_TIME);
 
-$data_dir = G5_DATA_PATH.'/editor/'.$ym.'/';
-$data_url = G5_DATA_URL.'/editor/'.$ym.'/';
+$data_dir = G5_DATA_PATH . '/editor/' . $ym . '/';
+$data_url = G5_DATA_URL . '/editor/' . $ym . '/';
 
 @mkdir($data_dir, G5_DIR_PERMISSION);
 @chmod($data_dir, G5_DIR_PERMISSION);
 
-if(!function_exists('ft_nonce_is_valid')){
+if (!function_exists('ft_nonce_is_valid')) {
     include_once('../../../editor.lib.php');
 }
 
 $is_editor_upload = false;
 
-if( isset($_GET['_nonce']) && ft_nonce_is_valid( $_GET['_nonce'] , 'smarteditor' ) ){
+if (isset($_GET['_nonce']) && ft_nonce_is_valid($_GET['_nonce'], 'smarteditor')) {
     $is_editor_upload = true;
 }
 
-if( $is_editor_upload ) {
-    
+if ($is_editor_upload) {
+
     run_event('smarteditor_photo_upload', $data_dir, $data_url);
 
     require('UploadHandler.php');
@@ -55,6 +56,6 @@ if( $is_editor_upload ) {
     $upload_handler = new UploadHandler($options);
 
 } else {
-    echo json_encode(array('files'=>array('0'=>array('error'=>'정상적인 업로드가 아닙니다.'))));
+    echo json_encode(array('files' => array('0' => array('error' => '정상적인 업로드가 아닙니다.'))));
     exit;
 }

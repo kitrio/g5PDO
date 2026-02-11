@@ -15,7 +15,7 @@ if (!$count) {
 }
 
 for ($i = 0; $i < $count; $i++) {
-    $po_id = isset($_POST['chk'][$i]) ? (int) $_POST['chk'][$i] : 0;
+    $po_id = isset($_POST['chk'][$i]) ? (int)$_POST['chk'][$i] : 0;
 
     $sql = " delete from {$g5['poll_table']} where po_id = '$po_id' ";
     sql_query($sql);

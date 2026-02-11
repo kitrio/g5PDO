@@ -11,13 +11,13 @@ define("CHE_UPLOAD_IMG_CHECK", 1);  // 이미지 파일을 썸네일 할수 있�
 
 # data/editor 디렉토리가 없는 경우가 있을수 있으므로 디렉토리를 생성하는 코드를 추가함. kagla 140305
 
-@mkdir(G5_DATA_PATH.'/'.G5_EDITOR_DIR, G5_DIR_PERMISSION);
-@chmod(G5_DATA_PATH.'/'.G5_EDITOR_DIR, G5_DIR_PERMISSION);
+@mkdir(G5_DATA_PATH . '/' . G5_EDITOR_DIR, G5_DIR_PERMISSION);
+@chmod(G5_DATA_PATH . '/' . G5_EDITOR_DIR, G5_DIR_PERMISSION);
 
 $ym = date('ym', G5_SERVER_TIME);
 
-$data_dir = G5_DATA_PATH.'/'.G5_EDITOR_DIR.'/'.$ym;
-$data_url = G5_DATA_URL.'/'.G5_EDITOR_DIR.'/'.$ym;
+$data_dir = G5_DATA_PATH . '/' . G5_EDITOR_DIR . '/' . $ym;
+$data_url = G5_DATA_URL . '/' . G5_EDITOR_DIR . '/' . $ym;
 
 define("SAVE_DIR", $data_dir);
 
@@ -29,24 +29,27 @@ define("SAVE_DIR", $data_dir);
 
 define("SAVE_URL", $data_url);
 
-function che_get_user_id() {
+function che_get_user_id()
+{
     global $member;
 
-    if(session_id() == '') {
+    if (session_id() == '') {
         @session_start();
     }
 
     $add_str = (isset($member['mb_id']) && $member['mb_id']) ? $member['mb_id'] : '';
-    return session_id().$add_str;
+    return session_id() . $add_str;
 }
 
-function che_get_file_passname(){
-    $tmp_name = che_get_user_id().$_SERVER['REMOTE_ADDR'];
+function che_get_file_passname()
+{
+    $tmp_name = che_get_user_id() . $_SERVER['REMOTE_ADDR'];
     $tmp_name = md5(sha1($tmp_name));
     return $tmp_name;
 }
 
-function che_generateRandomString($length = 4) {
+function che_generateRandomString($length = 4)
+{
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -56,15 +59,16 @@ function che_generateRandomString($length = 4) {
     return $randomString;
 }
 
-function che_replace_filename($filename){
+function che_replace_filename($filename)
+{
 
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
     $random_str = che_generateRandomString(4);
 
     $passname = che_get_file_passname();
-    
+
     $file_arr = explode('_', $filename);
 
-    return $file_arr[0].'_'.$passname.'_'.$random_str.'.'.$ext;
+    return $file_arr[0] . '_' . $passname . '_' . $random_str . '.' . $ext;
 }

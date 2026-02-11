@@ -1,6 +1,7 @@
 <?php
 
-function String2Hex($string) {
+function String2Hex($string)
+{
     $hex = array();
     for ($i = 0; $i < strlen($string); $i++) {
         $hex[] = dechex(ord($string[$i]));
@@ -8,7 +9,8 @@ function String2Hex($string) {
     return $hex;
 }
 
-function Hex2String($hex) {
+function Hex2String($hex)
+{
     $str = "";
     for ($i = 0; $i < count($hex); $i++) {
         $str .= chr(hexdec($hex[$i]));
@@ -16,7 +18,8 @@ function Hex2String($hex) {
     return $str;
 }
 
-function encrypt_SEED($str, $bszUser_key, $bszIV) {
+function encrypt_SEED($str, $bszUser_key, $bszIV)
+{
     $planBytes = String2Hex($str);
     $keyBytes = String2Hex(base64_decode($bszUser_key));
     $IVBytes = String2Hex(($bszIV));
@@ -46,7 +49,8 @@ function encrypt_SEED($str, $bszUser_key, $bszIV) {
     return base64_encode(Hex2String($ret));
 }
 
-function decrypt_SEED($str, $bszUser_key, $bszIV) {
+function decrypt_SEED($str, $bszUser_key, $bszIV)
+{
     $planBytes = String2Hex(base64_decode($str));
     $keyBytes = String2Hex(base64_decode($bszUser_key));
     $IVBytes = String2Hex(($bszIV));
@@ -71,7 +75,7 @@ function decrypt_SEED($str, $bszUser_key, $bszIV) {
 
     // 방법 1
     $bszPlainText = KISA_SEED_CBC::SEED_CBC_Decrypt($keyBytes, $IVBytes, $planBytes, 0, count($planBytes));
-    for ($i = 0; $i < sizeof((array) $bszPlainText); $i++) {
+    for ($i = 0; $i < sizeof((array)$bszPlainText); $i++) {
         $planBytresMessage[] = sprintf("%02X", $bszPlainText[$i]);
     }
     return Hex2String($planBytresMessage);

@@ -14,20 +14,17 @@ if ($default['de_card_test']) {
     if ($default['de_escrow_use'] == 1) {
         // 에스크로결제 테스트
         $default['de_inicis_mid'] = 'iniescrow0';
-    }
-    else {
+    } else {
         // 일반결제 테스트
         $default['de_inicis_mid'] = 'INIpayTest';
     }
-}
-else {
-    $default['de_inicis_mid'] = "SIR".$default['de_inicis_mid'];
+} else {
+    $default['de_inicis_mid'] = "SIR" . $default['de_inicis_mid'];
 
     if ($default['de_escrow_use'] == 1) {
         // 에스크로결제 테스트
         $useescrow = '&useescrow=Y';
-    }
-    else {
+    } else {
         // 일반결제 테스트
         $useescrow = '';
     }
@@ -93,11 +90,11 @@ $CARD_CODE = array(
 );
 
 $PAY_METHOD = array(
-    'ISP'    => '신용카드',
-    'CARD'   => '신용카드',
-    'BANK'   => '계좌이체',
+    'ISP' => '신용카드',
+    'CARD' => '신용카드',
+    'BANK' => '계좌이체',
     'MOBILE' => '휴대폰',
-    'VBANK'  => '가상계좌'
+    'VBANK' => '가상계좌'
 );
 
 //신용카드 포인트 결제에 관한 옵션 ( 신청해야 함 )
@@ -107,8 +104,8 @@ $inicis_cardpoint = $default['de_inicis_cartpoint_use'] ? '&cp_yn=Y' : '';
 // 예) BC 2,3,6개월, 국민 3,6개월, 삼성 6,9개월 무이자 : 11-2:3:6^06-3:6^12-3:6:4
 //$inicis_cardpoint .= '';        // &merc_noint=Y&noint_quota=카드사코드-개월:개월^추가카드사코드-개월:개월:개월 형식으로 설정
 
-require_once(G5_SHOP_PATH.'/inicis/libs/inicis_youngcart_fn.php');
+require_once(G5_SHOP_PATH . '/inicis/libs/inicis_youngcart_fn.php');
 
-$noti_url   = G5_MSHOP_URL.'/inicis/settle_common.php';
-$next_url   = G5_MSHOP_URL.'/inicis/pay_approval.php';
-$return_url = G5_MSHOP_URL.'/inicis/pay_return.php?oid=';
+$noti_url = G5_MSHOP_URL . '/inicis/settle_common.php';
+$next_url = G5_MSHOP_URL . '/inicis/pay_approval.php';
+$return_url = G5_MSHOP_URL . '/inicis/pay_return.php?oid=';

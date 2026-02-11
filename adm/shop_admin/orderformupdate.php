@@ -12,9 +12,9 @@ $sort1 = isset($_REQUEST['sort1']) ? clean_xss_tags($_REQUEST['sort1'], 1, 1) : 
 $sort2 = isset($_REQUEST['sort2']) ? clean_xss_tags($_REQUEST['sort2'], 1, 1) : '';
 $sel_field = isset($_REQUEST['sel_field']) ? clean_xss_tags($_REQUEST['sel_field'], 1, 1) : '';
 
-if(isset($_POST['mod_type']) && $_POST['mod_type'] === 'info') {
-    $od_zip1   = isset($_POST['od_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_zip'], 0, 3)) : '';
-    $od_zip2   = isset($_POST['od_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_zip'], 3)) : '';
+if (isset($_POST['mod_type']) && $_POST['mod_type'] === 'info') {
+    $od_zip1 = isset($_POST['od_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_zip'], 0, 3)) : '';
+    $od_zip2 = isset($_POST['od_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_zip'], 3)) : '';
     $od_b_zip1 = isset($_POST['od_b_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_b_zip'], 0, 3)) : '';
     $od_b_zip2 = isset($_POST['od_b_zip']) ? preg_replace('/[^0-9]/', '', substr($_POST['od_b_zip'], 3)) : '';
     $od_email = isset($_POST['od_email']) ? strip_tags(clean_xss_attributes($_POST['od_email'])) : '';

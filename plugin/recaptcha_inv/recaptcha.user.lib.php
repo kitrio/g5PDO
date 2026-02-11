@@ -2,7 +2,7 @@
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
 // 캡챠 HTML 코드 출력
-function captcha_html($class="captcha")
+function captcha_html($class = "captcha")
 {
 
     global $config;
@@ -12,34 +12,35 @@ function captcha_html($class="captcha")
     */
     $html = '<fieldset id="captcha" class="captcha invisible_recaptcha">';
     $html .= '<script src="https://www.google.com/recaptcha/api.js?hl=ko"></script>';
-    $html .= '<script src="'.G5_CAPTCHA_URL.'/recaptcha.js"></script>';
+    $html .= '<script src="' . G5_CAPTCHA_URL . '/recaptcha.js"></script>';
     $html .= '<div id="recaptcha" class="g-recaptcha" data-sitekey="' . $config['cf_recaptcha_site_key'] . '" data-callback="recaptcha_validate" data-badge="inline" data-size="invisible"></div>';
     $html .= '<script>jQuery("#recaptcha").hide().parent(".invisible_recaptcha").hide().closest(".is_captcha_use").hide();</script>';
     $html .= '</fieldset>';
 
-	return $html;
+    return $html;
 }
 
 // 캡챠 사용시 자바스크립트에서 입력된 캡챠를 검사함
 function chk_captcha_js()
 {
-	return "if (!chk_captcha()) return false;\n";
+    return "if (!chk_captcha()) return false;\n";
 }
 
-function chk_captcha(){
+function chk_captcha()
+{
 
     global $config;
 
     $resp = null;
 
-    if ( isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"]) ) {
+    if (isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"])) {
 
-        $reCaptcha = new ReCaptcha_GNU( $config['cf_recaptcha_secret_key'] );
+        $reCaptcha = new ReCaptcha_GNU($config['cf_recaptcha_secret_key']);
 
         $resp = $reCaptcha->verify($_POST["g-recaptcha-response"], $_SERVER["REMOTE_ADDR"]);
     }
 
-    if( ! $resp ){
+    if (!$resp) {
         return false;
     }
 

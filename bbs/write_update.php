@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
-include_once(G5_LIB_PATH.'/naver_syndi.lib.php');
-include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
+include_once(G5_LIB_PATH . '/naver_syndi.lib.php');
+include_once(G5_CAPTCHA_PATH . '/captcha.lib.php');
 
 // 토큰체크
 check_write_token($bo_table);
@@ -11,16 +11,16 @@ $g5['title'] = '게시글 저장';
 $msg = array();
 $uid = isset($_POST['uid']) ? preg_replace('/[^0-9]/', '', $_POST['uid']) : 0;
 
-if($board['bo_use_category']) {
+if ($board['bo_use_category']) {
     $ca_name = isset($_POST['ca_name']) ? trim($_POST['ca_name']) : '';
-    if(!$ca_name) {
+    if (!$ca_name) {
         $msg[] = '<strong>분류</strong>를 선택하세요.';
     } else {
-        $categories = array_map('trim', explode("|", $board['bo_category_list'].($is_admin ? '|공지' : '')));
-        if(!empty($categories) && !in_array($ca_name, $categories))
+        $categories = array_map('trim', explode("|", $board['bo_category_list'] . ($is_admin ? '|공지' : '')));
+        if (!empty($categories) && !in_array($ca_name, $categories))
             $msg[] = '분류를 올바르게 입력하세요.';
 
-        if(empty($categories))
+        if (empty($categories))
             $ca_name = '';
     }
 } else {
@@ -29,7 +29,7 @@ if($board['bo_use_category']) {
 
 $wr_subject = '';
 if (isset($_POST['wr_subject'])) {
-    $wr_subject = substr(trim($_POST['wr_subject']),0,255);
+    $wr_subject = substr(trim($_POST['wr_subject']), 0, 255);
     $wr_subject = preg_replace("#[\\\]+$#", "", $wr_subject);
     if (function_exists('normalize_utf8_string')) {
         $wr_subject = normalize_utf8_string($wr_subject);
@@ -41,7 +41,7 @@ if ($wr_subject == '') {
 
 $wr_content = '';
 if (isset($_POST['wr_content'])) {
-    $wr_content = substr(trim($_POST['wr_content']),0,65536);
+    $wr_content = substr(trim($_POST['wr_content']), 0, 65536);
     $wr_content = preg_replace("#[\\\]+$#", "", $wr_content);
     if (function_exists('normalize_utf8_string')) {
         $wr_content = normalize_utf8_string($wr_content);
@@ -53,14 +53,14 @@ if ($wr_content == '') {
 
 $wr_link1 = '';
 if (isset($_POST['wr_link1'])) {
-    $wr_link1 = substr($_POST['wr_link1'],0,1000);
+    $wr_link1 = substr($_POST['wr_link1'], 0, 1000);
     $wr_link1 = trim(strip_tags($wr_link1));
     $wr_link1 = preg_replace("#[\\\]+$#", "", $wr_link1);
 }
 
 $wr_link2 = '';
 if (isset($_POST['wr_link2'])) {
-    $wr_link2 = substr($_POST['wr_link2'],0,1000);
+    $wr_link2 = substr($_POST['wr_link2'], 0, 1000);
     $wr_link2 = trim(strip_tags($wr_link2));
     $wr_link2 = preg_replace("#[\\\]+$#", "", $wr_link2);
 }
@@ -79,12 +79,12 @@ if (substr_count($wr_content, '&#') > 50) {
 $upload_max_filesize = ini_get('upload_max_filesize');
 
 if (empty($_POST)) {
-    alert("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.\\npost_max_size=".ini_get('post_max_size')." , upload_max_filesize=".$upload_max_filesize."\\n게시판관리자 또는 서버관리자에게 문의 바랍니다.");
+    alert("파일 또는 글내용의 크기가 서버에서 설정한 값을 넘어 오류가 발생하였습니다.\\npost_max_size=" . ini_get('post_max_size') . " , upload_max_filesize=" . $upload_max_filesize . "\\n게시판관리자 또는 서버관리자에게 문의 바랍니다.");
 }
 
 $notice_array = explode(",", $board['bo_notice']);
 $wr_password = isset($_POST['wr_password']) ? $_POST['wr_password'] : '';
-$bf_content = isset($_POST['bf_content']) ? (array) $_POST['bf_content'] : array();
+$bf_content = isset($_POST['bf_content']) ? (array)$_POST['bf_content'] : array();
 $_POST['html'] = isset($_POST['html']) ? clean_xss_tags($_POST['html'], 1, 1) : '';
 $_POST['secret'] = isset($_POST['secret']) ? clean_xss_tags($_POST['secret'], 1, 1) : '';
 $_POST['mail'] = isset($_POST['mail']) ? clean_xss_tags($_POST['mail'], 1, 1) : '';
@@ -98,12 +98,12 @@ if ($w == 'u' || $w == 'r') {
 
 // 외부에서 글을 등록할 수 있는 버그가 존재하므로 비밀글은 사용일 경우에만 가능해야 함
 if (!$is_admin && !$board['bo_use_secret'] && (stripos($_POST['html'], 'secret') !== false || stripos($_POST['secret'], 'secret') !== false || stripos($_POST['mail'], 'secret') !== false)) {
-	alert('비밀글 미사용 게시판 이므로 비밀글로 등록할 수 없습니다.');
+    alert('비밀글 미사용 게시판 이므로 비밀글로 등록할 수 없습니다.');
 }
 
 $secret = '';
 if (isset($_POST['secret']) && $_POST['secret']) {
-    if(preg_match('#secret#', strtolower($_POST['secret']), $matches))
+    if (preg_match('#secret#', strtolower($_POST['secret']), $matches))
         $secret = $matches[0];
 }
 
@@ -114,13 +114,13 @@ if (!$is_admin && $board['bo_use_secret'] == 2) {
 
 $html = '';
 if (isset($_POST['html']) && $_POST['html']) {
-    if(preg_match('#html(1|2)#', strtolower($_POST['html']), $matches))
+    if (preg_match('#html(1|2)#', strtolower($_POST['html']), $matches))
         $html = $matches[0];
 }
 
 $mail = '';
 if (isset($_POST['mail']) && $_POST['mail']) {
-    if(preg_match('#mail#', strtolower($_POST['mail']), $matches))
+    if (preg_match('#mail#', strtolower($_POST['mail']), $matches))
         $mail = $matches[0];
 }
 
@@ -129,15 +129,15 @@ if (isset($_POST['notice']) && $_POST['notice']) {
     $notice = $_POST['notice'];
 }
 
-for ($i=1; $i<=10; $i++) {
+for ($i = 1; $i <= 10; $i++) {
     $var = "wr_$i";
     $$var = "";
-    if (isset($_POST['wr_'.$i]) && settype($_POST['wr_'.$i], 'string')) {
-        $$var = trim($_POST['wr_'.$i]);
+    if (isset($_POST['wr_' . $i]) && settype($_POST['wr_' . $i], 'string')) {
+        $$var = trim($_POST['wr_' . $i]);
     }
 }
 
-@include_once($board_skin_path.'/write_update.head.skin.php');
+@include_once($board_skin_path . '/write_update.head.skin.php');
 
 run_event('write_update_before', $board, $wr_id, $w, $qstr);
 
@@ -149,12 +149,12 @@ if ($w == '' || $w == 'u') {
     }
 
     //회원 자신이 쓴글을 수정할 경우 공지가 풀리는 경우가 있음 
-    if($w =='u' && !$is_admin && $board['bo_notice'] && in_array($wr['wr_id'], $notice_array)){
+    if ($w == 'u' && !$is_admin && $board['bo_notice'] && in_array($wr['wr_id'], $notice_array)) {
         $notice = 1;
     }
 
     // 김선용 1.00 : 글쓰기 권한과 수정은 별도로 처리되어야 함
-    if($w =='u' && $member['mb_id'] && $wr['mb_id'] === $member['mb_id']) {
+    if ($w == 'u' && $member['mb_id'] && $wr['mb_id'] === $member['mb_id']) {
         ;
     } else if ($member['mb_level'] < $board['bo_write_level']) {
         alert('글을 쓸 권한이 없습니다.');
@@ -227,7 +227,7 @@ if (!isset($_POST['wr_subject']) || !trim($_POST['wr_subject']))
 
 $wr_seo_title = exist_seo_title_recursive('bbs', generate_seo_title($wr_subject), $write_table, $wr_id);
 
-$options = array($html,$secret,$mail);
+$options = array($html, $secret, $mail);
 $wr_option = implode(',', array_filter(array_map('trim', $options)));
 
 if ($w == '' || $w == 'r') {
@@ -263,7 +263,7 @@ if ($w == '' || $w == 'r') {
         $wr_num = 0;
         $wr_reply = '';
     }
-    
+
     $sql = " insert into $write_table
                 set wr_num = " . ($w == 'r' ? "'$wr_num'" : "(SELECT IFNULL(MIN(wr_num) - 1, -1) FROM $write_table as sq) ") . ",
                      wr_reply = '$wr_reply',
@@ -285,8 +285,8 @@ if ($w == '' || $w == 'r') {
                      wr_name = '$wr_name',
                      wr_email = '$wr_email',
                      wr_homepage = '$wr_homepage',
-                     wr_datetime = '".G5_TIME_YMDHIS."',
-                     wr_last = '".G5_TIME_YMDHIS."',
+                     wr_datetime = '" . G5_TIME_YMDHIS . "',
+                     wr_last = '" . G5_TIME_YMDHIS . "',
                      wr_ip = '{$_SERVER['REMOTE_ADDR']}',
                      wr_1 = '$wr_1',
                      wr_2 = '$wr_2',
@@ -306,7 +306,7 @@ if ($w == '' || $w == 'r') {
     sql_query(" update $write_table set wr_parent = '$wr_id' where wr_id = '$wr_id' ");
 
     // 새글 INSERT
-    sql_query(" insert into {$g5['board_new_table']} ( bo_table, wr_id, wr_parent, bn_datetime, mb_id ) values ( '{$bo_table}', '{$wr_id}', '{$wr_id}', '".G5_TIME_YMDHIS."', '{$member['mb_id']}' ) ");
+    sql_query(" insert into {$g5['board_new_table']} ( bo_table, wr_id, wr_parent, bn_datetime, mb_id ) values ( '{$bo_table}', '{$wr_id}', '{$wr_id}', '" . G5_TIME_YMDHIS . "', '{$member['mb_id']}' ) ");
 
     // 게시글 1 증가
     sql_query("update {$g5['board_table']} set bo_count_write = bo_count_write + 1 where bo_table = '{$bo_table}'");
@@ -314,7 +314,7 @@ if ($w == '' || $w == 'r') {
     // 쓰기 포인트 부여
     if ($w == '') {
         if ($notice) {
-            $bo_notice = $wr_id.($board['bo_notice'] ? ",".$board['bo_notice'] : '');
+            $bo_notice = $wr_id . ($board['bo_notice'] ? "," . $board['bo_notice'] : '');
             sql_query(" update {$g5['board_table']} set bo_notice = '{$bo_notice}' where bo_table = '{$bo_table}' ");
         }
 
@@ -324,7 +324,7 @@ if ($w == '' || $w == 'r') {
         // 답변 포인트가 많은 경우 코멘트 대신 답변을 하는 경우가 많음
         insert_point($member['mb_id'], $board['bo_comment_point'], "{$board['bo_subject']} {$wr_id} 글답변", $bo_table, $wr_id, '쓰기');
     }
-}  else if ($w == 'u') {
+} else if ($w == 'u') {
     if (get_session('ss_bo_table') != $_POST['bo_table'] || get_session('ss_wr_id') != $_POST['wr_id']) {
         alert('올바른 방법으로 수정하여 주십시오.', get_pretty_url($bo_table));
     }
@@ -350,7 +350,7 @@ if ($w == '' || $w == 'r') {
             alert('자신의 글이 아니므로 수정할 수 없습니다.', $return_url);
     } else {
         if ($write['mb_id'])
-            alert('로그인 후 수정하세요.', G5_BBS_URL.'/login.php?url='.urlencode($return_url));
+            alert('로그인 후 수정하세요.', G5_BBS_URL . '/login.php?url=' . urlencode($return_url));
     }
 
     if ($member['mb_id']) {
@@ -362,15 +362,15 @@ if ($w == '' || $w == 'r') {
             $wr_homepage = addslashes(clean_xss_tags($member['mb_homepage']));
         } else {
             $mb_id = $wr['mb_id'];
-            if(isset($_POST['wr_name']) && $_POST['wr_name'])
+            if (isset($_POST['wr_name']) && $_POST['wr_name'])
                 $wr_name = clean_xss_tags(trim($_POST['wr_name']));
             else
                 $wr_name = addslashes(clean_xss_tags($wr['wr_name']));
-            if(isset($_POST['wr_email']) && $_POST['wr_email'])
+            if (isset($_POST['wr_email']) && $_POST['wr_email'])
                 $wr_email = get_email_address(trim($_POST['wr_email']));
             else
                 $wr_email = addslashes($wr['wr_email']);
-            if(isset($_POST['wr_homepage']) && $_POST['wr_homepage'])
+            if (isset($_POST['wr_homepage']) && $_POST['wr_homepage'])
                 $wr_homepage = addslashes(clean_xss_tags($_POST['wr_homepage']));
             else
                 $wr_homepage = addslashes(clean_xss_tags($wr['wr_homepage']));
@@ -383,7 +383,7 @@ if ($w == '' || $w == 'r') {
         $wr_email = get_email_address(trim($_POST['wr_email']));
     }
 
-    $sql_password = $wr_password ? " , wr_password = '".get_encrypt_string($wr_password)."' " : "";
+    $sql_password = $wr_password ? " , wr_password = '" . get_encrypt_string($wr_password) . "' " : "";
 
     $sql_ip = '';
     if (!$is_admin)
@@ -443,7 +443,7 @@ if ($w == '' || $w == 'r') {
     sql_query(" update {$g5['board_table']} set bo_notice = '{$bo_notice}' where bo_table = '{$bo_table}' ");
 
     // 글을 수정한 경우에는 제목이 달라질수도 있으니 static variable 를 새로고침합니다.
-    $write = get_write( $write_table, $wr['wr_id'], false);
+    $write = get_write($write_table, $wr['wr_id'], false);
 }
 
 // 게시판그룹접근사용을 하지 않아야 하고 비회원 글읽기가 가능해야 하며 비밀글이 아니어야 합니다.
@@ -452,39 +452,39 @@ if (!$group['gr_use_access'] && $board['bo_read_level'] < 2 && !$secret) {
 }
 
 // 파일개수 체크
-$file_count   = 0;
+$file_count = 0;
 $upload_count = (isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) ? count($_FILES['bf_file']['name']) : 0;
 
-for ($i=0; $i<$upload_count; $i++) {
-    if($_FILES['bf_file']['name'][$i] && is_uploaded_file($_FILES['bf_file']['tmp_name'][$i]))
+for ($i = 0; $i < $upload_count; $i++) {
+    if ($_FILES['bf_file']['name'][$i] && is_uploaded_file($_FILES['bf_file']['tmp_name'][$i]))
         $file_count++;
 }
 
-if($w == 'u') {
+if ($w == 'u') {
     $file = get_file($bo_table, $wr_id);
-    if($file_count && (int)$file['count'] > $board['bo_upload_count'])
-        alert('기존 파일을 삭제하신 후 첨부파일을 '.number_format($board['bo_upload_count']).'개 이하로 업로드 해주십시오.');
+    if ($file_count && (int)$file['count'] > $board['bo_upload_count'])
+        alert('기존 파일을 삭제하신 후 첨부파일을 ' . number_format($board['bo_upload_count']) . '개 이하로 업로드 해주십시오.');
 } else {
-    if($file_count > $board['bo_upload_count'])
-        alert('첨부파일을 '.number_format($board['bo_upload_count']).'개 이하로 업로드 해주십시오.');
+    if ($file_count > $board['bo_upload_count'])
+        alert('첨부파일을 ' . number_format($board['bo_upload_count']) . '개 이하로 업로드 해주십시오.');
 }
 
 // 디렉토리가 없다면 생성합니다. (퍼미션도 변경하구요.)
-@mkdir(G5_DATA_PATH.'/file/'.$bo_table, G5_DIR_PERMISSION);
-@chmod(G5_DATA_PATH.'/file/'.$bo_table, G5_DIR_PERMISSION);
+@mkdir(G5_DATA_PATH . '/file/' . $bo_table, G5_DIR_PERMISSION);
+@chmod(G5_DATA_PATH . '/file/' . $bo_table, G5_DIR_PERMISSION);
 
-$chars_array = array_merge(range(0,9), range('a','z'), range('A','Z'));
+$chars_array = array_merge(range(0, 9), range('a', 'z'), range('A', 'Z'));
 
 // 가변 파일 업로드
 $file_upload_msg = '';
 $upload = array();
 
-if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
-    for ($i=0; $i<count($_FILES['bf_file']['name']); $i++) {
-        $upload[$i]['file']     = '';
-        $upload[$i]['source']   = '';
+if (isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
+    for ($i = 0; $i < count($_FILES['bf_file']['name']); $i++) {
+        $upload[$i]['file'] = '';
+        $upload[$i]['source'] = '';
         $upload[$i]['filesize'] = 0;
-        $upload[$i]['image']    = array();
+        $upload[$i]['image'] = array();
         $upload[$i]['image'][0] = 0;
         $upload[$i]['image'][1] = 0;
         $upload[$i]['image'][2] = 0;
@@ -498,31 +498,29 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
 
             $row = sql_fetch(" select * from {$g5['board_file_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and bf_no = '{$i}' ");
 
-            $delete_file = run_replace('delete_file_path', G5_DATA_PATH.'/file/'.$bo_table.'/'.str_replace('../', '', $row['bf_file']), $row);
-            if( file_exists($delete_file) ){
+            $delete_file = run_replace('delete_file_path', G5_DATA_PATH . '/file/' . $bo_table . '/' . str_replace('../', '', $row['bf_file']), $row);
+            if (file_exists($delete_file)) {
                 @unlink($delete_file);
             }
             // 썸네일삭제
-            if(preg_match("/\.({$config['cf_image_extension']})$/i", $row['bf_file'])) {
+            if (preg_match("/\.({$config['cf_image_extension']})$/i", $row['bf_file'])) {
                 delete_board_thumbnail($bo_table, $row['bf_file']);
             }
-        }
-        else
+        } else
             $upload[$i]['del_check'] = false;
 
-        $tmp_file  = $_FILES['bf_file']['tmp_name'][$i];
-        $filesize  = $_FILES['bf_file']['size'][$i];
-        $filename  = $_FILES['bf_file']['name'][$i];
-        $filename  = get_safe_filename($filename);
+        $tmp_file = $_FILES['bf_file']['tmp_name'][$i];
+        $filesize = $_FILES['bf_file']['size'][$i];
+        $filename = $_FILES['bf_file']['name'][$i];
+        $filename = get_safe_filename($filename);
 
         // 서버에 설정된 값보다 큰파일을 업로드 한다면
         if ($filename) {
             if ($_FILES['bf_file']['error'][$i] == 1) {
-                $file_upload_msg .= '\"'.$filename.'\" 파일의 용량이 서버에 설정('.$upload_max_filesize.')된 값보다 크므로 업로드 할 수 없습니다.\\n';
+                $file_upload_msg .= '\"' . $filename . '\" 파일의 용량이 서버에 설정(' . $upload_max_filesize . ')된 값보다 크므로 업로드 할 수 없습니다.\\n';
                 continue;
-            }
-            else if ($_FILES['bf_file']['error'][$i] != 0) {
-                $file_upload_msg .= '\"'.$filename.'\" 파일이 정상적으로 업로드 되지 않았습니다.\\n';
+            } else if ($_FILES['bf_file']['error'][$i] != 0) {
+                $file_upload_msg .= '\"' . $filename . '\" 파일이 정상적으로 업로드 되지 않았습니다.\\n';
                 continue;
             }
         }
@@ -530,7 +528,7 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
         if (is_uploaded_file($tmp_file)) {
             // 관리자가 아니면서 설정한 업로드 사이즈보다 크다면 건너뜀
             if (!$is_admin && $filesize > $board['bo_upload_size']) {
-                $file_upload_msg .= '\"'.$filename.'\" 파일의 용량('.number_format($filesize).' 바이트)이 게시판에 설정('.number_format($board['bo_upload_size']).' 바이트)된 값보다 크므로 업로드 하지 않습니다.\\n';
+                $file_upload_msg .= '\"' . $filename . '\" 파일의 용량(' . number_format($filesize) . ' 바이트)이 게시판에 설정(' . number_format($board['bo_upload_size']) . ' 바이트)된 값보다 크므로 업로드 하지 않습니다.\\n';
                 continue;
             }
 
@@ -541,8 +539,8 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
             //-----------------------------------------------------------------
             $timg = @getimagesize($tmp_file);
             // image type
-            if ( preg_match("/\.({$config['cf_image_extension']})$/i", $filename) ||
-                 preg_match("/\.({$config['cf_flash_extension']})$/i", $filename) ) {
+            if (preg_match("/\.({$config['cf_image_extension']})$/i", $filename) ||
+                preg_match("/\.({$config['cf_flash_extension']})$/i", $filename)) {
                 if ($timg['2'] < 1 || $timg['2'] > 18)
                     continue;
             }
@@ -554,14 +552,14 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
             if ($w == 'u') {
                 // 존재하는 파일이 있다면 삭제합니다.
                 $row = sql_fetch(" select * from {$g5['board_file_table']} where bo_table = '$bo_table' and wr_id = '$wr_id' and bf_no = '$i' ");
-                
-                if(isset($row['bf_file']) && $row['bf_file']){
-                    $delete_file = run_replace('delete_file_path', G5_DATA_PATH.'/file/'.$bo_table.'/'.str_replace('../', '', $row['bf_file']), $row);
-                    if( file_exists($delete_file) ){
-                        @unlink(G5_DATA_PATH.'/file/'.$bo_table.'/'.$row['bf_file']);
+
+                if (isset($row['bf_file']) && $row['bf_file']) {
+                    $delete_file = run_replace('delete_file_path', G5_DATA_PATH . '/file/' . $bo_table . '/' . str_replace('../', '', $row['bf_file']), $row);
+                    if (file_exists($delete_file)) {
+                        @unlink(G5_DATA_PATH . '/file/' . $bo_table . '/' . $row['bf_file']);
                     }
                     // 이미지파일이면 썸네일삭제
-                    if(preg_match("/\.({$config['cf_image_extension']})$/i", $row['bf_file'])) {
+                    if (preg_match("/\.({$config['cf_image_extension']})$/i", $row['bf_file'])) {
                         delete_board_thumbnail($bo_table, $row['bf_file']);
                     }
                 }
@@ -578,9 +576,9 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
             $shuffle = implode('', $chars_array);
 
             // 첨부파일 첨부시 첨부파일명에 공백이 포함되어 있으면 일부 PC에서 보이지 않거나 다운로드 되지 않는 현상이 있습니다. (길상여의 님 090925)
-            $upload[$i]['file'] = md5(sha1($_SERVER['REMOTE_ADDR'])).'_'.substr($shuffle,0,8).'_'.replace_filename($filename);
+            $upload[$i]['file'] = md5(sha1($_SERVER['REMOTE_ADDR'])) . '_' . substr($shuffle, 0, 8) . '_' . replace_filename($filename);
 
-            $dest_file = G5_DATA_PATH.'/file/'.$bo_table.'/'.$upload[$i]['file'];
+            $dest_file = G5_DATA_PATH . '/file/' . $bo_table . '/' . $upload[$i]['file'];
 
             // 업로드가 안된다면 에러메세지 출력하고 죽어버립니다.
             $error_code = move_uploaded_file($tmp_file, $dest_file) or die($_FILES['bf_file']['error'][$i]);
@@ -595,21 +593,18 @@ if(isset($_FILES['bf_file']['name']) && is_array($_FILES['bf_file']['name'])) {
 }   // end if
 
 // 나중에 테이블에 저장하는 이유는 $wr_id 값을 저장해야 하기 때문입니다.
-for ($i=0; $i<count($upload); $i++)
-{
+for ($i = 0; $i < count($upload); $i++) {
     $upload[$i]['source'] = sql_real_escape_string($upload[$i]['source']);
     $bf_content[$i] = isset($bf_content[$i]) ? sql_real_escape_string($bf_content[$i]) : '';
-    $bf_width = isset($upload[$i]['image'][0]) ? (int) $upload[$i]['image'][0] : 0;
-    $bf_height = isset($upload[$i]['image'][1]) ? (int) $upload[$i]['image'][1] : 0;
-    $bf_type = isset($upload[$i]['image'][2]) ? (int) $upload[$i]['image'][2] : 0;
+    $bf_width = isset($upload[$i]['image'][0]) ? (int)$upload[$i]['image'][0] : 0;
+    $bf_height = isset($upload[$i]['image'][1]) ? (int)$upload[$i]['image'][1] : 0;
+    $bf_type = isset($upload[$i]['image'][2]) ? (int)$upload[$i]['image'][2] : 0;
 
     $row = sql_fetch(" select count(*) as cnt from {$g5['board_file_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and bf_no = '{$i}' ");
-    if ($row['cnt'])
-    {
+    if ($row['cnt']) {
         // 삭제에 체크가 있거나 파일이 있다면 업데이트를 합니다.
         // 그렇지 않다면 내용만 업데이트 합니다.
-        if ($upload[$i]['del_check'] || $upload[$i]['file'])
-        {
+        if ($upload[$i]['del_check'] || $upload[$i]['file']) {
             $sql = " update {$g5['board_file_table']}
                         set bf_source = '{$upload[$i]['source']}',
                              bf_file = '{$upload[$i]['file']}',
@@ -617,18 +612,16 @@ for ($i=0; $i<count($upload); $i++)
                              bf_fileurl = '{$upload[$i]['fileurl']}',
                              bf_thumburl = '{$upload[$i]['thumburl']}',
                              bf_storage = '{$upload[$i]['storage']}',
-                             bf_filesize = '".(int)$upload[$i]['filesize']."',
-                             bf_width = '".$bf_width."',
-                             bf_height = '".$bf_height."',
-                             bf_type = '".$bf_type."',
-                             bf_datetime = '".G5_TIME_YMDHIS."'
+                             bf_filesize = '" . (int)$upload[$i]['filesize'] . "',
+                             bf_width = '" . $bf_width . "',
+                             bf_height = '" . $bf_height . "',
+                             bf_type = '" . $bf_type . "',
+                             bf_datetime = '" . G5_TIME_YMDHIS . "'
                       where bo_table = '{$bo_table}'
                                 and wr_id = '{$wr_id}'
                                 and bf_no = '{$i}' ";
             sql_query($sql);
-        }
-        else
-        {
+        } else {
             $sql = " update {$g5['board_file_table']}
                         set bf_content = '{$bf_content[$i]}'
                         where bo_table = '{$bo_table}'
@@ -636,9 +629,7 @@ for ($i=0; $i<count($upload); $i++)
                                   and bf_no = '{$i}' ";
             sql_query($sql);
         }
-    }
-    else
-    {
+    } else {
         $sql = " insert into {$g5['board_file_table']}
                     set bo_table = '{$bo_table}',
                          wr_id = '{$wr_id}',
@@ -650,11 +641,11 @@ for ($i=0; $i<count($upload); $i++)
                          bf_thumburl = '{$upload[$i]['thumburl']}',
                          bf_storage = '{$upload[$i]['storage']}',
                          bf_download = 0,
-                         bf_filesize = '".(int)$upload[$i]['filesize']."',
-                         bf_width = '".$bf_width."',
-                         bf_height = '".$bf_height."',
-                         bf_type = '".$bf_type."',
-                         bf_datetime = '".G5_TIME_YMDHIS."' ";
+                         bf_filesize = '" . (int)$upload[$i]['filesize'] . "',
+                         bf_width = '" . $bf_width . "',
+                         bf_height = '" . $bf_height . "',
+                         bf_type = '" . $bf_type . "',
+                         bf_datetime = '" . G5_TIME_YMDHIS . "' ";
         sql_query($sql);
 
         run_event('write_update_file_insert', $bo_table, $wr_id, $upload[$i], $w);
@@ -664,8 +655,7 @@ for ($i=0; $i<count($upload); $i++)
 // 업로드된 파일 내용에서 가장 큰 번호를 얻어 거꾸로 확인해 가면서
 // 파일 정보가 없다면 테이블의 내용을 삭제합니다.
 $row = sql_fetch(" select max(bf_no) as max_bf_no from {$g5['board_file_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ");
-for ($i=(int)$row['max_bf_no']; $i>=0; $i--)
-{
+for ($i = (int)$row['max_bf_no']; $i >= 0; $i--) {
     $row2 = sql_fetch(" select bf_file from {$g5['board_file_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' and bf_no = '{$i}' ");
 
     // 정보가 있다면 빠집니다.
@@ -711,17 +701,17 @@ if (!($w == 'u' || $w == 'cu') && $config['cf_email_use'] && $board['bo_use_emai
 
     $wr_content = conv_content(conv_unescape_nl(stripslashes($wr_content)), $tmp_html);
 
-    $warr = array( ''=>'입력', 'u'=>'수정', 'r'=>'답변', 'c'=>'코멘트', 'cu'=>'코멘트 수정' );
+    $warr = array('' => '입력', 'u' => '수정', 'r' => '답변', 'c' => '코멘트', 'cu' => '코멘트 수정');
     $str = $warr[$w];
 
-    $subject = '['.$config['cf_title'].'] '.$board['bo_subject'].' 게시판에 '.$str.'글이 올라왔습니다.';
+    $subject = '[' . $config['cf_title'] . '] ' . $board['bo_subject'] . ' 게시판에 ' . $str . '글이 올라왔습니다.';
 
     $link_url = get_pretty_url($bo_table, $wr_id, $qstr);
 
-    include_once(G5_LIB_PATH.'/mailer.lib.php');
+    include_once(G5_LIB_PATH . '/mailer.lib.php');
 
     ob_start();
-    include_once ('./write_update_mail.php');
+    include_once('./write_update_mail.php');
     $content = ob_get_contents();
     ob_end_clean();
 
@@ -735,7 +725,7 @@ if (!($w == 'u' || $w == 'cu') && $config['cf_email_use'] && $board['bo_use_emai
 
     // 원글게시자에게 보내는 메일
     if ($config['cf_email_wr_write']) {
-        if($w == '')
+        if ($w == '')
             $wr['wr_email'] = $wr_email;
 
         $array_email[] = $wr['wr_email'];
@@ -751,18 +741,18 @@ if (!($w == 'u' || $w == 'cu') && $config['cf_email_use'] && $board['bo_use_emai
     $unique_email = array_unique($array_email);
     $unique_email = run_replace('write_update_mail_list', array_values($unique_email), $board, $wr_id);
 
-    for ($i=0; $i<count($unique_email); $i++) {
+    for ($i = 0; $i < count($unique_email); $i++) {
         mailer($wr_name, $wr_email, $unique_email[$i], $subject, $content, 1);
     }
 }
 
 // 사용자 코드 실행
-@include_once($board_skin_path.'/write_update.skin.php');
-@include_once($board_skin_path.'/write_update.tail.skin.php');
+@include_once($board_skin_path . '/write_update.skin.php');
+@include_once($board_skin_path . '/write_update.tail.skin.php');
 
 delete_cache_latest($bo_table);
 
-$redirect_url = run_replace('write_update_move_url', short_url_clean(G5_HTTP_BBS_URL.'/board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id.$qstr), $board, $wr_id, $w, $qstr, $file_upload_msg);
+$redirect_url = run_replace('write_update_move_url', short_url_clean(G5_HTTP_BBS_URL . '/board.php?bo_table=' . $bo_table . '&amp;wr_id=' . $wr_id . $qstr), $board, $wr_id, $w, $qstr, $file_upload_msg);
 
 run_event('write_update_after', $board, $wr_id, $w, $qstr, $redirect_url);
 

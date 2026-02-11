@@ -2,7 +2,7 @@
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
 // 토스페이먼츠 v2 공통 설정
-require_once(G5_SHOP_PATH.'/toss/toss.inc.php');
+require_once(G5_SHOP_PATH . '/toss/toss.inc.php');
 
 $orderId = isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : '';
 $paymentKey = isset($_POST['paymentKey']) ? $_POST['paymentKey'] : '';
@@ -43,7 +43,7 @@ if ($result) {
     // 결제승인 성공시 처리
     $status = isset($toss->responseData['status']) ? $toss->responseData['status'] : '';
     $method = isset($toss->responseData['method']) ? $toss->responseData['method'] : '';
-    
+
     // 가상계좌(VIRTUAL_ACCOUNT)만 입금대기(WAITING_FOR_DEPOSIT) 상태 값을 가질 수 있음
     if ($status === 'DONE' || ($status === 'WAITING_FOR_DEPOSIT' && $method === '가상계좌')) {
         // 공통 DB처리 변수 설정
@@ -51,12 +51,12 @@ if ($result) {
         $amount = isset($toss->responseData['totalAmount']) ? $toss->responseData['totalAmount'] : 0;
         $escw_yn = $toss->responseData['useEscrow'] === true ? 'Y' : 'N';
         $app_time = isset($toss->responseData['approvedAt']) ? date('Y-m-d H:i:s', strtotime($toss->responseData['approvedAt'])) : '';
-        
+
         // 결제수단별 데이터 처리 (카드, 가상계좌, 계좌이체, 휴대폰, 간편결제 순)
         if ($method === '카드') {
             // 카드
             $app_no = $od_app_no = isset($toss->responseData['card']['approveNo']) ? $toss->responseData['card']['approveNo'] : '00000000';
-            $card_name = isset($toss->cardCode[$toss->responseData['card']['issuerCode']]) ? $toss->cardCode[$toss->responseData['card']['issuerCode']] : '';            
+            $card_name = isset($toss->cardCode[$toss->responseData['card']['issuerCode']]) ? $toss->cardCode[$toss->responseData['card']['issuerCode']] : '';
         } else if ($method === '가상계좌') {
             // 가상계좌
             $bank_name = $bankname = isset($toss->bankCode[$toss->responseData['virtualAccount']['bankCode']]) ? $toss->bankCode[$toss->responseData['virtualAccount']['bankCode']] : '';
@@ -77,11 +77,11 @@ if ($result) {
             if ($RcptType) {
                 $pg_receipt_infos['od_cash'] = 1;   // 현금영수증 발급인것으로 처리
                 $pg_receipt_infos['od_cash_no'] = $RcptAuthCode;    // 현금영수증 승인번호
-                $pg_receipt_infos['od_cash_info'] = serialize(array('TID'=>$RcptTID, 'ApplNum'=>$RcptAuthCode, 'receiptUrl'=>$RcptReceiptUrl));
+                $pg_receipt_infos['od_cash_info'] = serialize(array('TID' => $RcptTID, 'ApplNum' => $RcptAuthCode, 'receiptUrl' => $RcptReceiptUrl));
             }
         } else if ($method === '휴대폰') {
             // 휴대폰
-            $mobile_no = isset($toss->responseData['mobilePhone']['customerMobilePhone']) ? $toss->responseData['mobilePhone']['customerMobilePhone'] : '';            
+            $mobile_no = isset($toss->responseData['mobilePhone']['customerMobilePhone']) ? $toss->responseData['mobilePhone']['customerMobilePhone'] : '';
         } else if ($method === '간편결제') {
             // 간편결제
             $provider = isset($toss->responseData['easyPay']['provider']) ? $toss->responseData['easyPay']['provider'] : '';
@@ -89,20 +89,20 @@ if ($result) {
         }
     } else {
 
-        if(G5_IS_MOBILE) {
-            if(isset($_POST['pp_id']) && $_POST['pp_id']) {
-                $page_return_url = G5_SHOP_URL.'/personalpayform.php?pp_id='.get_session('ss_personalpay_id');
+        if (G5_IS_MOBILE) {
+            if (isset($_POST['pp_id']) && $_POST['pp_id']) {
+                $page_return_url = G5_SHOP_URL . '/personalpayform.php?pp_id=' . get_session('ss_personalpay_id');
             } else {
-                $page_return_url = G5_SHOP_URL.'/orderform.php';
-                if(get_session('ss_direct'))
+                $page_return_url = G5_SHOP_URL . '/orderform.php';
+                if (get_session('ss_direct'))
                     $page_return_url .= '?sw_direct=1';
             }
 
-            alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], $page_return_url);
+            alert($toss->responseData['message'] . ' 코드 : ' . $toss->responseData['code'], $page_return_url);
         } else {
-            alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], G5_SHOP_URL.'/orderform.php');
+            alert($toss->responseData['message'] . ' 코드 : ' . $toss->responseData['code'], G5_SHOP_URL . '/orderform.php');
         }
     }
 } else {
-    alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], G5_SHOP_URL);
+    alert($toss->responseData['message'] . ' 코드 : ' . $toss->responseData['code'], G5_SHOP_URL);
 }

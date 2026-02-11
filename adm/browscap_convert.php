@@ -19,32 +19,32 @@ $g5['title'] = '접속로그 변환';
 require_once './admin.head.php';
 ?>
 
-<div id="processing">
-    <p>접속로그 정보를 Browscap 정보로 변환하시려면 아래 업데이트 버튼을 클릭해 주세요.</p>
-    <button type="button" id="run_update">업데이트</button>
-</div>
+    <div id="processing">
+        <p>접속로그 정보를 Browscap 정보로 변환하시려면 아래 업데이트 버튼을 클릭해 주세요.</p>
+        <button type="button" id="run_update">업데이트</button>
+    </div>
 
-<script>
-    $(function() {
-        $(document).on("click", "#run_update", function() {
-            $("#processing").html('<div class="update_processing"></div><p>Browscap 정보로 변환 중입니다.</p>');
+    <script>
+      $(function () {
+        $(document).on("click", "#run_update", function () {
+          $("#processing").html('<div class="update_processing"></div><p>Browscap 정보로 변환 중입니다.</p>');
 
-            $.ajax({
-                method: "GET",
-                url: "./browscap_converter.php",
-                data: {
-                    rows: "<?php echo strval($rows); ?>"
-                },
-                async: true,
-                cache: false,
-                dataType: "html",
-                success: function(data) {
-                    $("#processing").html(data);
-                }
-            });
+          $.ajax({
+            method: "GET",
+            url: "./browscap_converter.php",
+            data: {
+              rows: "<?php echo strval($rows); ?>"
+            },
+            async: true,
+            cache: false,
+            dataType: "html",
+            success: function (data) {
+              $("#processing").html(data);
+            }
+          });
         });
-    });
-</script>
+      });
+    </script>
 
 <?php
 require_once './admin.tail.php';

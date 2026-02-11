@@ -1,5 +1,7 @@
 <?php
-class TossPayments {
+
+class TossPayments
+{
 
     // 클라이언트, 시크릿 키, 상점아이디
     public string $clientKey;
@@ -47,7 +49,7 @@ class TossPayments {
         '89' => '케이뱅크',
         '90' => '카카오뱅크',
         '92' => '토스뱅크',
-    
+
         // 증권
         'S0' => '유안타증권',
         'S2' => '신한금융투자',
@@ -117,21 +119,13 @@ class TossPayments {
         'SSG' => 'SSG페이'
     );
 
-    public function __construct(string $clientKey, string $secretKey, string $mId) {
+    public function __construct(string $clientKey, string $secretKey, string $mId)
+    {
         $this->clientKey = $clientKey;
         $this->secretKey = $secretKey;
         $this->mId = $mId;
     }
 
-    /**
-     * 헤더 시크릿 키 설정
-     * @return void
-     */
-    private function setHeaderSecretKey(): void
-    {
-        $this->headerSecretKey = base64_encode($this->secretKey . ':');
-    }
- 
     /**
      * 헤더 설정
      * @return void
@@ -144,6 +138,15 @@ class TossPayments {
             'Authorization: Basic ' . $this->headerSecretKey,
             'Content-Type' => 'Content-Type: application/json'
         );
+    }
+
+    /**
+     * 헤더 시크릿 키 설정
+     * @return void
+     */
+    private function setHeaderSecretKey(): void
+    {
+        $this->headerSecretKey = base64_encode($this->secretKey . ':');
     }
 
     /**
@@ -200,7 +203,8 @@ class TossPayments {
      *
      * @return bool
      */
-    public function approvePayment(): bool {
+    public function approvePayment(): bool
+    {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->acceptUrl);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
@@ -346,7 +350,7 @@ class TossPayments {
     public function cancelCashReceipt($receiptKey): bool
     {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->cashReceiptsUrl."/".$receiptKey."/cancel");
+        curl_setopt($curl, CURLOPT_URL, $this->cashReceiptsUrl . "/" . $receiptKey . "/cancel");
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
         curl_setopt($curl, CURLOPT_SSLVERSION, 6);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

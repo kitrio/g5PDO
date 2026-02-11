@@ -16,7 +16,7 @@ if (!$count) {
 for ($i = 0; $i < $count; $i++) {
     // 실제 번호를 넘김
     $k = $_POST['chk'][$i];
-    $po_id = (int) $_POST['po_id'][$k];
+    $po_id = (int)$_POST['po_id'][$k];
     $str_mb_id = sql_real_escape_string($_POST['mb_id'][$k]);
 
     // 포인트 내역정보

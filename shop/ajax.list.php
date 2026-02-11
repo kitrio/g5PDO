@@ -18,24 +18,24 @@ if (!$ca['ca_id'])
 // 스킨경로
 $skin_dir = G5_MSHOP_SKIN_PATH;
 
-if($ca['ca_mobile_skin_dir']) {
-    $skin_dir = G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/shop/'.$ca['ca_mobile_skin_dir'];
+if ($ca['ca_mobile_skin_dir']) {
+    $skin_dir = G5_MOBILE_PATH . '/' . G5_SKIN_DIR . '/shop/' . $ca['ca_mobile_skin_dir'];
 
-    if(is_dir($skin_dir)) {
-        $skin_file = $skin_dir.'/'.$ca['ca_mobile_skin'];
+    if (is_dir($skin_dir)) {
+        $skin_file = $skin_dir . '/' . $ca['ca_mobile_skin'];
 
-        if(!is_file($skin_file))
+        if (!is_file($skin_file))
             $skin_dir = G5_MSHOP_SKIN_PATH;
     } else {
         $skin_dir = G5_MSHOP_SKIN_PATH;
     }
 }
 
-$skin_file = $skin_dir.'/'.$ca['ca_mobile_skin'];
+$skin_file = $skin_dir . '/' . $ca['ca_mobile_skin'];
 
 // 상품 출력순서가 있다면
 if ($sort != "")
-    $order_by = $sort.' '.$sortodr.' , it_order, it_id desc';
+    $order_by = $sort . ' ' . $sortodr . ' , it_order, it_id desc';
 else
     $order_by = 'it_order, it_id desc';
 
@@ -63,7 +63,7 @@ $list->set_view('it_img', true);
 $list->set_view('it_id', false);
 $list->set_view('it_name', true);
 $list->set_view('it_price', true);
-if(isset($use_sns) && $use_sns){
+if (isset($use_sns) && $use_sns) {
     $list->set_view('sns', true);
 }
 echo $list->run();
@@ -71,8 +71,8 @@ echo $list->run();
 $content = ob_get_contents();
 ob_end_clean();
 
-$data['item']  = $content;
+$data['item'] = $content;
 $data['error'] = '';
-$data['page']  = $page;
+$data['page'] = $page;
 
 die(json_encode($data));

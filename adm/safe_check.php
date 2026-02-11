@@ -7,7 +7,7 @@ function social_log_file_delete($second = 0)
 {
     $files = glob(G5_DATA_PATH . '/tmp/social_*');
     if (is_array($files)) {
-        $before_time  = $second ? G5_SERVER_TIME - $second : 0;
+        $before_time = $second ? G5_SERVER_TIME - $second : 0;
         foreach ($files as $social_log_file) {
             $modification_time = filemtime($social_log_file); // 파일접근시간
 

@@ -8,8 +8,7 @@ $g5['title'] = "전화번호부";
 
 $post_bk_no = (isset($_POST['bk_no']) && is_array($_POST['bk_no'])) ? $_POST['bk_no'] : array();
 
-for ($i=0; $i<count($post_bk_no); $i++) 
-{
+for ($i = 0; $i < count($post_bk_no); $i++) {
     $bk_no = $post_bk_no[$i];
     if (!trim($bk_no)) continue;
 
@@ -21,22 +20,20 @@ for ($i=0; $i<count($post_bk_no); $i++)
         sql_query("update {$g5['sms5_book_table']} set bk_receipt=0 where bk_no='$bk_no'");
 
         if ($res['mb_id'])
-           sql_query("update {$g5['member_table']} set mb_sms=0 where mb_id='{$res['mb_id']}'");
+            sql_query("update {$g5['member_table']} set mb_sms=0 where mb_id='{$res['mb_id']}'");
 
         if ($res['bk_receipt'] == 1)
             sql_query("update {$g5['sms5_book_group_table']} set bg_receipt= case bg_receipt when 0 then 0 else bg_receipt - 1 end, bg_reject=bg_reject+1 where bg_no='{$res['bg_no']}'");
-    }
-    else if ($atype == 'receipt') // 수신허용
+    } else if ($atype == 'receipt') // 수신허용
     {
         sql_query("update {$g5['sms5_book_table']} set bk_receipt=1 where bk_no='$bk_no'");
 
         if ($res['mb_id'])
-           sql_query("update {$g5['member_table']} set mb_sms=1 where mb_id='{$res['mb_id']}'");
+            sql_query("update {$g5['member_table']} set mb_sms=1 where mb_id='{$res['mb_id']}'");
 
         if ($res['bk_receipt'] == 0)
             sql_query("update {$g5['sms5_book_group_table']} set bg_receipt=bg_receipt+1, bg_reject= case bg_reject when 0 then 0 else bg_reject - 1 end where bg_no='{$res['bg_no']}'");
-    }
-    else if ($atype == 'del') // 삭제
+    } else if ($atype == 'del') // 삭제
     {
         sql_query("delete from {$g5['sms5_book_table']} where bk_no='$bk_no'");
 
@@ -58,7 +55,7 @@ for ($i=0; $i<count($post_bk_no); $i++)
         */
     }
 }
-if( $str_query ){
-    $str_query = '?'.$str_query;
+if ($str_query) {
+    $str_query = '?' . $str_query;
 }
-goto_url('./num_book.php'.$str_query);
+goto_url('./num_book.php' . $str_query);

@@ -1,6 +1,6 @@
 <?php
 include_once('./_common.php');
-include(G5_SHOP_PATH.'/kakaopay/incKakaopayCommon.php');
+include(G5_SHOP_PATH . '/kakaopay/incKakaopayCommon.php');
 
 // 카카오페이를 사용하지 않을 경우
 if (!$default['de_kakaopay_enckey']) {
@@ -35,4 +35,4 @@ $mKey = hash("sha256", $default['de_kakaopay_key']);
 $params = "oid=" . $orderNumber . "&price=" . $price . "&timestamp=" . $timestamp;
 $sign = hash("sha256", $params);
 
-die(json_encode(array('error'=>'', 'mKey'=>$mKey, 'timestamp'=>$timestamp, 'sign'=>$sign)));
+die(json_encode(array('error' => '', 'mKey' => $mKey, 'timestamp' => $timestamp, 'sign' => $sign)));

@@ -33,8 +33,8 @@ $check_keys = array(
 );
 
 for ($i = 1; $i <= 10; $i++) {
-    $check_keys['gr_' . $i . '_subj']   = isset($_POST['gr_' . $i . '_subj']) ? $_POST['gr_' . $i . '_subj'] : '';
-    $check_keys['gr_' . $i]           = isset($_POST['gr_' . $i]) ? $_POST['gr_' . $i] : '';
+    $check_keys['gr_' . $i . '_subj'] = isset($_POST['gr_' . $i . '_subj']) ? $_POST['gr_' . $i . '_subj'] : '';
+    $check_keys['gr_' . $i] = isset($_POST['gr_' . $i]) ? $_POST['gr_' . $i] : '';
 }
 
 foreach ($check_keys as $key => $value) {

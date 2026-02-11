@@ -11,7 +11,7 @@ $sql = " select a.mb_id, b.mb_nick, b.mb_name, b.mb_email, b.mb_homepage, b.mb_o
             where a.mb_id <> '{$config['cf_admin']}'
             order by a.lo_datetime desc ";
 $result = sql_query($sql);
-for ($i=0; $row=sql_fetch_array($result); $i++) {
+for ($i = 0; $row = sql_fetch_array($result); $i++) {
     $row['lo_url'] = get_text($row['lo_url']);
     $list[$i] = $row;
 
@@ -24,9 +24,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
             $list[$i]['name'] = preg_replace("/([0-9]+).([0-9]+).([0-9]+).([0-9]+)/", G5_IP_DISPLAY, $row['lo_ip']);
     }
 
-    $list[$i]['num'] = sprintf('%03d',$i+1);
+    $list[$i]['num'] = sprintf('%03d', $i + 1);
 }
 
-include_once($connect_skin_path.'/current_connect.skin.php');
+include_once($connect_skin_path . '/current_connect.skin.php');
 
 include_once('./_tail.php');

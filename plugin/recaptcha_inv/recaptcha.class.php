@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-if ( ! class_exists( 'ReCaptchaResponse_v' ) ){
+if (!class_exists('ReCaptchaResponse_v')) {
     class ReCaptchaResponse_v
     {
         public $success;
@@ -39,7 +39,7 @@ class ReCaptcha_GNU
      * @const string
      */
     const VERSION = 'php_1.1.2';
-    
+
     private static $_signupUrl = 'https://www.google.com/recaptcha/admin';
     private static $_siteVerifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
@@ -69,49 +69,12 @@ class ReCaptcha_GNU
         $this->secret = $secret;
     }
 
-    public function get_content($url, $data=array()) {
-
-        $curlsession = curl_init();
-        curl_setopt ($curlsession, CURLOPT_URL, $url);
-        curl_setopt ($curlsession, CURLOPT_POST, 1);
-        curl_setopt ($curlsession, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
-        curl_setopt ($curlsession, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
-        curl_setopt ($curlsession, CURLINFO_HEADER_OUT, false);
-        curl_setopt ($curlsession, CURLOPT_HEADER, false);
-        curl_setopt ($curlsession, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt ($curlsession, CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt ($curlsession, CURLOPT_TIMEOUT, 3);
-
-        $response = curl_exec($curlsession);
-        $cinfo = curl_getinfo($curlsession);
-        curl_close($curlsession);
-
-        if ($cinfo['http_code'] != 200){
-            return '';
-        }
-        return $response;
-    }
-
-    /**
-     * Submits an HTTP GET to a reCAPTCHA server.
-     *
-     * @param string $path url path to recaptcha server.
-     * @param array  $data array of parameters to be sent.
-     *
-     * @return array response
-     */
-    private function submit($url, $data)
-    {
-        $response = $this->get_content($url, $data);
-        return $response;
-    }
-
     /**
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test.
      *
-     * @param string $remoteIp   IP address of end user.
-     * @param string $response   response string from recaptcha verification.
+     * @param string $remoteIp IP address of end user.
+     * @param string $response response string from recaptcha verification.
      *
      * @return ReCaptchaResponse_v
      */
@@ -126,7 +89,7 @@ class ReCaptcha_GNU
         }
         $getResponse = $this->submit(
             self::$_siteVerifyUrl,
-            array (
+            array(
                 'secret' => $this->secret,
                 'remoteip' => $remoteIp,
                 'version' => self::VERSION,
@@ -142,5 +105,43 @@ class ReCaptcha_GNU
             $recaptchaResponse->errorCodes = isset($answers['error-codes']) ? $answers['error-codes'] : 'http_error';
         }
         return $recaptchaResponse;
+    }
+
+    /**
+     * Submits an HTTP GET to a reCAPTCHA server.
+     *
+     * @param string $path url path to recaptcha server.
+     * @param array $data array of parameters to be sent.
+     *
+     * @return array response
+     */
+    private function submit($url, $data)
+    {
+        $response = $this->get_content($url, $data);
+        return $response;
+    }
+
+    public function get_content($url, $data = array())
+    {
+
+        $curlsession = curl_init();
+        curl_setopt($curlsession, CURLOPT_URL, $url);
+        curl_setopt($curlsession, CURLOPT_POST, 1);
+        curl_setopt($curlsession, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
+        curl_setopt($curlsession, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($curlsession, CURLINFO_HEADER_OUT, false);
+        curl_setopt($curlsession, CURLOPT_HEADER, false);
+        curl_setopt($curlsession, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curlsession, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($curlsession, CURLOPT_TIMEOUT, 3);
+
+        $response = curl_exec($curlsession);
+        $cinfo = curl_getinfo($curlsession);
+        curl_close($curlsession);
+
+        if ($cinfo['http_code'] != 200) {
+            return '';
+        }
+        return $response;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 include_once('./_common.php');
-include_once(G5_LIB_PATH.'/mailer.lib.php');
+include_once(G5_LIB_PATH . '/mailer.lib.php');
 
 if (!$is_member)
     alert_close('회원만 메일을 발송할 수 있습니다.');
@@ -31,7 +31,7 @@ if (isset($_POST["token"]) && get_session("ss_token") === $_POST["token"]) {
 
 // 상품
 $it = get_shop_item($it_id, true);
-if (! (isset($it['it_id']) && $it['it_id']))
+if (!(isset($it['it_id']) && $it['it_id']))
     alert("등록된 상품이 아닙니다.");
 
 $subject = isset($_POST['subject']) ? stripslashes($_POST['subject']) : '';
@@ -44,7 +44,7 @@ $it_name = $it['it_name'];
 $it_mimg = get_it_image($it_id, $default['de_mimg_width'], $default['de_mimg_height']);
 
 ob_start();
-include G5_SHOP_PATH.'/mail/itemrecommend.mail.php';
+include G5_SHOP_PATH . '/mail/itemrecommend.mail.php';
 $content = ob_get_contents();
 ob_end_clean();
 
@@ -54,6 +54,6 @@ echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">";
 ?>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <script language="JavaScript">
-alert("메일을 전달하였습니다");
-window.close();
+  alert("메일을 전달하였습니다");
+  window.close();
 </script>

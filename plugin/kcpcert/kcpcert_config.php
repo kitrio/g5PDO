@@ -12,7 +12,7 @@ $home_dir = G5_KCPCERT_PATH; // ct_cli 절대경로 ( bin 전까지 )
 $web_siteid = '';
 
 if ($config['cf_cert_use'] == 2) { // 실서비스
-    $site_cd = 'SM'.$config['cf_cert_kcp_cd'];
+    $site_cd = 'SM' . $config['cf_cert_kcp_cd'];
     $cert_url = 'https://cert.kcp.co.kr/kcp_cert/cert_view.jsp';
     $kcp_enc_key = $config['cf_cert_kcp_enckey'];
 } else if ($config['cf_cert_use'] == 1) { // 테스트사용
@@ -25,32 +25,33 @@ if ($config['cf_cert_use'] == 2) { // 실서비스
     $kcp_enc_key = '';
 }
 
-if(!$site_cd)
+if (!$site_cd)
     alert('KCP 휴대폰 본인확인 서비스 사이트코드가 없습니다.\\관리자 > 기본환경설정에 KCP 사이트코드를 입력해 주십시오.', G5_URL);
 
 // KCP 인증 라이브러리
-require G5_KCPCERT_PATH.'/lib/ct_cli_lib.php';
+require G5_KCPCERT_PATH . '/lib/ct_cli_lib.php';
 
 /* ============================================================================== */
 /* =   null 값을 처리하는 메소드                                                = */
 /* = -------------------------------------------------------------------------- = */
-function f_get_parm_str( $val )
+function f_get_parm_str($val)
 {
-    if ( $val == null ) $val = "";
-    if ( $val == ""   ) $val = "";
-    return  $val;
+    if ($val == null) $val = "";
+    if ($val == "") $val = "";
+    return $val;
 }
 
 //!!중요 해당 함수는 year, month, day 변수가 null 일 경우 00 으로 치환합니다
-function f_get_parm_int( $val )
+function f_get_parm_int($val)
 {
     $ret_val = "";
 
-    if ( $val == null ) $val = "00";
-    if ( $val == ""   ) $val = "00";
+    if ($val == null) $val = "00";
+    if ($val == "") $val = "00";
 
-    $ret_val = strlen($val) == 1? ("0" . $val) : $val;
+    $ret_val = strlen($val) == 1 ? ("0" . $val) : $val;
 
-    return  $ret_val;
+    return $ret_val;
 }
+
 /* ============================================================================== */;

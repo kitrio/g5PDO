@@ -13,7 +13,7 @@ if (!sql_query(" DESCRIBE {$g5['new_win_table']} ", false)) {
         sql_query(" ALTER TABLE {$g5['g5_shop_new_win_table']} RENAME TO `{$g5['new_win_table']}` ;", false);
     } else {
         $query_cp = sql_query(
-            " CREATE TABLE IF NOT EXISTS `{$g5['new_win_table']}` (
+                " CREATE TABLE IF NOT EXISTS `{$g5['new_win_table']}` (
                       `nw_id` int(11) NOT NULL AUTO_INCREMENT,
                       `nw_division` varchar(10) NOT NULL DEFAULT 'both',
                       `nw_device` varchar(10) NOT NULL DEFAULT 'both',
@@ -29,7 +29,7 @@ if (!sql_query(" DESCRIBE {$g5['new_win_table']} ", false)) {
                       `nw_content_html` tinyint(4) NOT NULL DEFAULT '0',
                       PRIMARY KEY (`nw_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ",
-            true
+                true
         );
     }
 }
@@ -48,16 +48,17 @@ $sql = "select * $sql_common order by nw_id desc ";
 $result = sql_query($sql);
 ?>
 
-<div class="local_ov01 local_ov"><span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo $total_count; ?>건</span></span></div>
+    <div class="local_ov01 local_ov"><span class="btn_ov01"><span class="ov_txt">전체 </span><span
+                    class="ov_num"> <?php echo $total_count; ?>건</span></span></div>
 
-<div class="btn_fixed_top ">
-    <a href="./newwinform.php" class="btn btn_01">새창관리추가</a>
-</div>
+    <div class="btn_fixed_top ">
+        <a href="./newwinform.php" class="btn btn_01">새창관리추가</a>
+    </div>
 
-<div class="tbl_head01 tbl_wrap">
-    <table>
-        <caption><?php echo $g5['title']; ?> 목록</caption>
-        <thead>
+    <div class="tbl_head01 tbl_wrap">
+        <table>
+            <caption><?php echo $g5['title']; ?> 목록</caption>
+            <thead>
             <tr>
                 <th scope="col">번호</th>
                 <th scope="col">제목</th>
@@ -71,8 +72,8 @@ $result = sql_query($sql);
                 <th scope="col">Height</th>
                 <th scope="col">관리</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <?php
             for ($i = 0; $row = sql_fetch_array($result); $i++) {
                 $bg = 'bg' . ($i % 2);
@@ -88,7 +89,7 @@ $result = sql_query($sql);
                         $nw_device = '모두';
                         break;
                 }
-            ?>
+                ?>
                 <tr class="<?php echo $bg; ?>">
                     <td class="td_num"><?php echo $row['nw_id']; ?></td>
                     <td class="td_left"><?php echo $row['nw_subject']; ?></td>
@@ -101,20 +102,23 @@ $result = sql_query($sql);
                     <td class="td_num"><?php echo $row['nw_width']; ?>px</td>
                     <td class="td_num"><?php echo $row['nw_height']; ?>px</td>
                     <td class="td_mng td_mng_m">
-                        <a href="./newwinform.php?w=u&amp;nw_id=<?php echo $row['nw_id']; ?>" class="btn btn_03"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>수정</a>
-                        <a href="./newwinformupdate.php?w=d&amp;nw_id=<?php echo $row['nw_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>삭제</a>
+                        <a href="./newwinform.php?w=u&amp;nw_id=<?php echo $row['nw_id']; ?>" class="btn btn_03"><span
+                                    class="sound_only"><?php echo $row['nw_subject']; ?> </span>수정</a>
+                        <a href="./newwinformupdate.php?w=d&amp;nw_id=<?php echo $row['nw_id']; ?>"
+                           onclick="return delete_confirm(this);" class="btn btn_02"><span
+                                    class="sound_only"><?php echo $row['nw_subject']; ?> </span>삭제</a>
                     </td>
                 </tr>
-            <?php
+                <?php
             }
 
             if ($i == 0) {
                 echo '<tr><td colspan="11" class="empty_table">자료가 한건도 없습니다.</td></tr>';
             }
             ?>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 
 
 <?php

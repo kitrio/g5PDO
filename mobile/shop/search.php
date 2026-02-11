@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 $g5['title'] = "상품 검색 결과";
-include_once(G5_MSHOP_PATH.'/_head.php');
+include_once(G5_MSHOP_PATH . '/_head.php');
 
 // QUERY 문에 공통적으로 들어가는 내용
 // 상품명에 검색어가 포한된것과 상품판매가능인것만
@@ -16,27 +16,27 @@ $search_all = true;
 if (isset($_GET['qname']) || isset($_GET['qexplan']) || isset($_GET['qid']) || isset($_GET['qbasic']))
     $search_all = false;
 
-$q       = utf8_strcut(get_search_string(trim($_GET['q'])), 30, "");
-$qname   = isset($_GET['qname']) ? trim(clean_xss_tags($_GET['qname'])) : '';
+$q = utf8_strcut(get_search_string(trim($_GET['q'])), 30, "");
+$qname = isset($_GET['qname']) ? trim(clean_xss_tags($_GET['qname'])) : '';
 $qexplan = isset($_GET['qexplan']) ? trim(clean_xss_tags($_GET['qexplan'])) : '';
-$qid     = isset($_GET['qid']) ? trim(clean_xss_tags($_GET['qid'])) : '';
-$qbasic  = isset($_GET['qbasic']) ? trim(clean_xss_tags($_GET['qbasic'])) : '';
-$qcaid   = isset($_GET['qcaid']) ? preg_replace('#[^a-z0-9]#i', '', trim($_GET['qcaid'])) : '';
-$qfrom   = isset($_GET['qfrom']) ? preg_replace('/[^0-9]/', '', trim($_GET['qfrom'])) : '';
-$qto     = isset($_GET['qto']) ? preg_replace('/[^0-9]/', '', trim($_GET['qto'])) : '';
-if (isset($_GET['qsort']))  {
+$qid = isset($_GET['qid']) ? trim(clean_xss_tags($_GET['qid'])) : '';
+$qbasic = isset($_GET['qbasic']) ? trim(clean_xss_tags($_GET['qbasic'])) : '';
+$qcaid = isset($_GET['qcaid']) ? preg_replace('#[^a-z0-9]#i', '', trim($_GET['qcaid'])) : '';
+$qfrom = isset($_GET['qfrom']) ? preg_replace('/[^0-9]/', '', trim($_GET['qfrom'])) : '';
+$qto = isset($_GET['qto']) ? preg_replace('/[^0-9]/', '', trim($_GET['qto'])) : '';
+if (isset($_GET['qsort'])) {
     $qsort = trim($_GET['qsort']);
     $qsort = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\s]/", "", $qsort);
 } else {
     $qsort = '';
 }
-if (isset($_GET['qorder']))  {
+if (isset($_GET['qorder'])) {
     $qorder = preg_match("/^(asc|desc)$/i", $qorder) ? $qorder : '';
 } else {
     $qorder = '';
 }
 
-if(!($qname || $qexplan || $qid || $qbasic))
+if (!($qname || $qexplan || $qid || $qbasic))
     $search_all = true;
 
 // 검색범위 checkbox 처리
@@ -45,26 +45,26 @@ $qexplan_check = false;
 $qid_check = false;
 $qbasic_check = false;
 
-if($search_all) {
+if ($search_all) {
     $qname_check = true;
     $qexplan_check = true;
     $qid_check = true;
     $qbasic_check = true;
 } else {
-    if($qname)
+    if ($qname)
         $qname_check = true;
-    if($qexplan)
+    if ($qexplan)
         $qexplan_check = true;
-    if($qid)
+    if ($qid)
         $qid_check = true;
-    if($qbasic)
+    if ($qbasic)
         $qbasic_check = true;
 }
 
 if ($q) {
     $arr = explode(" ", $q);
     $detail_where = array();
-    for ($i=0; $i<count($arr); $i++) {
+    for ($i = 0; $i < count($arr); $i++) {
         $word = trim($arr[$i]);
         if (!$word) continue;
 
@@ -77,15 +77,15 @@ if ($q) {
             $concat[] = "a.it_id";
         if ($search_all || $qbasic)
             $concat[] = "a.it_basic";
-        $concat_fields = "concat(".implode(",' ',",$concat).")";
+        $concat_fields = "concat(" . implode(",' ',", $concat) . ")";
 
-        $detail_where[] = $concat_fields." like '%$word%' ";
+        $detail_where[] = $concat_fields . " like '%$word%' ";
 
         // 인기검색어
         insert_popular($concat, $word);
     }
 
-    $where[] = "(".implode(" and ", $detail_where).")";
+    $where[] = "(" . implode(" and ", $detail_where) . ")";
 }
 
 if ($qcaid)
@@ -97,7 +97,7 @@ if ($qfrom && $qto)
 $sql_where = " where " . implode(" and ", $where);
 
 // 상품 출력순서가 있다면
-$qsort  = strtolower($qsort);
+$qsort = strtolower($qsort);
 $qorder = strtolower($qorder);
 $order_by = "";
 // 아래의 $qsort 필드만 정렬이 가능하게 하여 다른 필드로 하여금 유추해 볼수 없게함
@@ -117,30 +117,30 @@ $from_record = ($page - 1) * $items;
 $sql = " select COUNT(*) as cnt $sql_common $sql_where ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
-$total_page  = ceil($total_count / $items); // 전체 페이지 계산
+$total_page = ceil($total_count / $items); // 전체 페이지 계산
 
 $sql = " select b.ca_id, b.ca_name, count(*) as cnt $sql_common $sql_where group by b.ca_id order by b.ca_id ";
 $result = sql_query($sql);
 
 $categorys = array();
 // 검색된 분류를 배열에 저장
-while($row = sql_fetch_array($result)){
+while ($row = sql_fetch_array($result)) {
     $categorys[] = $row;
 }
 
-$search_skin = G5_MSHOP_SKIN_PATH.'/search.skin.php';
+$search_skin = G5_MSHOP_SKIN_PATH . '/search.skin.php';
 
-$list_file = G5_MSHOP_SKIN_PATH.'/'.$default['de_mobile_search_list_skin'];
+$list_file = G5_MSHOP_SKIN_PATH . '/' . $default['de_mobile_search_list_skin'];
 if (file_exists($list_file) && is_include_path_check($list_file)) {
     define('G5_SHOP_CSS_URL', G5_MSHOP_SKIN_URL);
     $list = new item_list($list_file, $default['de_mobile_search_list_mod'], $default['de_mobile_search_list_row'], $default['de_mobile_search_img_width'], $default['de_mobile_search_img_height']);
     $list->set_query(" select * $sql_common $sql_where {$order_by} limit $from_record, $items ");
 }
 
-if(!file_exists($search_skin)) {
-    echo str_replace(G5_PATH.'/', '', $search_skin).' 스킨 파일이 존재하지 않습니다.';
+if (!file_exists($search_skin)) {
+    echo str_replace(G5_PATH . '/', '', $search_skin) . ' 스킨 파일이 존재하지 않습니다.';
 } else {
     include_once($search_skin);
 }
 
-include_once(G5_MSHOP_PATH.'/_tail.php');
+include_once(G5_MSHOP_PATH . '/_tail.php');

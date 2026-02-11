@@ -28,10 +28,10 @@
 class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_IComparable
 {
     /* Underline types */
-    const UNDERLINE_NONE             = 'none';
-    const UNDERLINE_DOUBLE           = 'double';
+    const UNDERLINE_NONE = 'none';
+    const UNDERLINE_DOUBLE = 'double';
     const UNDERLINE_DOUBLEACCOUNTING = 'doubleAccounting';
-    const UNDERLINE_SINGLE           = 'single';
+    const UNDERLINE_SINGLE = 'single';
     const UNDERLINE_SINGLEACCOUNTING = 'singleAccounting';
 
     /**
@@ -100,10 +100,10 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
     /**
      * Create a new PHPExcel_Style_Font
      *
-     * @param    boolean    $isSupervisor    Flag indicating if this is a supervisor or not
+     * @param boolean $isSupervisor Flag indicating if this is a supervisor or not
      *                                    Leave this value at default unless you understand exactly what
      *                                        its ramifications are
-     * @param    boolean    $isConditional    Flag indicating if this is a conditional style or not
+     * @param boolean $isConditional Flag indicating if this is a conditional style or not
      *                                    Leave this value at default unless you understand exactly what
      *                                        its ramifications are
      */
@@ -130,90 +130,6 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
         if ($isSupervisor) {
             $this->color->bindParent($this, 'color');
         }
-    }
-
-    /**
-     * Get the shared style component for the currently active cell in currently active sheet.
-     * Only used for style supervisor
-     *
-     * @return PHPExcel_Style_Font
-     */
-    public function getSharedComponent()
-    {
-        return $this->parent->getSharedComponent()->getFont();
-    }
-
-    /**
-     * Build style array from subcomponents
-     *
-     * @param array $array
-     * @return array
-     */
-    public function getStyleArray($array)
-    {
-        return array('font' => $array);
-    }
-
-    /**
-     * Apply styles from array
-     *
-     * <code>
-     * $objPHPExcel->getActiveSheet()->getStyle('B2')->getFont()->applyFromArray(
-     *        array(
-     *            'name'        => 'Arial',
-     *            'bold'        => TRUE,
-     *            'italic'    => FALSE,
-     *            'underline' => PHPExcel_Style_Font::UNDERLINE_DOUBLE,
-     *            'strike'    => FALSE,
-     *            'color'        => array(
-     *                'rgb' => '808080'
-     *            )
-     *        )
-     * );
-     * </code>
-     *
-     * @param    array    $pStyles    Array containing style information
-     * @throws    PHPExcel_Exception
-     * @return PHPExcel_Style_Font
-     */
-    public function applyFromArray($pStyles = null)
-    {
-        if (is_array($pStyles)) {
-            if ($this->isSupervisor) {
-                $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
-            } else {
-                if (array_key_exists('name', $pStyles)) {
-                    $this->setName($pStyles['name']);
-                }
-                if (array_key_exists('bold', $pStyles)) {
-                    $this->setBold($pStyles['bold']);
-                }
-                if (array_key_exists('italic', $pStyles)) {
-                    $this->setItalic($pStyles['italic']);
-                }
-                if (array_key_exists('superScript', $pStyles)) {
-                    $this->setSuperScript($pStyles['superScript']);
-                }
-                if (array_key_exists('subScript', $pStyles)) {
-                    $this->setSubScript($pStyles['subScript']);
-                }
-                if (array_key_exists('underline', $pStyles)) {
-                    $this->setUnderline($pStyles['underline']);
-                }
-                if (array_key_exists('strike', $pStyles)) {
-                    $this->setStrikethrough($pStyles['strike']);
-                }
-                if (array_key_exists('color', $pStyles)) {
-                    $this->getColor()->applyFromArray($pStyles['color']);
-                }
-                if (array_key_exists('size', $pStyles)) {
-                    $this->setSize($pStyles['size']);
-                }
-            }
-        } else {
-            throw new PHPExcel_Exception("Invalid style array passed.");
-        }
-        return $this;
     }
 
     /**
@@ -247,6 +163,17 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
             $this->name = $pValue;
         }
         return $this;
+    }
+
+    /**
+     * Get the shared style component for the currently active cell in currently active sheet.
+     * Only used for style supervisor
+     *
+     * @return PHPExcel_Style_Font
+     */
+    public function getSharedComponent()
+    {
+        return $this->parent->getSharedComponent()->getFont();
     }
 
     /**
@@ -382,7 +309,7 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
         return $this;
     }
 
-        /**
+    /**
      * Get SubScript
      *
      * @return boolean
@@ -432,7 +359,7 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
     /**
      * Set Underline
      *
-     * @param string|boolean $pValue    PHPExcel_Style_Font underline type
+     * @param string|boolean $pValue PHPExcel_Style_Font underline type
      *                                    If a boolean is passed, then TRUE equates to UNDERLINE_SINGLE,
      *                                        false equates to UNDERLINE_NONE
      * @return PHPExcel_Style_Font
@@ -499,9 +426,9 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
     /**
      * Set Color
      *
-     * @param    PHPExcel_Style_Color $pValue
-     * @throws    PHPExcel_Exception
+     * @param PHPExcel_Style_Color $pValue
      * @return PHPExcel_Style_Font
+     * @throws    PHPExcel_Exception
      */
     public function setColor(PHPExcel_Style_Color $pValue = null)
     {
@@ -513,6 +440,79 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
             $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
         } else {
             $this->color = $color;
+        }
+        return $this;
+    }
+
+    /**
+     * Build style array from subcomponents
+     *
+     * @param array $array
+     * @return array
+     */
+    public function getStyleArray($array)
+    {
+        return array('font' => $array);
+    }
+
+    /**
+     * Apply styles from array
+     *
+     * <code>
+     * $objPHPExcel->getActiveSheet()->getStyle('B2')->getFont()->applyFromArray(
+     *        array(
+     *            'name'        => 'Arial',
+     *            'bold'        => TRUE,
+     *            'italic'    => FALSE,
+     *            'underline' => PHPExcel_Style_Font::UNDERLINE_DOUBLE,
+     *            'strike'    => FALSE,
+     *            'color'        => array(
+     *                'rgb' => '808080'
+     *            )
+     *        )
+     * );
+     * </code>
+     *
+     * @param array $pStyles Array containing style information
+     * @return PHPExcel_Style_Font
+     * @throws    PHPExcel_Exception
+     */
+    public function applyFromArray($pStyles = null)
+    {
+        if (is_array($pStyles)) {
+            if ($this->isSupervisor) {
+                $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
+            } else {
+                if (array_key_exists('name', $pStyles)) {
+                    $this->setName($pStyles['name']);
+                }
+                if (array_key_exists('bold', $pStyles)) {
+                    $this->setBold($pStyles['bold']);
+                }
+                if (array_key_exists('italic', $pStyles)) {
+                    $this->setItalic($pStyles['italic']);
+                }
+                if (array_key_exists('superScript', $pStyles)) {
+                    $this->setSuperScript($pStyles['superScript']);
+                }
+                if (array_key_exists('subScript', $pStyles)) {
+                    $this->setSubScript($pStyles['subScript']);
+                }
+                if (array_key_exists('underline', $pStyles)) {
+                    $this->setUnderline($pStyles['underline']);
+                }
+                if (array_key_exists('strike', $pStyles)) {
+                    $this->setStrikethrough($pStyles['strike']);
+                }
+                if (array_key_exists('color', $pStyles)) {
+                    $this->getColor()->applyFromArray($pStyles['color']);
+                }
+                if (array_key_exists('size', $pStyles)) {
+                    $this->setSize($pStyles['size']);
+                }
+            }
+        } else {
+            throw new PHPExcel_Exception("Invalid style array passed.");
         }
         return $this;
     }

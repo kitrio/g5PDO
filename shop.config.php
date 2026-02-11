@@ -9,18 +9,18 @@ if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) return;
 
 define('G5_SHOP_DIR', 'shop');
 
-define('G5_SHOP_PATH',  G5_PATH.'/'.G5_SHOP_DIR);
-define('G5_SHOP_URL',   G5_URL.'/'.G5_SHOP_DIR);
-define('G5_MSHOP_PATH', G5_MOBILE_PATH.'/'.G5_SHOP_DIR);
-define('G5_MSHOP_URL',  G5_MOBILE_URL.'/'.G5_SHOP_DIR);
+define('G5_SHOP_PATH', G5_PATH . '/' . G5_SHOP_DIR);
+define('G5_SHOP_URL', G5_URL . '/' . G5_SHOP_DIR);
+define('G5_MSHOP_PATH', G5_MOBILE_PATH . '/' . G5_SHOP_DIR);
+define('G5_MSHOP_URL', G5_MOBILE_URL . '/' . G5_SHOP_DIR);
 
-define('G5_SHOP_IMG_URL',  G5_SHOP_URL.'/'.G5_IMG_DIR);
-define('G5_MSHOP_IMG_URL', G5_MSHOP_URL.'/'.G5_IMG_DIR);
+define('G5_SHOP_IMG_URL', G5_SHOP_URL . '/' . G5_IMG_DIR);
+define('G5_MSHOP_IMG_URL', G5_MSHOP_URL . '/' . G5_IMG_DIR);
 
 // 보안서버주소 설정
 if (G5_HTTPS_DOMAIN) {
-    define('G5_HTTPS_SHOP_URL', G5_HTTPS_DOMAIN.'/'.G5_SHOP_DIR);
-    define('G5_HTTPS_MSHOP_URL', G5_HTTPS_DOMAIN.'/'.G5_MOBILE_DIR.'/'.G5_SHOP_DIR);
+    define('G5_HTTPS_SHOP_URL', G5_HTTPS_DOMAIN . '/' . G5_SHOP_DIR);
+    define('G5_HTTPS_MSHOP_URL', G5_HTTPS_DOMAIN . '/' . G5_MOBILE_DIR . '/' . G5_SHOP_DIR);
 } else {
     define('G5_HTTPS_SHOP_URL', G5_SHOP_URL);
     define('G5_HTTPS_MSHOP_URL', G5_MSHOP_URL);
@@ -38,45 +38,45 @@ if (G5_HTTPS_DOMAIN) {
 // 쇼핑몰 설정값 배열변수
 $default = sql_fetch(" select * from {$g5['g5_shop_default_table']} ");
 
-if(!defined('_THEME_PREVIEW_')) {
+if (!defined('_THEME_PREVIEW_')) {
     // 테마 경로 설정
-    if(defined('G5_THEME_PATH')) {
-        define('G5_THEME_SHOP_PATH',   G5_THEME_PATH.'/'.G5_SHOP_DIR);
-        define('G5_THEME_SHOP_URL',    G5_THEME_URL.'/'.G5_SHOP_DIR);
-        define('G5_THEME_MSHOP_PATH',  G5_THEME_PATH.'/'.G5_MOBILE_DIR.'/'.G5_SHOP_DIR);
-        define('G5_THEME_MSHOP_URL',   G5_THEME_URL.'/'.G5_MOBILE_DIR.'/'.G5_SHOP_DIR);
+    if (defined('G5_THEME_PATH')) {
+        define('G5_THEME_SHOP_PATH', G5_THEME_PATH . '/' . G5_SHOP_DIR);
+        define('G5_THEME_SHOP_URL', G5_THEME_URL . '/' . G5_SHOP_DIR);
+        define('G5_THEME_MSHOP_PATH', G5_THEME_PATH . '/' . G5_MOBILE_DIR . '/' . G5_SHOP_DIR);
+        define('G5_THEME_MSHOP_URL', G5_THEME_URL . '/' . G5_MOBILE_DIR . '/' . G5_SHOP_DIR);
     }
 
     // 스킨 경로 설정
-    if(preg_match('#^theme/(.+)$#', $default['de_shop_skin'], $match)) {
-		if(defined('G5_THEME_PATH')) {
-			define('G5_SHOP_SKIN_PATH',  G5_THEME_PATH.'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-			define('G5_SHOP_SKIN_URL',   G5_THEME_URL .'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-		} else {
-			define('G5_SHOP_SKIN_PATH',  G5_PATH.'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-			define('G5_SHOP_SKIN_URL',   G5_URL .'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-		}
+    if (preg_match('#^theme/(.+)$#', $default['de_shop_skin'], $match)) {
+        if (defined('G5_THEME_PATH')) {
+            define('G5_SHOP_SKIN_PATH', G5_THEME_PATH . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+            define('G5_SHOP_SKIN_URL', G5_THEME_URL . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+        } else {
+            define('G5_SHOP_SKIN_PATH', G5_PATH . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+            define('G5_SHOP_SKIN_URL', G5_URL . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+        }
     } else {
-        define('G5_SHOP_SKIN_PATH',  G5_PATH.'/'.G5_SKIN_DIR.'/shop/'.$default['de_shop_skin']);
-        define('G5_SHOP_SKIN_URL',   G5_URL .'/'.G5_SKIN_DIR.'/shop/'.$default['de_shop_skin']);
+        define('G5_SHOP_SKIN_PATH', G5_PATH . '/' . G5_SKIN_DIR . '/shop/' . $default['de_shop_skin']);
+        define('G5_SHOP_SKIN_URL', G5_URL . '/' . G5_SKIN_DIR . '/shop/' . $default['de_shop_skin']);
     }
 
-    if(preg_match('#^theme/(.+)$#', $default['de_shop_mobile_skin'], $match)) {
-		if(defined('G5_THEME_PATH')) {
-			define('G5_MSHOP_SKIN_PATH', G5_THEME_MOBILE_PATH.'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-			define('G5_MSHOP_SKIN_URL',  G5_THEME_URL .'/'.G5_MOBILE_DIR.'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-		} else {
-			define('G5_MSHOP_SKIN_PATH', G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-			define('G5_MSHOP_SKIN_URL',  G5_MOBILE_URL .'/'.G5_SKIN_DIR.'/shop/'.$match[1]);
-		}
+    if (preg_match('#^theme/(.+)$#', $default['de_shop_mobile_skin'], $match)) {
+        if (defined('G5_THEME_PATH')) {
+            define('G5_MSHOP_SKIN_PATH', G5_THEME_MOBILE_PATH . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+            define('G5_MSHOP_SKIN_URL', G5_THEME_URL . '/' . G5_MOBILE_DIR . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+        } else {
+            define('G5_MSHOP_SKIN_PATH', G5_MOBILE_PATH . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+            define('G5_MSHOP_SKIN_URL', G5_MOBILE_URL . '/' . G5_SKIN_DIR . '/shop/' . $match[1]);
+        }
     } else {
-        define('G5_MSHOP_SKIN_PATH', G5_MOBILE_PATH.'/'.G5_SKIN_DIR.'/shop/'.$default['de_shop_mobile_skin']);
-        define('G5_MSHOP_SKIN_URL',  G5_MOBILE_URL .'/'.G5_SKIN_DIR.'/shop/'.$default['de_shop_mobile_skin']);
+        define('G5_MSHOP_SKIN_PATH', G5_MOBILE_PATH . '/' . G5_SKIN_DIR . '/shop/' . $default['de_shop_mobile_skin']);
+        define('G5_MSHOP_SKIN_URL', G5_MOBILE_URL . '/' . G5_SKIN_DIR . '/shop/' . $default['de_shop_mobile_skin']);
     }
 }
 
-if( !isset($g5['g5_shop_post_log_table']) || !$g5['g5_shop_post_log_table'] ){
-    $g5['g5_shop_post_log_table'] = G5_SHOP_TABLE_PREFIX.'order_post_log'; // 주문요청 로그 테이블
+if (!isset($g5['g5_shop_post_log_table']) || !$g5['g5_shop_post_log_table']) {
+    $g5['g5_shop_post_log_table'] = G5_SHOP_TABLE_PREFIX . 'order_post_log'; // 주문요청 로그 테이블
 }
 
 // 옵션 ID 특수문자 필터링 패턴

@@ -9,21 +9,22 @@
 /**
  * HybridAuth storage manager interface
  */
-interface Hybrid_Storage_Interface {
+interface Hybrid_Storage_Interface
+{
 
-	public function config($key, $value = null);
+    public function config($key, $value = null);
 
-	public function get($key);
+    public function get($key);
 
-	public function set($key, $value);
+    public function set($key, $value);
 
-	function clear();
+    function clear();
 
-	function delete($key);
+    function delete($key);
 
-	function deleteMatch($key);
+    function deleteMatch($key);
 
-	function getSessionData();
+    function getSessionData();
 
-	function restoreSessionData($sessiondata = null);
+    function restoreSessionData($sessiondata = null);
 }

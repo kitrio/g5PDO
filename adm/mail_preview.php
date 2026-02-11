@@ -5,7 +5,7 @@ require_once G5_LIB_PATH . '/mailer.lib.php';
 
 auth_check_menu($auth, $sub_menu, 'r');
 
-$ma_id = isset($_REQUEST['ma_id']) ? (int) $_REQUEST['ma_id'] : 0;
+$ma_id = isset($_REQUEST['ma_id']) ? (int)$_REQUEST['ma_id'] : 0;
 
 $se = sql_fetch("select ma_subject, ma_content from {$g5['mail_table']} where ma_id = '{$ma_id}' ");
 
@@ -22,11 +22,11 @@ $content = conv_content($se['ma_content'], 1) . "<hr size=0><p><span style='font
 </head>
 
 <body>
-    <h1><?php echo $subject; ?></h1>
-    <p><?php echo $content; ?></p>
-    <p>
-        <strong>주의!</strong> 이 화면에 보여지는 디자인은 실제 내용이 발송되었을 때 디자인과 다를 수 있습니다.
-    </p>
+<h1><?php echo $subject; ?></h1>
+<p><?php echo $content; ?></p>
+<p>
+    <strong>주의!</strong> 이 화면에 보여지는 디자인은 실제 내용이 발송되었을 때 디자인과 다를 수 있습니다.
+</p>
 </body>
 
 </html>

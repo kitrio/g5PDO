@@ -8,7 +8,7 @@ if (!$config['cf_email_use']) {
 
 auth_check_menu($auth, $sub_menu, 'r');
 
-$ma_id = isset($_GET['ma_id']) ? (int) $_GET['ma_id'] : 0;
+$ma_id = isset($_GET['ma_id']) ? (int)$_GET['ma_id'] : 0;
 
 $sql = " select * from {$g5['mail_table']} where ma_id = '$ma_id' ";
 $ma = sql_fetch($sql);
@@ -57,31 +57,40 @@ $g5['title'] = '회원메일발송';
 require_once './admin.head.php';
 ?>
 
-<div class="local_ov01 local_ov">
-    전체회원 <?php echo number_format($tot_cnt) ?>명 , 탈퇴대기회원 <?php echo number_format($finish_cnt) ?>명, 정상회원 <?php echo number_format($tot_cnt - $finish_cnt) ?>명 중 메일 발송 대상 선택
-</div>
+    <div class="local_ov01 local_ov">
+        전체회원 <?php echo number_format($tot_cnt) ?>명 , 탈퇴대기회원 <?php echo number_format($finish_cnt) ?>명,
+        정상회원 <?php echo number_format($tot_cnt - $finish_cnt) ?>명 중 메일 발송 대상 선택
+    </div>
 
-<form name="frmsendmailselectform" id="frmsendmailselectform" action="./mail_select_list.php" method="post" autocomplete="off">
-    <input type="hidden" name="ma_id" value="<?php echo $ma_id ?>">
+    <form name="frmsendmailselectform" id="frmsendmailselectform" action="./mail_select_list.php" method="post"
+          autocomplete="off">
+        <input type="hidden" name="ma_id" value="<?php echo $ma_id ?>">
 
-    <div class="tbl_frm01 tbl_wrap">
-        <table>
-            <caption><?php echo $g5['title']; ?> 대상선택</caption>
-            <tbody>
+        <div class="tbl_frm01 tbl_wrap">
+            <table>
+                <caption><?php echo $g5['title']; ?> 대상선택</caption>
+                <tbody>
                 <tr>
                     <th scope="row">회원 ID</th>
                     <td>
-                        <input type="radio" name="mb_id1" value="1" id="mb_id1_all" <?php echo $mb_id1 ? "checked" : ""; ?>> <label for="mb_id1_all">전체</label>
-                        <input type="radio" name="mb_id1" value="0" id="mb_id1_section" <?php echo !$mb_id1 ? "checked" : ""; ?>> <label for="mb_id1_section">구간</label>
-                        <input type="text" name="mb_id1_from" value="<?php echo get_sanitize_input($mb_id1_from); ?>" id="mb_id1_from" title="시작구간" class="frm_input"> 에서
-                        <input type="text" name="mb_id1_to" value="<?php echo get_sanitize_input($mb_id1_to); ?>" id="mb_id1_to" title="종료구간" class="frm_input"> 까지
+                        <input type="radio" name="mb_id1" value="1"
+                               id="mb_id1_all" <?php echo $mb_id1 ? "checked" : ""; ?>> <label
+                                for="mb_id1_all">전체</label>
+                        <input type="radio" name="mb_id1" value="0"
+                               id="mb_id1_section" <?php echo !$mb_id1 ? "checked" : ""; ?>> <label
+                                for="mb_id1_section">구간</label>
+                        <input type="text" name="mb_id1_from" value="<?php echo get_sanitize_input($mb_id1_from); ?>"
+                               id="mb_id1_from" title="시작구간" class="frm_input"> 에서
+                        <input type="text" name="mb_id1_to" value="<?php echo get_sanitize_input($mb_id1_to); ?>"
+                               id="mb_id1_to" title="종료구간" class="frm_input"> 까지
                     </td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="mb_email">E-mail</label></th>
                     <td>
                         <?php echo help("메일 주소에 단어 포함 (예 : @" . preg_replace('#^(www[^\.]*\.){1}#', '', $_SERVER['HTTP_HOST']) . ")") ?>
-                        <input type="text" name="mb_email" value="<?php echo get_sanitize_input($mb_email); ?>" id="mb_email" class="frm_input" size="50">
+                        <input type="text" name="mb_email" value="<?php echo get_sanitize_input($mb_email); ?>"
+                               id="mb_email" class="frm_input" size="50">
                     </td>
                 </tr>
                 <tr>
@@ -125,15 +134,15 @@ require_once './admin.head.php';
                         </select>
                     </td>
                 </tr>
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="확인" class="btn_submit">
-        <a href="./mail_list.php">목록 </a>
-    </div>
-</form>
+        <div class="btn_confirm01 btn_confirm">
+            <input type="submit" value="확인" class="btn_submit">
+            <a href="./mail_list.php">목록 </a>
+        </div>
+    </form>
 
 <?php
 require_once './admin.tail.php';

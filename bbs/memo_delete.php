@@ -10,7 +10,7 @@ set_session('ss_memo_delete_token', '');
 if (!($token && $delete_token == $token))
     alert('토큰 에러로 삭제 불가합니다.');
 
-$me_id = isset($_REQUEST['me_id']) ? (int) $_REQUEST['me_id'] : 0;
+$me_id = isset($_REQUEST['me_id']) ? (int)$_REQUEST['me_id'] : 0;
 
 $sql = " select * from {$g5['memo_table']} where me_id = '{$me_id}' ";
 $row = sql_fetch($sql);
@@ -28,10 +28,10 @@ if (!$row['me_read_datetime'][0]) // 메모 받기전이면
                 and mb_memo_call = '{$row['me_send_mb_id']}' ";
     sql_query($sql);
 
-    $sql = " update `{$g5['member_table']}` set mb_memo_cnt = '".get_memo_not_read($member['mb_id'])."' where mb_id = '{$member['mb_id']}' ";
+    $sql = " update `{$g5['member_table']}` set mb_memo_cnt = '" . get_memo_not_read($member['mb_id']) . "' where mb_id = '{$member['mb_id']}' ";
     sql_query($sql);
 }
 
 run_event('memo_delete', $me_id, $row);
 
-goto_url('./memo.php?kind='.$kind);
+goto_url('./memo.php?kind=' . $kind);

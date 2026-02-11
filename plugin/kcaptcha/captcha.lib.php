@@ -1,2 +1,2 @@
 <?php
-require(dirname(__FILE__).'/kcaptcha.lib.php');
+require(dirname(__FILE__) . '/kcaptcha.lib.php');

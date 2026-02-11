@@ -6,14 +6,14 @@ if ($is_admin != 'super')
     alert('최고관리자만 접근 가능합니다.', G5_URL);
 
 $g5['title'] = '회원관리파일 일괄삭제';
-include_once(G5_ADMIN_PATH.'/admin.head.php');
+include_once(G5_ADMIN_PATH . '/admin.head.php');
 ?>
 
-<div class="local_desc02 local_desc">
-    <p>
-        완료 메세지가 나오기 전에 프로그램의 실행을 중지하지 마십시오.
-    </p>
-</div>
+    <div class="local_desc02 local_desc">
+        <p>
+            완료 메세지가 나오기 전에 프로그램의 실행을 중지하지 마십시오.
+        </p>
+    </div>
 
 <?php
 flush();
@@ -29,7 +29,8 @@ $files = glob(G5_DATA_PATH . '/member_list/*');
 $cnt = 0;
 
 // 폴더 및 하위 파일 재귀 삭제 함수
-function deleteFolder($folderPath) {
+function deleteFolder($folderPath)
+{
     $items = glob($folderPath . '/*');
     foreach ($items as $item) {
         if (is_dir($item)) {
@@ -69,4 +70,4 @@ echo '<div class="local_desc01 local_desc"><p><strong>회원관리파일 ' . $cn
 ?>
 
 <?php
-include_once(G5_ADMIN_PATH.'/admin.tail.php');
+include_once(G5_ADMIN_PATH . '/admin.tail.php');

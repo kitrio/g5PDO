@@ -2,7 +2,7 @@
 $sub_menu = '400400';
 include_once('./_common.php');
 include_once('./admin.shop.lib.php');
-include_once(G5_LIB_PATH.'/mailer.lib.php');
+include_once(G5_LIB_PATH . '/mailer.lib.php');
 
 check_admin_token();
 
@@ -30,13 +30,12 @@ $od_receipt_point = isset($_POST['od_receipt_point']) ? clean_xss_tags($_POST['o
 $od_receipt_coupon = isset($_POST['od_receipt_coupon']) ? clean_xss_tags($_POST['od_receipt_coupon'], 1, 1) : '';
 $search = isset($_POST['search']) ? get_search_string($_POST['search']) : '';
 
-for ($i=0; $i<$count_post_chk; $i++)
-{
+for ($i = 0; $i < $count_post_chk; $i++) {
     // 실제 번호를 넘김
-    $k     = isset($_POST['chk'][$i]) ? $_POST['chk'][$i] : 0;
+    $k = isset($_POST['chk'][$i]) ? $_POST['chk'][$i] : 0;
     $od_id = isset($_POST['od_id'][$k]) ? safe_replace_regex($_POST['od_id'][$k], 'od_id') : '';
 
-    $invoice      = isset($_POST['od_invoice'][$k]) ? clean_xss_tags($_POST['od_invoice'][$k], 1, 1) : '';
+    $invoice = isset($_POST['od_invoice'][$k]) ? clean_xss_tags($_POST['od_invoice'][$k], 1, 1) : '';
     $invoice_time = isset($_POST['od_invoice_time'][$k]) ? safe_replace_regex($_POST['od_invoice_time'][$k], 'time') : '';
     $delivery_company = isset($_POST['od_delivery_company'][$k]) ? clean_xss_tags($_POST['od_delivery_company'][$k], 1, 1) : '';
 
@@ -47,10 +46,9 @@ for ($i=0; $i<$count_post_chk; $i++)
     //echo $od_id . "<br>";
 
     $current_status = $od['od_status'];
-    $change_status  = isset($_POST['od_status']) ? clean_xss_tags($_POST['od_status'], 1, 1) : '';
+    $change_status = isset($_POST['od_status']) ? clean_xss_tags($_POST['od_status'], 1, 1) : '';
 
-    switch ($current_status)
-    {
+    switch ($current_status) {
         case '주문' :
             if ($change_status != '입금') continue 2;
             if ($od['od_settle_case'] != '무통장') continue 2;
@@ -58,19 +56,19 @@ for ($i=0; $i<$count_post_chk; $i++)
             order_update_receipt($od_id);
 
             // SMS
-            if($config['cf_sms_use'] == 'icode' && $send_sms && $default['de_sms_use4']) {
+            if ($config['cf_sms_use'] == 'icode' && $send_sms && $default['de_sms_use4']) {
                 $sms_contents = conv_sms_contents($od_id, $default['de_sms_cont4']);
-                if($sms_contents) {
-                    $receive_number = preg_replace("/[^0-9]/", "", $od['od_hp']);	// 수신자번호
+                if ($sms_contents) {
+                    $receive_number = preg_replace("/[^0-9]/", "", $od['od_hp']);    // 수신자번호
                     $send_number = preg_replace("/[^0-9]/", "", $default['de_admin_company_tel']); // 발신자번호
 
-                    if($receive_number)
+                    if ($receive_number)
                         $sms_messages[] = array('recv' => $receive_number, 'send' => $send_number, 'cont' => $sms_contents);
                 }
             }
 
             // 메일
-            if($config['cf_email_use'] && $od_send_mail)
+            if ($config['cf_email_use'] && $od_send_mail)
                 include './ordermail.inc.php';
 
             break;
@@ -91,28 +89,28 @@ for ($i=0; $i<$count_post_chk; $i++)
             change_status($od_id, '준비', '배송');
 
             // SMS
-            if($config['cf_sms_use'] == 'icode' && $send_sms && $default['de_sms_use5']) {
+            if ($config['cf_sms_use'] == 'icode' && $send_sms && $default['de_sms_use5']) {
                 $sms_contents = conv_sms_contents($od_id, $default['de_sms_cont5']);
-                if($sms_contents) {
-                    $receive_number = preg_replace("/[^0-9]/", "", $od['od_hp']);	// 수신자번호
+                if ($sms_contents) {
+                    $receive_number = preg_replace("/[^0-9]/", "", $od['od_hp']);    // 수신자번호
                     $send_number = preg_replace("/[^0-9]/", "", $default['de_admin_company_tel']); // 발신자번호
 
-                    if($receive_number)
+                    if ($receive_number)
                         $sms_messages[] = array('recv' => $receive_number, 'send' => $send_number, 'cont' => $sms_contents);
                 }
             }
 
             // 메일
-            if($config['cf_email_use'] && $od_send_mail)
+            if ($config['cf_email_use'] && $od_send_mail)
                 include './ordermail.inc.php';
 
             // 에스크로 배송
-            if($send_escrow && $od['od_tno'] && $od['od_escrow']) {
-                $escrow_tno  = $od['od_tno'];
+            if ($send_escrow && $od['od_tno'] && $od['od_escrow']) {
+                $escrow_tno = $od['od_tno'];
                 $escrow_numb = $invoice;
                 $escrow_corp = $delivery_company;
 
-                include(G5_SHOP_PATH.'/'.$od['od_pg'].'/escrow.register.php');
+                include(G5_SHOP_PATH . '/' . $od['od_pg'] . '/escrow.register.php');
             }
 
             break;
@@ -124,7 +122,7 @@ for ($i=0; $i<$count_post_chk; $i++)
             // 완료인 경우에만 상품구입 합계수량을 상품테이블에 저장한다.
             $sql2 = " select it_id from {$g5['g5_shop_cart_table']} where od_id = '$od_id' and ct_status = '완료' group by it_id ";
             $result2 = sql_query($sql2);
-            for ($k=0; $row2=sql_fetch_array($result2); $k++) {
+            for ($k = 0; $row2 = sql_fetch_array($result2); $k++) {
                 $sql3 = " select sum(ct_qty) as sum_qty from {$g5['g5_shop_cart_table']} where it_id = '{$row2['it_id']}' and ct_status = '완료' ";
                 $row3 = sql_fetch($sql3);
 
@@ -146,7 +144,7 @@ for ($i=0; $i<$count_post_chk; $i++)
 
     // 주문정보
     $info = get_order_info($od_id);
-    if(!$info) continue;
+    if (!$info) continue;
 
     $sql = " update {$g5['g5_shop_order_table']}
                 set od_misu         = '{$info['od_misu']}',
@@ -161,27 +159,27 @@ for ($i=0; $i<$count_post_chk; $i++)
 
 // SMS
 $sms_count = count($sms_messages);
-if($sms_count > 0) {
-    if($config['cf_sms_type'] == 'LMS') {
-        include_once(G5_LIB_PATH.'/icode.lms.lib.php');
+if ($sms_count > 0) {
+    if ($config['cf_sms_type'] == 'LMS') {
+        include_once(G5_LIB_PATH . '/icode.lms.lib.php');
 
         $port_setting = get_icode_port_type($config['cf_icode_id'], $config['cf_icode_pw']);
 
         // SMS 모듈 클래스 생성
-        if($port_setting !== false) {
+        if ($port_setting !== false) {
             $SMS = new LMS;
             $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $port_setting);
 
-            for($s=0; $s<$sms_count; $s++) {
-                $strDest     = array();
-                $strDest[]   = $sms_messages[$s]['recv'];
+            for ($s = 0; $s < $sms_count; $s++) {
+                $strDest = array();
+                $strDest[] = $sms_messages[$s]['recv'];
                 $strCallBack = $sms_messages[$s]['send'];
-                $strCaller   = iconv_euckr(trim($default['de_admin_company_name']));
-                $strSubject  = '';
-                $strURL      = '';
-                $strData     = iconv_euckr($sms_messages[$s]['cont']);
-                $strDate     = '';
-                $nCount      = count($strDest);
+                $strCaller = iconv_euckr(trim($default['de_admin_company_name']));
+                $strSubject = '';
+                $strURL = '';
+                $strData = iconv_euckr($sms_messages[$s]['cont']);
+                $strDate = '';
+                $nCount = count($strDest);
 
                 $res = $SMS->Add($strDest, $strCallBack, $strCaller, $strSubject, $strURL, $strData, $strDate, $nCount);
 
@@ -190,12 +188,12 @@ if($sms_count > 0) {
             }
         }
     } else {
-        include_once(G5_LIB_PATH.'/icode.sms.lib.php');
+        include_once(G5_LIB_PATH . '/icode.sms.lib.php');
 
         $SMS = new SMS; // SMS 연결
         $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $config['cf_icode_server_port']);
 
-        for($s=0; $s<$sms_count; $s++) {
+        for ($s = 0; $s < $sms_count; $s++) {
             $recv_number = $sms_messages[$s]['recv'];
             $send_number = $sms_messages[$s]['send'];
             $sms_content = iconv_euckr($sms_messages[$s]['cont']);
@@ -208,7 +206,7 @@ if($sms_count > 0) {
     }
 }
 
-$qstr  = "sort1=$sort1&amp;sort2=$sort2&amp;sel_field=$sel_field&amp;search=$search";
+$qstr = "sort1=$sort1&amp;sort2=$sort2&amp;sel_field=$sel_field&amp;search=$search";
 $qstr .= "&amp;od_status=$od_status";
 $qstr .= "&amp;od_settle_case=$od_settle_case";
 $qstr .= "&amp;od_misu=$od_misu";

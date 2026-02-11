@@ -10,7 +10,7 @@ if (isset($_REQUEST['mode']) && $_REQUEST['mode'] === 'fail') {
     exit;
 }
 
-if(!isset($_SESSION['PAYREQ_MAP'])){
+if (!isset($_SESSION['PAYREQ_MAP'])) {
     alert('세션이 만료 되었거나 유효하지 않은 요청 입니다.', G5_MSHOP_URL);
 }
 
@@ -18,7 +18,7 @@ $payReqMap = $_SESSION['PAYREQ_MAP']; //결제 요청시, Session에 저장했�
 
 $g5['title'] = '토스페이먼츠 결제인증 완료처리';
 $g5['body_script'] = ' onload="setTossResult();"';
-include_once(G5_PATH.'/head.sub.php');
+include_once(G5_PATH . '/head.sub.php');
 
 // 토스페이먼츠 결제인증 성공시 인증키 주문 임시데이터에 업데이트
 $paymentKey = isset($_REQUEST['paymentKey']) ? trim($_REQUEST['paymentKey']) : '';
@@ -41,37 +41,38 @@ $data_new = base64_encode(serialize($data));
 $sql = " update {$g5['g5_shop_order_data_table']} set dt_data = '$data_new' where od_id = '$orderId' limit 1 ";
 sql_query($sql);
 
-if(isset($data['pp_id']) && $data['pp_id']) {
-    $order_action_url = G5_HTTPS_MSHOP_URL.'/personalpayformupdate.php';
+if (isset($data['pp_id']) && $data['pp_id']) {
+    $order_action_url = G5_HTTPS_MSHOP_URL . '/personalpayformupdate.php';
 } else {
-    $order_action_url = G5_HTTPS_MSHOP_URL.'/orderformupdate.php';
+    $order_action_url = G5_HTTPS_MSHOP_URL . '/orderformupdate.php';
 }
 ?>
 
 <?php
 $exclude = array();
 
-echo '<form name="forderform" method="post" action="'.$order_action_url.'" autocomplete="off">'.PHP_EOL;
+echo '<form name="forderform" method="post" action="' . $order_action_url . '" autocomplete="off">' . PHP_EOL;
 
 echo make_order_field($data, $exclude);
 
-echo '</form>'.PHP_EOL;
+echo '</form>' . PHP_EOL;
 ?>
 
-<div>
-    <div id="show_progress">
-        <span style="display:block; text-align:center;margin-top:120px"><img src="<?php echo G5_MOBILE_URL; ?>/shop/img/loading.gif" alt=""></span>
-        <span style="display:block; text-align:center;margin-top:10px; font-size:14px">주문완료 중입니다. 잠시만 기다려 주십시오.</span>
+    <div>
+        <div id="show_progress">
+            <span style="display:block; text-align:center;margin-top:120px"><img
+                        src="<?php echo G5_MOBILE_URL; ?>/shop/img/loading.gif" alt=""></span>
+            <span style="display:block; text-align:center;margin-top:10px; font-size:14px">주문완료 중입니다. 잠시만 기다려 주십시오.</span>
+        </div>
     </div>
-</div>
 
-<script type="text/javascript">
-function setTossResult() {
-    setTimeout( function() {
-        document.forderform.submit();
-    }, 300);
-}
-</script>
+    <script type="text/javascript">
+      function setTossResult() {
+        setTimeout(function () {
+          document.forderform.submit();
+        }, 300);
+      }
+    </script>
 
 <?php
-include_once(G5_PATH.'/tail.sub.php');
+include_once(G5_PATH . '/tail.sub.php');

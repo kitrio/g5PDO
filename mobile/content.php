@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-if (! (isset($co['co_id']) && $co['co_id']))
+if (!(isset($co['co_id']) && $co['co_id']))
     alert('등록된 내용이 없습니다.');
 
 $g5['title'] = $co['co_subject'];
@@ -14,7 +14,7 @@ $str = conv_content($co_content, $co['co_html'], $co['co_tag_filter_use']);
 $src = $dst = array();
 $src[] = "/{{쇼핑몰명}}|{{홈페이지제목}}/";
 $dst[] = $config['cf_title'];
-if(isset($default) && isset($default['de_admin_company_name'])){
+if (isset($default) && isset($default['de_admin_company_name'])) {
     $src[] = "/{{회사명}}|{{상호}}/";
     $dst[] = isset($default['de_admin_company_name']) ? $default['de_admin_company_name'] : '';
     $src[] = "/{{대표자명}}/";
@@ -43,17 +43,17 @@ if(isset($default) && isset($default['de_admin_company_name'])){
 $str = preg_replace($src, $dst, $str);
 
 // 스킨경로
-if(trim($co['co_mobile_skin']) == '')
+if (trim($co['co_mobile_skin']) == '')
     $co['co_mobile_skin'] = 'basic';
 
 $content_skin_path = get_skin_path('content', $co['co_mobile_skin']);
-$content_skin_url  = get_skin_url('content', $co['co_mobile_skin']);
-$skin_file = $content_skin_path.'/content.skin.php';
+$content_skin_url = get_skin_url('content', $co['co_mobile_skin']);
+$skin_file = $content_skin_path . '/content.skin.php';
 
-if(is_file($skin_file)) {
+if (is_file($skin_file)) {
     include($skin_file);
 } else {
-    echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
+    echo '<p>' . str_replace(G5_PATH . '/', '', $skin_file) . '이 존재하지 않습니다.</p>';
 }
 
 include_once('./_tail.php');

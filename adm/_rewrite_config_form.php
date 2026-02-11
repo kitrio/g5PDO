@@ -42,7 +42,8 @@ add_javascript('<script src="' . G5_JS_URL . '/remodal/remodal.js"></script>', 1
     <?php echo $pg_anchor ?>
     <div class="local_desc02 local_desc">
         <p>
-            게시판과 컨텐츠 페이지에 짧은 URL 을 사용합니다. <a href="https://sir.kr/manual/g5/286" class="btn btn_03" target="_blank" style="margin-left:10px">설정 관련 메뉴얼 보기</a>
+            게시판과 컨텐츠 페이지에 짧은 URL 을 사용합니다. <a href="https://sir.kr/manual/g5/286" class="btn btn_03" target="_blank"
+                                             style="margin-left:10px">설정 관련 메뉴얼 보기</a>
             <?php if ($is_use_apache && !$is_use_nginx) { ?>
                 <?php if (!$is_apache_rewrite) { ?>
                     <br><strong>Apache 서버인 경우 rewrite_module 이 비활성화 되어 있으면 짧은 주소를 사용할수 없습니다.</strong>
@@ -70,26 +71,30 @@ add_javascript('<script src="' . G5_JS_URL . '/remodal/remodal.js"></script>', 1
                 <col>
             </colgroup>
             <tbody>
-                <?php
-                $short_url_arrs = array(
+            <?php
+            $short_url_arrs = array(
                     '0' => array('label' => '사용안함', 'url' => G5_URL . '/board.php?bo_table=free&wr_id=123'),
                     '1' => array('label' => '숫자', 'url' => G5_URL . '/free/123'),
                     '2' => array('label' => '글 이름', 'url' => G5_URL . '/free/안녕하세요/'),
-                );
-                foreach ($short_url_arrs as $k => $v) {
-                    $checked = ((int) $config['cf_bbs_rewrite'] === (int) $k) ? 'checked' : '';
+            );
+            foreach ($short_url_arrs as $k => $v) {
+                $checked = ((int)$config['cf_bbs_rewrite'] === (int)$k) ? 'checked' : '';
                 ?>
-                    <tr>
-                        <td><input name="cf_bbs_rewrite" id="cf_bbs_rewrite_<?php echo $k; ?>" type="radio" value="<?php echo $k; ?>" <?php echo $checked; ?>><label for="cf_bbs_rewrite_<?php echo $k; ?>" class="rules_label"><?php echo $v['label']; ?></label></td>
-                        <td><?php echo $v['url']; ?></td>
-                    </tr>
-                <?php } //end foreach ?>
+                <tr>
+                    <td><input name="cf_bbs_rewrite" id="cf_bbs_rewrite_<?php echo $k; ?>" type="radio"
+                               value="<?php echo $k; ?>" <?php echo $checked; ?>><label
+                                for="cf_bbs_rewrite_<?php echo $k; ?>"
+                                class="rules_label"><?php echo $v['label']; ?></label></td>
+                    <td><?php echo $v['url']; ?></td>
+                </tr>
+            <?php } //end foreach ?>
             </tbody>
         </table>
     </div>
 
     <div class="server_rewrite_info">
-        <div class="is_rewrite remodal" data-remodal-id="modal_apache" role="dialog" aria-labelledby="modalApache" aria-describedby="modal1Desc">
+        <div class="is_rewrite remodal" data-remodal-id="modal_apache" role="dialog" aria-labelledby="modalApache"
+             aria-describedby="modal1Desc">
 
             <button type="button" class="connect-close" data-remodal-action="close">
                 <i class="fa fa-close"></i>
@@ -108,7 +113,8 @@ add_javascript('<script src="' . G5_JS_URL . '/remodal/remodal.js"></script>', 1
             <textarea readonly="readonly" rows="10"><?php echo get_mod_rewrite_rules(true); ?></textarea>
         </div>
 
-        <div class="is_rewrite remodal" data-remodal-id="modal_nginx" role="dialog" aria-labelledby="modalNginx" aria-describedby="modal2Desc">
+        <div class="is_rewrite remodal" data-remodal-id="modal_nginx" role="dialog" aria-labelledby="modalNginx"
+             aria-describedby="modal2Desc">
 
             <button type="button" class="connect-close" data-remodal-action="close">
                 <i class="fa fa-close"></i>

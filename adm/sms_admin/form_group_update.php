@@ -8,11 +8,10 @@ $post_cnk = (isset($_POST['chk']) && is_array($_POST['chk'])) ? $_POST['chk'] : 
 
 if ($w == 'u') // 업데이트
 {
-    for ($i=0; $i<count($post_cnk); $i++)
-    {
+    for ($i = 0; $i < count($post_cnk); $i++) {
         // 실제 번호를 넘김
         $k = $post_cnk[$i];
-        $fg_no = isset($_POST['fg_no'][$k]) ? (int) $_POST['fg_no'][$k] : 0;
+        $fg_no = isset($_POST['fg_no'][$k]) ? (int)$_POST['fg_no'][$k] : 0;
         $fg_name = isset($_POST['fg_name'][$k]) ? addslashes(strip_tags(clean_xss_attributes($_POST['fg_name'][$k]))) : '';
         $fg_member = isset($_POST['fg_member'][$k]) ? addslashes(strip_tags($_POST['fg_member'][$k])) : '';
 
@@ -33,14 +32,12 @@ if ($w == 'u') // 업데이트
         sql_query("update {$g5['sms5_form_group_table']} set fg_name='$fg_name', fg_member='$fg_member' where fg_no='$fg_no'");
         sql_query("update {$g5['sms5_form_table']} set fg_member = '$fg_member' where fg_no = '$fg_no'");
     }
-}
-else if ($w == 'de') // 그룹삭제
+} else if ($w == 'de') // 그룹삭제
 {
-    for ($i=0; $i<count($post_cnk); $i++)
-    {
+    for ($i = 0; $i < count($post_cnk); $i++) {
         // 실제 번호를 넘김
         $k = $post_cnk[$i];
-        $fg_no = isset($_POST['fg_no'][$k]) ? (int) $_POST['fg_no'][$k] : 0;
+        $fg_no = isset($_POST['fg_no'][$k]) ? (int)$_POST['fg_no'][$k] : 0;
 
         if (!is_numeric($fg_no))
             alert('그룹 고유번호가 없습니다.');
@@ -52,14 +49,11 @@ else if ($w == 'de') // 그룹삭제
         sql_query("delete from {$g5['sms5_form_group_table']} where fg_no='$fg_no'");
         sql_query("update {$g5['sms5_form_table']} set fg_no = 0, fg_member = 0 where fg_no='$fg_no'");
     }
-}
-else if ($w == 'em') 
-{
-    for ($i=0; $i<count($post_cnk); $i++)
-    {
+} else if ($w == 'em') {
+    for ($i = 0; $i < count($post_cnk); $i++) {
         // 실제 번호를 넘김
         $k = $post_cnk[$i];
-        $fg_no = isset($_POST['fg_no'][$k]) ? (int) $_POST['fg_no'][$k] : 0;
+        $fg_no = isset($_POST['fg_no'][$k]) ? (int)$_POST['fg_no'][$k] : 0;
 
         if ($fg_no == 'no') $fg_no = 0;
 
@@ -68,19 +62,16 @@ else if ($w == 'em')
 
         sql_query("delete from {$g5['sms5_form_table']} where fg_no = '$fg_no'");
     }
-}
-else if ($w == 'no') 
-{
+} else if ($w == 'no') {
     if ($fg_no == 'no') $fg_no = 0;
 
-    $fg_no = (int) $fg_no;
+    $fg_no = (int)$fg_no;
 
     if ($fg_no)
         sql_query("update {$g5['sms5_form_group_table']} set fg_count = 0 where fg_no = '$fg_no'");
 
     sql_query("delete from {$g5['sms5_form_table']} where fg_no = '$fg_no'");
-}
-else // 등록
+} else // 등록
 {
     $fg_name = isset($_POST['fg_name']) ? addslashes(strip_tags(clean_xss_attributes($_POST['fg_name']))) : '';
 

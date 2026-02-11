@@ -6,8 +6,8 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<title>회원가입 알림 메일</title>
+    <meta charset="utf-8">
+    <title>회원가입 알림 메일</title>
 </head>
 
 <body>
@@ -27,7 +27,9 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
             회원 닉네임 : <?php echo $mb_nick ?><br>
             추천인아이디 : <?php echo $mb_recommend ?>
         </p>
-        <a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $mb_id ?>" style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">관리자에서 회원정보 확인하기</a>
+        <a href="<?php echo G5_ADMIN_URL ?>/member_form.php?w=u&amp;mb_id=<?php echo $mb_id ?>"
+           style="display:block;padding:30px 0;background:#484848;color:#fff;text-decoration:none;text-align:center">관리자에서
+            회원정보 확인하기</a>
     </div>
 </div>
 

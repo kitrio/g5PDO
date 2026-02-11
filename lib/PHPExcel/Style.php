@@ -107,12 +107,12 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
 
         // Initialise values
         $this->conditionalStyles = array();
-        $this->font         = new PHPExcel_Style_Font($isSupervisor, $isConditional);
-        $this->fill         = new PHPExcel_Style_Fill($isSupervisor, $isConditional);
-        $this->borders      = new PHPExcel_Style_Borders($isSupervisor, $isConditional);
-        $this->alignment    = new PHPExcel_Style_Alignment($isSupervisor, $isConditional);
+        $this->font = new PHPExcel_Style_Font($isSupervisor, $isConditional);
+        $this->fill = new PHPExcel_Style_Fill($isSupervisor, $isConditional);
+        $this->borders = new PHPExcel_Style_Borders($isSupervisor, $isConditional);
+        $this->alignment = new PHPExcel_Style_Alignment($isSupervisor, $isConditional);
         $this->numberFormat = new PHPExcel_Style_NumberFormat($isSupervisor, $isConditional);
-        $this->protection   = new PHPExcel_Style_Protection($isSupervisor, $isConditional);
+        $this->protection = new PHPExcel_Style_Protection($isSupervisor, $isConditional);
 
         // bind parent if we are a supervisor
         if ($isSupervisor) {
@@ -123,6 +123,73 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
             $this->numberFormat->bindParent($this);
             $this->protection->bindParent($this);
         }
+    }
+
+    /**
+     * Build style array from subcomponents
+     *
+     * @param array $array
+     * @return array
+     */
+    public function getStyleArray($array)
+    {
+        return array('quotePrefix' => $array);
+    }
+
+    /**
+     * Get Conditional Styles. Only used on supervisor.
+     *
+     * @return PHPExcel_Style_Conditional[]
+     */
+    public function getConditionalStyles()
+    {
+        return $this->getActiveSheet()->getConditionalStyles($this->getActiveCell());
+    }
+
+    /**
+     * Set Conditional Styles. Only used on supervisor.
+     *
+     * @param PHPExcel_Style_Conditional[] $pValue Array of condtional styles
+     * @return PHPExcel_Style
+     */
+    public function setConditionalStyles($pValue = null)
+    {
+        if (is_array($pValue)) {
+            $this->getActiveSheet()->setConditionalStyles($this->getSelectedCells(), $pValue);
+        }
+        return $this;
+    }
+
+    /**
+     * Get quote prefix
+     *
+     * @return boolean
+     */
+    public function getQuotePrefix()
+    {
+        if ($this->isSupervisor) {
+            return $this->getSharedComponent()->getQuotePrefix();
+        }
+        return $this->quotePrefix;
+    }
+
+    /**
+     * Set quote prefix
+     *
+     * @param boolean $pValue
+     */
+    public function setQuotePrefix($pValue)
+    {
+        if ($pValue == '') {
+            $pValue = false;
+        }
+        if ($this->isSupervisor) {
+            $styleArray = array('quotePrefix' => $pValue);
+            $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
+        } else {
+            $this->quotePrefix = (boolean)$pValue;
+        }
+        return $this;
     }
 
     /**
@@ -143,27 +210,6 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
         }
 
         return $this->parent->getCellXfByIndex($xfIndex);
-    }
-
-    /**
-     * Get parent. Only used for style supervisor
-     *
-     * @return PHPExcel
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Build style array from subcomponents
-     *
-     * @param array $array
-     * @return array
-     */
-    public function getStyleArray($array)
-    {
-        return array('quotePrefix' => $array);
     }
 
     /**
@@ -201,10 +247,10 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
      * );
      * </code>
      *
-     * @param    array    $pStyles    Array containing style information
-     * @param     boolean        $pAdvanced    Advanced mode for setting borders.
-     * @throws    PHPExcel_Exception
+     * @param array $pStyles Array containing style information
+     * @param boolean $pAdvanced Advanced mode for setting borders.
      * @return PHPExcel_Style
+     * @throws    PHPExcel_Exception
      */
     public function applyFromArray($pStyles = null, $pAdvanced = true)
     {
@@ -225,11 +271,11 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
 
                 // Calculate range outer borders
                 $rangeStart = PHPExcel_Cell::coordinateFromString($rangeA);
-                $rangeEnd   = PHPExcel_Cell::coordinateFromString($rangeB);
+                $rangeEnd = PHPExcel_Cell::coordinateFromString($rangeB);
 
                 // Translate column into index
-                $rangeStart[0]    = PHPExcel_Cell::columnIndexFromString($rangeStart[0]) - 1;
-                $rangeEnd[0]    = PHPExcel_Cell::columnIndexFromString($rangeEnd[0]) - 1;
+                $rangeStart[0] = PHPExcel_Cell::columnIndexFromString($rangeStart[0]) - 1;
+                $rangeEnd[0] = PHPExcel_Cell::columnIndexFromString($rangeEnd[0]) - 1;
 
                 // Make sure we can loop upwards on rows and columns
                 if ($rangeStart[0] > $rangeEnd[0] && $rangeStart[1] > $rangeEnd[1]) {
@@ -279,11 +325,11 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
                         // start column index for region
                         $colStart = ($x == 3) ?
                             PHPExcel_Cell::stringFromColumnIndex($rangeEnd[0])
-                                : PHPExcel_Cell::stringFromColumnIndex($rangeStart[0] + $x - 1);
+                            : PHPExcel_Cell::stringFromColumnIndex($rangeStart[0] + $x - 1);
                         // end column index for region
                         $colEnd = ($x == 1) ?
                             PHPExcel_Cell::stringFromColumnIndex($rangeStart[0])
-                                : PHPExcel_Cell::stringFromColumnIndex($rangeEnd[0] - $xMax + $x);
+                            : PHPExcel_Cell::stringFromColumnIndex($rangeEnd[0] - $xMax + $x);
 
                         for ($y = 1; $y <= $yMax; ++$y) {
                             // which edges are touching the region
@@ -470,6 +516,61 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
     }
 
     /**
+     * Get parent. Only used for style supervisor
+     *
+     * @return PHPExcel
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Get hash code
+     *
+     * @return string Hash code
+     */
+    public function getHashCode()
+    {
+        $hashConditionals = '';
+        foreach ($this->conditionalStyles as $conditional) {
+            $hashConditionals .= $conditional->getHashCode();
+        }
+
+        return md5(
+            $this->fill->getHashCode() .
+            $this->font->getHashCode() .
+            $this->borders->getHashCode() .
+            $this->alignment->getHashCode() .
+            $this->numberFormat->getHashCode() .
+            $hashConditionals .
+            $this->protection->getHashCode() .
+            ($this->quotePrefix ? 't' : 'f') .
+            __CLASS__
+        );
+    }
+
+    /**
+     * Get own index in style collection
+     *
+     * @return int
+     */
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
+    /**
+     * Set own index in style collection
+     *
+     * @param int $pValue
+     */
+    public function setIndex($pValue)
+    {
+        $this->index = $pValue;
+    }
+
+    /**
      * Get Fill
      *
      * @return PHPExcel_Style_Fill
@@ -532,30 +633,6 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
     }
 
     /**
-     * Get Conditional Styles. Only used on supervisor.
-     *
-     * @return PHPExcel_Style_Conditional[]
-     */
-    public function getConditionalStyles()
-    {
-        return $this->getActiveSheet()->getConditionalStyles($this->getActiveCell());
-    }
-
-    /**
-     * Set Conditional Styles. Only used on supervisor.
-     *
-     * @param PHPExcel_Style_Conditional[] $pValue Array of condtional styles
-     * @return PHPExcel_Style
-     */
-    public function setConditionalStyles($pValue = null)
-    {
-        if (is_array($pValue)) {
-            $this->getActiveSheet()->setConditionalStyles($this->getSelectedCells(), $pValue);
-        }
-        return $this;
-    }
-
-    /**
      * Get Protection
      *
      * @return PHPExcel_Style_Protection
@@ -563,82 +640,5 @@ class PHPExcel_Style extends PHPExcel_Style_Supervisor implements PHPExcel_IComp
     public function getProtection()
     {
         return $this->protection;
-    }
-
-    /**
-     * Get quote prefix
-     *
-     * @return boolean
-     */
-    public function getQuotePrefix()
-    {
-        if ($this->isSupervisor) {
-            return $this->getSharedComponent()->getQuotePrefix();
-        }
-        return $this->quotePrefix;
-    }
-
-    /**
-     * Set quote prefix
-     *
-     * @param boolean $pValue
-     */
-    public function setQuotePrefix($pValue)
-    {
-        if ($pValue == '') {
-            $pValue = false;
-        }
-        if ($this->isSupervisor) {
-            $styleArray = array('quotePrefix' => $pValue);
-            $this->getActiveSheet()->getStyle($this->getSelectedCells())->applyFromArray($styleArray);
-        } else {
-            $this->quotePrefix = (boolean) $pValue;
-        }
-        return $this;
-    }
-
-    /**
-     * Get hash code
-     *
-     * @return string Hash code
-     */
-    public function getHashCode()
-    {
-        $hashConditionals = '';
-        foreach ($this->conditionalStyles as $conditional) {
-            $hashConditionals .= $conditional->getHashCode();
-        }
-
-        return md5(
-            $this->fill->getHashCode() .
-            $this->font->getHashCode() .
-            $this->borders->getHashCode() .
-            $this->alignment->getHashCode() .
-            $this->numberFormat->getHashCode() .
-            $hashConditionals .
-            $this->protection->getHashCode() .
-            ($this->quotePrefix  ? 't' : 'f') .
-            __CLASS__
-        );
-    }
-
-    /**
-     * Get own index in style collection
-     *
-     * @return int
-     */
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
-    /**
-     * Set own index in style collection
-     *
-     * @param int $pValue
-     */
-    public function setIndex($pValue)
-    {
-        $this->index = $pValue;
     }
 }
