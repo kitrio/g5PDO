@@ -1,14 +1,5 @@
 <?php
 include_once("./_common.php");
-include_once("./JSON.php");
-
-if (!function_exists('json_encode')) {
-    function json_encode($data)
-    {
-        $json = new Services_JSON();
-        return ($json->encode($data));
-    }
-}
 
 $page_size = 9;
 

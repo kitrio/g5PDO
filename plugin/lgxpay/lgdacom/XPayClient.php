@@ -24,18 +24,6 @@ class XPayClient
 
     public function __construct($home_dir, $mode = "real")
     {
-        if (!function_exists('json_decode')) {
-            function json_decode($content, $assoc = false)
-            {
-                require_once 'JSON.php';
-                if ($assoc) {
-                    $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
-                } else {
-                    $json = new Services_JSON;
-                }
-                return $json->decode($content);
-            }
-        }
         define("LGD_USER_AGENT", "XPayClient (4.0.0.0/PHP)");
         define("LGD_LOG_FATAL", 0);
         define("LGD_LOG_ERROR", 1);

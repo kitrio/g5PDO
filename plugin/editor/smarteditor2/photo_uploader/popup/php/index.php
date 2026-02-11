@@ -11,15 +11,6 @@
  */
 include_once("./_common.php");
 
-if (!function_exists('json_encode')) {
-    @include_once("./JSON.php");
-    function json_encode($data)
-    {
-        $json = new Services_JSON();
-        return ($json->encode($data));
-    }
-}
-
 @ini_set('gd.jpeg_ignore_warning', 1);
 
 $ym = date('ym', G5_SERVER_TIME);

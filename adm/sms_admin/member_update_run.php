@@ -1,7 +1,6 @@
 <?php
 $sub_menu = "900200";
 include_once("./_common.php");
-@include_once(G5_PLUGIN_PATH . "/sms5/JSON.php");
 
 $mtype = isset($_REQUEST['mtype']) ? clean_xss_tags($_REQUEST['mtype'], 1, 1) : '';
 
@@ -10,14 +9,6 @@ if (empty($config['cf_sms_use'])) {
         die("{\"error\":\"환경 설정의 SMS 사용에서 아이코드를 사용설정해 주셔야 실행할수 있습니다.\"}");
     } else {
         die("환경 설정의 SMS 사용에서 아이코드를 사용설정해 주셔야 실행할수 있습니다.");
-    }
-}
-
-if (!function_exists('json_encode')) {
-    function json_encode($data)
-    {
-        $json = new Services_JSON();
-        return ($json->encode($data));
     }
 }
 

@@ -2,7 +2,6 @@
 include_once('./_common.php');
 include_once(G5_SHOP_PATH . '/settle_inicis.inc.php');
 require_once(G5_SHOP_PATH . '/inicis/libs/HttpClient.php');
-require_once(G5_SHOP_PATH . '/inicis/libs/json_lib.php');
 require_once(G5_SHOP_PATH . '/inicis/libs/properties.php');
 
 $inicis_pay_result = false;

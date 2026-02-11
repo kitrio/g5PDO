@@ -1,15 +1,6 @@
 <?php
 $sub_menu = "900300";
 include_once("./_common.php");
-@include_once(G5_PLUGIN_PATH . "/sms5/JSON.php");
-
-if (!function_exists('json_encode')) {
-    function json_encode($data)
-    {
-        $json = new Services_JSON();
-        return ($json->encode($data));
-    }
-}
 
 ajax_auth_check_menu($auth, $sub_menu, "r");
 

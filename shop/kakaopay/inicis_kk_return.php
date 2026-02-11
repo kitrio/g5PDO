@@ -2,7 +2,6 @@
 include_once('./_common.php');
 include_once(G5_SHOP_PATH . '/kakaopay/incKakaopayCommon.php');
 require_once(G5_SHOP_PATH . '/inicis/libs/HttpClient.php');
-require_once(G5_SHOP_PATH . '/inicis/libs/json_lib.php');
 
 // 카카오페이를 사용하지 않을 경우
 if (!$default['de_kakaopay_enckey']) die('카카오페이를 사용하지 않습니다.');
