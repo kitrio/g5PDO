@@ -598,62 +598,74 @@ function check_html_link_nofollow($type = '')
  *
  * @param string $html
  * @return string
+ * @throws HTMLPurifier_Exception
  */
 function html_purifier($html)
 {
     global $is_admin, $write;
+    static $purifier = null;
+    static $default_domain = array();
+    static $domains = array();
 
-    $f = file(G5_PLUGIN_PATH . '/htmlpurifier/safeiframe.txt');
-    $domains = array();
-    foreach ($f as $domain) {
-        // 첫행이 # 이면 주석 처리
-        if (!preg_match("/^#/", $domain)) {
-            $domain = trim($domain);
-            if ($domain) {
-                array_push($domains, $domain);
+    if ($purifier === null) {
+        $f = file(G5_PLUGIN_PATH . '/htmlpurifier/safeiframe.txt');
+        foreach ($f as $domain) {
+            // 첫행이 # 이면 주석 처리
+            if (!preg_match('/^#/', $domain)) {
+                $domain = trim($domain);
+                if ($domain) {
+                    $domains[] = $domain;
+                }
             }
         }
+
+        include_once(G5_PLUGIN_PATH . '/htmlpurifier/HTMLPurifier.standalone.php');
+        include_once(G5_PLUGIN_PATH . '/htmlpurifier/extend.video.php');
     }
+
+    $is_writer_admin = false;
+    $current_site_domain = $_SERVER['HTTP_HOST'] . '/';
     // 글쓴이가 관리자인 경우에만 현재 사이트 도메인을 허용
     if (isset($write['mb_id']) && $write['mb_id'] && is_admin($write['mb_id'])) {
-        array_push($domains, $_SERVER['HTTP_HOST'] . '/');
+        if ($domains && !in_array($_SERVER['HTTP_HOST'], $domains)) {
+            $domains[] = $current_site_domain; // 현재 사이트 도메인 추가
+            $is_writer_admin = true;
+        }
+    } else {
+        // 글쓴이가 관리자가 아니면 기본 도메인으로 초기화
+        $domains = $default_domain;
     }
     $safeiframe = implode('|', run_replace('html_purifier_safeiframes', $domains, $html));
 
-    include_once(G5_PLUGIN_PATH . '/htmlpurifier/HTMLPurifier.standalone.php');
-    include_once(G5_PLUGIN_PATH . '/htmlpurifier/extend.video.php');
+    if ($purifier === null || $is_writer_admin) {
+        $purifier_config = HTMLPurifier_Config::createDefault();
+        // data/cache 디렉토리에 CSS, HTML, URI 디렉토리 등을 만든다.
+        $purifier_config->set('Cache.SerializerPath', G5_DATA_PATH . '/cache');
+        $purifier_config->set('HTML.SafeEmbed', false);
+        $purifier_config->set('HTML.SafeObject', false);
+        $purifier_config->set('Output.FlashCompat', false);
+        $purifier_config->set('HTML.SafeIframe', true);
+        if (check_html_link_nofollow('html_purifier')) {
+            $purifier_config->set('HTML.Nofollow', true); // rel=nofollow 으로 스팸유입을 줄임
+        }
+        $purifier_config->set('URI.SafeIframeRegexp', '%^(https?:)?//(' . preg_replace('/\\\?\./', '\.', $safeiframe) . ')%');
+        $purifier_config->set('Attr.AllowedFrameTargets', array('_blank'));
+        //유튜브, 비메오 전체화면 가능하게 하기
+        $purifier_config->set('Filter.Custom', array(new HTMLPurifier_Filter_Iframevideo()));
 
-    $config = HTMLPurifier_Config::createDefault();
-    // data/cache 디렉토리에 CSS, HTML, URI 디렉토리 등을 만든다.
-    $config->set('Cache.SerializerPath', G5_DATA_PATH . '/cache');
-    $config->set('HTML.SafeEmbed', false);
-    $config->set('HTML.SafeObject', false);
-    $config->set('Output.FlashCompat', false);
-    $config->set('HTML.SafeIframe', true);
-    if ((function_exists('check_html_link_nofollow') && check_html_link_nofollow('html_purifier'))) {
-        $config->set('HTML.Nofollow', true); // rel=nofollow 으로 스팸유입을 줄임
+        /*
+         * HTMLPurifier 설정을 변경할 수 있는 Event hook
+         * 리스너에서는 첫번째 인자($config)로 `HTMLPurifier_Config` 객체를 받을 수 있다
+         */
+        run_event('html_purifier_config', $purifier_config, array(
+                'html' => $html,
+                'write' => $write,
+                'is_admin' => $is_admin
+            )
+        );
+
+        $purifier = new HTMLPurifier($purifier_config);
     }
-    $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(' . preg_replace('/\\\?\./', '\.', $safeiframe) . ')%');
-    $config->set('Attr.AllowedFrameTargets', array('_blank'));
-    //유튜브, 비메오 전체화면 가능하게 하기
-    $config->set('Filter.Custom', array(new HTMLPurifier_Filter_Iframevideo()));
-
-    /*
-     * HTMLPurifier 설정을 변경할 수 있는 Event hook
-     * 리스너에서는 첫번째 인자($config)로 `HTMLPurifier_Config` 객체를 받을 수 있다
-     */
-    run_event('html_purifier_config', $config, array(
-            'html' => $html,
-            'write' => $write,
-            'is_admin' => $is_admin
-        )
-    );
-
-    // 커스텀 URI 필터 등록
-    $def = $config->getDefinition('URI', true); // URI 정의 가져오기
-    $def->addFilter(new HTMLPurifierContinueParamFilter(), $config); // 커스텀 필터 추가
-
-    $purifier = new HTMLPurifier($config);
 
     return run_replace('html_purifier_result', $purifier->purify($html), $purifier, $html);
 }
