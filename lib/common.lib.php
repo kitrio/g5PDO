@@ -2516,22 +2516,38 @@ function get_uniqid()
 {
     global $g5;
 
-    if ($get_uniqid_key = run_replace('get_uniqid_key', '')) {
-        return $get_uniqid_key;
+    $max_try = 10; // 최대 10번 시도
+    $is_success = false;
+    $start_transaction_result = sql_query('START TRANSACTION');
+    if (!$start_transaction_result) {
+        return false; // 트랜잭션 시작 실패
     }
 
-    sql_query(" LOCK TABLE {$g5['uniqid_table']} WRITE ");
-    while (1) {
+    while ($max_try--) {
         // 년월일시분초에 100분의 1초 두자리를 추가함 (1/100 초 앞에 자리가 모자르면 0으로 채움)
-        $key = date('YmdHis', time()) . str_pad((int)((float)microtime() * 100), 2, "0", STR_PAD_LEFT);
-
-        $result = sql_query(" insert into {$g5['uniqid_table']} set uq_id = '$key', uq_ip = '{$_SERVER['REMOTE_ADDR']}' ", false);
-        if ($result) break; // 쿼리가 정상이면 빠진다.
+        $key = date('YmdHis', time()) . str_pad((int)((float)microtime() * 100), 2, '0', STR_PAD_LEFT);
+        $result = sql_query("insert into {$g5['uniqid_table']} set uq_id = '$key', uq_ip = '{$_SERVER['REMOTE_ADDR']}' ");
+        if ($result) {
+            // 쿼리가 성공적으로 실행되었으면, 트랜잭션을 커밋하고 빠져나간다.
+            $is_success = true;
+            $commet_result = sql_query('COMMIT');
+            if (!$commet_result) {
+                // 커밋 실패시 트랜잭션을 롤백하기 위함
+                $is_success = false;
+            } else {
+                break; // 쿼리가 정상이면 빠진다.
+            }
+        }
 
         // insert 하지 못했으면 일정시간 쉰다음 다시 유일키를 만든다.
         usleep(10000); // 100분의 1초를 쉰다
     }
-    sql_query(" UNLOCK TABLES ");
+
+    if (!$is_success) {
+        // 최대 시도 횟수를 초과해도 실패했으면 트랜잭션을 롤백.
+        sql_query('ROLLBACK');
+        return false; // 실패
+    }
 
     return $key;
 }
