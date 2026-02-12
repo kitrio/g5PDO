@@ -3,8 +3,8 @@ if (!defined('_GNUBOARD_')) exit;
 
 define('G5_HOOK_DEFAULT_PRIORITY', 8);
 
-include_once(dirname(__FILE__) . '/Hook/hook.class.php');
-include_once(dirname(__FILE__) . '/Hook/hook.extends.class.php');
+include_once(__DIR__ . '/Hook/hook.class.php');
+include_once(__DIR__ . '/Hook/hook.extends.class.php');
 
 function get_hook_class()
 {

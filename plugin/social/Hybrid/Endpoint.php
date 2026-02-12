@@ -81,7 +81,7 @@ class Hybrid_Endpoint
 
         $output = str_replace("{RETURN_TO_URL}", str_replace(
             array("<", ">", "\"", "'", "&"), array("&lt;", "&gt;", "&quot;", "&apos;", "&amp;"), Hybrid_Auth::getCurrentUrl(false)
-        ), file_get_contents(dirname(__FILE__) . "/resources/openid_xrds.xml"));
+        ), file_get_contents(__DIR__ . "/resources/openid_xrds.xml"));
         print $output;
         die();
     }
@@ -139,13 +139,13 @@ class Hybrid_Endpoint
             // Init Hybrid_Auth
             try {
                 if (!class_exists("Hybrid_Storage", false)) {
-                    require_once realpath(dirname(__FILE__)) . "/Storage.php";
+                    require_once realpath(__DIR__) . "/Storage.php";
                 }
                 if (!class_exists("Hybrid_Exception", false)) {
-                    require_once realpath(dirname(__FILE__)) . "/Exception.php";
+                    require_once realpath(__DIR__) . "/Exception.php";
                 }
                 if (!class_exists("Hybrid_Logger", false)) {
-                    require_once realpath(dirname(__FILE__)) . "/Logger.php";
+                    require_once realpath(__DIR__) . "/Logger.php";
                 }
 
                 $storage = new Hybrid_Storage();
@@ -208,7 +208,7 @@ class Hybrid_Endpoint
     {
         $output = str_replace("{X_XRDS_LOCATION}", htmlentities(Hybrid_Auth::getCurrentUrl(false), ENT_QUOTES, 'UTF-8')
             . "?get=openid_xrds&v="
-            . Hybrid_Auth::$version, file_get_contents(dirname(__FILE__) . "/resources/openid_realm.html"));
+            . Hybrid_Auth::$version, file_get_contents(__DIR__ . "/resources/openid_realm.html"));
         print $output;
         die();
     }

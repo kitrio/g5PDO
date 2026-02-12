@@ -1,6 +1,6 @@
 <?php
 include_once("_common.php");
-include_once(dirname(__FILE__) . '/kcaptcha_config.php');
+include_once(__DIR__ . '/kcaptcha_config.php');
 include_once('captcha.lib.php');
 
 while (true) {

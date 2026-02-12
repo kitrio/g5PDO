@@ -1,3 +1,3 @@
 <?php
-require_once(dirname(__FILE__) . '/recaptcha.class.php');
-require_once(dirname(__FILE__) . '/recaptcha.user.lib.php');
+require_once(__DIR__ . '/recaptcha.class.php');
+require_once(__DIR__ . '/recaptcha.user.lib.php');

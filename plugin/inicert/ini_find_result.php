@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
-require_once(dirname(__FILE__) . '/libs/KISA_SEED_CBC.php');
-require_once(dirname(__FILE__) . '/libs/INILib.php');
+require_once(__DIR__ . '/libs/KISA_SEED_CBC.php');
+require_once(__DIR__ . '/libs/INILib.php');
 
 $txId = isset($_POST['txId']) ? clean_xss_tags($_POST['txId'], 1, 1) : '';
 $mid = substr($txId, 6, 10);

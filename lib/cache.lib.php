@@ -1,8 +1,8 @@
 <?php
 if (!defined('_GNUBOARD_')) exit;
 
-include_once(dirname(__FILE__) . '/Cache/obj.class.php');
-include_once(dirname(__FILE__) . '/Cache/FileCache.class.php');
+include_once(__DIR__ . '/Cache/obj.class.php');
+include_once(__DIR__ . '/Cache/FileCache.class.php');
 
 function get_cachemanage_instance()
 {
