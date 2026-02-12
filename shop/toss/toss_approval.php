@@ -76,4 +76,3 @@ if (isset($payReqMap['pp_id']) && $payReqMap['pp_id']) {
         $page_return_url .= '?sw_direct=1';
     }
 }
-?>

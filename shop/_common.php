@@ -19,4 +19,3 @@ if (!defined('G5_USE_SHOP') || !G5_USE_SHOP)
 
 define('_SHOP_', true);
 define('_SHOP_COMMON_', true); // 모바일 페이지의 직접 접근을 막는 경우에 사용
-?>

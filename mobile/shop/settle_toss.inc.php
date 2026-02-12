@@ -12,4 +12,3 @@ $toss = new TossPayments(
 );
 
 $toss->setPaymentHeader();
-?>

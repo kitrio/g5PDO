@@ -90,4 +90,3 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
 header('Content-type: text/xml');
 echo $xml->asXML();
 
-?>
