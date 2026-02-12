@@ -3820,8 +3820,8 @@ function check_vaild_callback($callback)
 // 문자열 암복호화
 class str_encrypt
 {
-    var $salt;
-    var $length;
+    private $salt;
+    private $length;
 
     function __construct($salt = '')
     {
