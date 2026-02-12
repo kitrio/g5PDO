@@ -53,7 +53,7 @@ if (!isset($config['cf_member_img_size'])) {
 }
 
 // 소셜 로그인 관리 테이블 없을 경우 생성
-if (isset($g5['social_profile_table']) && !sql_query(" DESC {$g5['social_profile_table']} ", false)) {
+if (isset($g5['social_profile_table']) && !sql_query("SHOW TABLES LIKE '{$g5['social_profile_table']}' ", false)) {
     sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['social_profile_table']}` (
                   `mp_no` int(11) NOT NULL AUTO_INCREMENT,
                   `mb_id` varchar(255) NOT NULL DEFAULT '',
@@ -179,7 +179,7 @@ if (!$row) {
 
 if (defined('G5_USE_SHOP') && G5_USE_SHOP) {
     // 임시저장 테이블이 없을 경우 생성
-    if (!sql_query(" DESC {$g5['g5_shop_post_log_table']} ", false)) {
+    if (!sql_query("SHOW TABLES LIKE '{$g5['g5_shop_post_log_table']}' ", false)) {
         sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['g5_shop_post_log_table']}` (
                     `log_id` int(11) NOT NULL AUTO_INCREMENT,
                     `oid` bigint(20) unsigned NOT NULL,
@@ -225,48 +225,6 @@ if (
     sql_query(" ALTER TABLE `{$g5['auth_table']}` CHANGE `au_menu` `au_menu` VARCHAR(50) NOT NULL; ", true);
 
     $is_check = true;
-}
-
-// qa config 테이블 auto id key 추가
-$row = sql_fetch("select * from `{$g5['qa_config_table']}` limit 1");
-if (!isset($row['qa_id'])) {
-    sql_query(" ALTER TABLE `{$g5['qa_config_table']}` ADD COLUMN `qa_id` INT(11) NOT NULL AUTO_INCREMENT FIRST,
-                ADD PRIMARY KEY (`qa_id`); ", true);
-
-    $is_check = true;
-}
-
-// config 기본 테이블 auto id key 추가
-if (!isset($config['cf_id'])) {
-    sql_query(" ALTER TABLE `{$g5['config_table']}`
-                    ADD COLUMN `cf_id` INT(11) NOT NULL AUTO_INCREMENT FIRST,
-                    ADD PRIMARY KEY (`cf_id`); ", true);
-
-    $is_check = true;
-}
-
-// login 테이블 auto id key 추가
-$row = sql_fetch("select * from `{$g5['login_table']}` limit 1");
-if (!isset($row['lo_id'])) {
-    sql_query(" ALTER TABLE `{$g5['login_table']}`
-                    ADD COLUMN `lo_id` INT(11) NOT NULL AUTO_INCREMENT FIRST,
-                    DROP PRIMARY KEY,
-                    ADD PRIMARY KEY (`lo_id`),
-                    ADD UNIQUE KEY `lo_ip_unique` (`lo_ip`) ", true);
-
-    $is_check = true;
-}
-
-// visit 테이블 auto id key 로 변경
-$result = sql_query("describe `{$g5['visit_table']}`");
-while ($row = sql_fetch_array($result)) {
-    if (isset($row['Field']) && $row['Field'] === 'vi_id' && (isset($row['Default']) && $row['Default'] == 0)) {
-        sql_query("ALTER TABLE `{$g5['visit_table']}`
-                    CHANGE COLUMN `vi_id` `vi_id` INT(11) NOT NULL AUTO_INCREMENT;
-        ", false);
-
-        $is_check = true;
-    }
 }
 
 // SMS5 테이블 G5_TABLE_PREFIX 적용

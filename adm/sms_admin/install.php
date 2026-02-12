@@ -59,7 +59,7 @@ $f = explode(";", $file);
 for ($i = 0; $i < count($f); $i++) {
     if (trim($f[$i]) == "") continue;
     $f[$i] = get_db_create_replace($f[$i]);
-    sql_query($f[$i]) or die(mysqli_error());
+    sql_query($f[$i]) or die(get_pdo()->errorInfo());
 }
 // 테이블 생성 ------------------------------------
 
@@ -70,7 +70,7 @@ usleep(50000);
 //-------------------------------------------------------------------------------------------------
 // config 테이블 설정
 $sql = " insert into {$g5['sms5_book_group_table']} set bg_name='미분류'";
-sql_query($sql) or die(mysqli_error() . "<p>" . $sql);
+sql_query($sql) or die(get_pdo()->errorInfo() . "<p>" . $sql);
 
 echo "<script>document.getElementById('sms5_job_02').innerHTML='DB설정 완료';</script>";
 flush();

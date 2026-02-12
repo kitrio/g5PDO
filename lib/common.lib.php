@@ -1663,54 +1663,92 @@ function html_symbol($str)
  **
  *************************************************************************/
 
-// DB 연결
-function sql_connect($host, $user, $pass, $db = G5_MYSQL_DB)
+/**
+ * DB 연결
+ * @param string $host
+ * @param string $user
+ * @param string $pass
+ * @param string $db
+ * @return PDO 객체
+ */
+function sql_connect($host, $user, $pass, $db)
 {
-    mysqli_report(MYSQLI_REPORT_OFF);
-    $link = @mysqli_connect($host, $user, $pass, $db) or die('MySQL Host, User, Password, DB 정보에 오류가 있습니다.');
+    try {
+        //인코딩 포함 dsn
+        $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=' . G5_DB_CHARSET, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $pdo->exec("SET SESSION sql_mode = ''");
 
-    // 연결 오류 발생 시 스크립트 종료
-    if (mysqli_connect_errno()) {
-        die('Connect Error: ' . mysqli_connect_error());
+        if (defined('G5_TIMEZONE')) {
+            sql_query(" set time_zone = '" . G5_TIMEZONE . "'");
+        }
+        $pdo->query("USE " . G5_MYSQL_DB);
+        return $pdo;
+    } catch (Exception $e) {
+        error_log(json_encode([
+            'type' => "Database connection error",
+            'message' => $e->getMessage(),
+            'trace' => $e->getTrace()
+        ]));
+        http_response_code(502);
+        exit();
     }
+}
 
-    return $link;
+/**
+ * @return PDO
+ */
+function get_pdo()
+{
+    return $GLOBALS['g5']['connect_db'];
 }
 
 
-// DB 선택
+/**
+ * DB 선택
+ * @param $db
+ * @param PDOStatement $connect
+ * @return bool
+ */
 function sql_select_db($db, $connect)
 {
-    return @mysqli_select_db($connect, $db);
+    return $connect->execute("USE {$db}");
 }
 
-
+/**
+ * @param $charset
+ * @param PDOStatement $link
+ * @return void
+ */
 function sql_set_charset($charset, $link = null)
 {
-    global $g5;
-
     if (!$link)
-        $link = $g5['connect_db'];
+        $link = get_pdo();
 
-    mysqli_set_charset($link, $charset);
+    $link->exec("SET NAMES {$charset}");
 }
 
+/**
+ * @param PDOStatement $result
+ * @param $offset
+ * @return array|mixed|null
+ */
 function sql_data_seek($result, $offset = 0)
 {
-    if (!$result) return;
+    if (!$result)
+        return null;
 
-    mysqli_data_seek($result, $offset);
+    $result->fetchAll(PDO::FETCH_ASSOC);
+    return $result[$offset] ?? [];
 }
 
-// mysqli_query 와 mysqli_error 를 한꺼번에 처리
-// mysql connect resource 지정 - 명랑폐인님 제안
-function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
+function sql_query(string $sql, $show_error = G5_DISPLAY_SQL_ERROR, $link = null)
 {
     global $g5, $g5_debug;
 
-    if (!$link) {
-        $link = $g5['connect_db'];
-    }
+    /** @var PDO $link */
+    if (!$link)
+        $link = get_pdo();
 
     // Blind SQL Injection 취약점 해결
     $sql = trim($sql);
@@ -1722,27 +1760,17 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
 
     $is_debug = get_permission_debug_show();
 
-    $start_time = ($is_debug || G5_COLLECT_QUERY) ? get_microtime() : 0;
-
-    if ($error) {
-        $result = @mysqli_query($link, $sql) or die("<p>$sql<p>" . mysqli_errno($link) . " : " . mysqli_error($link) . "<p>error file : {$_SERVER['SCRIPT_NAME']}");
-    } else {
-        try {
-            $result = @mysqli_query($link, $sql);
-        } catch (Exception $e) {
-            $result = null;
-        }
-    }
-
-    $end_time = ($is_debug || G5_COLLECT_QUERY) ? get_microtime() : 0;
+    $start_time = ($is_debug || G5_COLLECT_QUERY) ? microtime(true) : 0;
+    $stmt = $link->query($sql);
+    $end_time = ($is_debug || G5_COLLECT_QUERY) ? microtime(true) : 0;
 
     $error = null;
     $source = array();
     if ($is_debug || G5_COLLECT_QUERY) {
-        $error = array(
-            'error_code' => mysqli_errno($link),
-            'error_message' => mysqli_error($link),
-        );
+        $error = [
+            'error_code' => $link->errorCode(),
+            'error_message' => $link->errorInfo()[2] ?? ''
+        ];
 
         $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $found = false;
@@ -1751,6 +1779,7 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
             if ($trace['function'] === 'sql_query') {
                 $found = true;
             }
+
             if (isset($stack[$index + 1]) && $stack[$index + 1]['function'] === 'sql_fetch') {
                 continue;
             }
@@ -1778,8 +1807,8 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
 
         $g5_debug['sql'][] = array(
             'sql' => $sql,
-            'result' => $result,
-            'success' => !!$result,
+            'result' => $error['error_code'],
+            'success' => (bool)$error['error_code'],
             'source' => $source,
             'error_code' => $error['error_code'],
             'error_message' => $error['error_message'],
@@ -1788,50 +1817,54 @@ function sql_query($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
         );
     }
 
-    run_event('sql_query_after', $result, $sql, $start_time, $end_time, $error, $source);
-
-    return $result;
+    return $stmt;
 }
 
-
-// 쿼리를 실행한 후 결과값에서 한행을 얻는다.
+/**
+ * 쿼리를 실행한 후 결과값에서 한 행을 얻는다.
+ * @param $sql
+ * @param $error
+ * @param $link
+ * @return array|false|null
+ */
 function sql_fetch($sql, $error = G5_DISPLAY_SQL_ERROR, $link = null)
 {
     global $g5;
 
     if (!$link)
-        $link = $g5['connect_db'];
+        $link = get_pdo();
 
     $result = sql_query($sql, $error, $link);
-    //$row = @sql_fetch_array($result) or die("<p>$sql<p>" . mysqli_errno() . " : " .  mysqli_error() . "<p>error file : $_SERVER['SCRIPT_NAME']");
     $row = sql_fetch_array($result);
     return $row;
 }
 
 
-// 결과값에서 한행 연관배열(이름으로)로 얻는다.
+/**
+ * 결과값에서 한행 연관배열로 얻는다.
+ * @param PDOStatement $result
+ * @return array|false|null
+ */
 function sql_fetch_array($result)
 {
-    if (!$result) return array();
-
-    try {
-        $row = @mysqli_fetch_assoc($result);
-    } catch (Exception $e) {
-        $row = null;
+    if (!$result) {
+        return null;
     }
 
-    return $row;
+    return $result->fetch(PDO::FETCH_ASSOC);
 }
 
 
 // $result에 대한 메모리(memory)에 있는 내용을 모두 제거한다.
 // sql_free_result()는 결과로부터 얻은 질의 값이 커서 많은 메모리를 사용할 염려가 있을 때 사용된다.
 // 단, 결과 값은 스크립트(script) 실행부가 종료되면서 메모리에서 자동적으로 지워진다.
+/**
+ * @param PDOStatement $result
+ * @return void
+ */
 function sql_free_result($result)
 {
-    if (!is_resource($result)) return;
-
-    mysqli_free_result($result);
+    $result->closeCursor();
 }
 
 
@@ -1855,21 +1888,31 @@ function sql_password($value)
     return $row['pass'];
 }
 
-
+/**
+ * 마지막 insert 된 id 를 얻는다.
+ * @param $link
+ * @return int|string
+ */
 function sql_insert_id($link = null)
 {
-    global $g5;
-
     if (!$link)
-        $link = $g5['connect_db'];
+        $link = get_pdo();
 
-    return mysqli_insert_id($link);
+    /**
+     * @var PDO $link
+     */
+    return $link->lastInsertId();
 }
 
 
+/**
+ * 쿼리 결과값의 row 수를 얻는다.
+ * @param PDOStatement $result
+ * @return int|string
+ */
 function sql_num_rows($result)
 {
-    return mysqli_num_rows($result);
+    return $result->rowCount();
 }
 
 
@@ -1878,31 +1921,25 @@ function sql_field_names($table, $link = null)
     global $g5;
 
     if (!$link)
-        $link = $g5['connect_db'];
+        $link = get_pdo();
 
     $columns = array();
 
     $sql = " select * from `$table` limit 1 ";
     $result = sql_query($sql, $link);
 
-    while ($field = mysqli_fetch_field($result)) {
+    while ($field = $result->getColumnMeta()) {
         $columns[] = $field->name;
     }
 
     return $columns;
 }
 
-
-function sql_error_info($link = null)
+function sql_error_info()
 {
-    global $g5;
-
-    if (!$link)
-        $link = $g5['connect_db'];
-
-    return mysqli_errno($link) . ' : ' . mysqli_error($link);
+    $link = get_pdo();
+    return $link->errorCode() ?: '' . $link->errorInfo()[2] ?? '';
 }
-
 
 // PHPMyAdmin 참고
 function get_table_define($table, $crlf = "\n")
@@ -1927,7 +1964,6 @@ function get_table_define($table, $crlf = "\n")
         }
         $schema_create .= ',' . $crlf;
     } // end while
-    sql_free_result($result);
 
     $schema_create = preg_replace('/,' . $crlf . '$/', '', $schema_create);
 
@@ -2374,15 +2410,26 @@ function convert_charset($from_charset, $to_charset, $str)
 }
 
 
-// mysqli_real_escape_string 의 alias 기능을 한다.
-function sql_real_escape_string($str, $link = null)
+/**
+ * pdo quoto 로 mysqli_real_escape 의 alias 기능을 한다.
+ * @param $str
+ * @param $link
+ * @return string
+ */
+function sql_real_escape_string($str, $link=null)
 {
     global $g5;
 
-    if (!$link)
-        $link = $g5['connect_db'];
-
-    return mysqli_real_escape_string($link, $str);
+    if(!$link)
+        $link = get_pdo();
+    /**
+     * @var PDO $link
+     */
+    $escape_str = $link->quote($str);
+    if($escape_str === false){
+        return '';
+    }
+    return substr($escape_str, 1, -1);
 }
 
 function escape_trim($field)
