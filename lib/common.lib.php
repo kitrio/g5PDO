@@ -670,6 +670,21 @@ function html_purifier($html)
     return run_replace('html_purifier_result', $purifier->purify($html), $purifier, $html);
 }
 
+/**
+ * 관리자에서 설정할 수있는 html 을 받아서 필터링 후 반환
+ * htmlpurifier 를 무분별하게 실행하는것을 막기위함.
+ * @param string $html_content
+ * @return string
+ */
+function print_filtered_html($html_content)
+{
+    $striped_content = trim(strip_tags($html_content));
+    if ($striped_content == '') {
+        return '';
+    }
+
+    return html_purifier($striped_content);
+}
 
 // 검색 구문을 얻는다.
 function get_sql_search($search_ca_name, $search_field, $search_text, $search_operator = 'and')
