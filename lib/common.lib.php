@@ -1656,6 +1656,18 @@ function html_symbol($str)
     return $str ? preg_replace("/\&([a-z0-9]{1,20}|\#[0-9]{0,3});/i", "&#038;\\1;", $str) : "";
 }
 
+/**
+ * null byte 삭제
+ * @param $input
+ * @return array|mixed|string|string[]
+ */
+function sanitize_null_bytes($input) {
+    if (is_string($input)) {
+        return str_replace(["\x00", "\0", '%00'], '', $input);
+    }
+    return $input;
+}
+
 
 /*************************************************************************
  **
@@ -1752,8 +1764,11 @@ function sql_query(string $sql, $show_error = G5_DISPLAY_SQL_ERROR, $link = null
 
     // Blind SQL Injection 취약점 해결
     $sql = trim($sql);
+
+    // null byte 공격방지
+    $sql = sanitize_null_bytes($sql);
+
     // union의 사용을 허락하지 않습니다.
-    //$sql = preg_replace("#^select.*from.*union.*#i", "select 1", $sql);
     $sql = preg_replace("#^select.*from.*[\s\(]+union[\s\)]+.*#i ", "select 1", $sql);
     // `information_schema` DB로의 접근을 허락하지 않습니다.
     $sql = preg_replace("#^select.*from.*where.*`?information_schema`?.*#i", "select 1", $sql);
