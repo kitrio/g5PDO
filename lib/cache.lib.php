@@ -8,7 +8,13 @@ function get_cachemanage_instance()
 {
     static $instance = null;
 
-    if (!(defined('G5_USE_CACHE') && G5_USE_CACHE)) return $instance;
+    if (!G5_USE_CACHE) {
+        return $instance;
+    }
+
+    if ($instance !== null) {
+        return $instance;
+    }
 
     $instance = run_replace('get_cachemanage_instance', $instance);
 
