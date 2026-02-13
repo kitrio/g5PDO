@@ -1,7 +1,31 @@
 <?php
-if (!defined('_GNUBOARD_')) exit;
+if (!defined('_GNUBOARD_')) exit();
 
 add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/style.css">', 0);
+
+$total_query_time = 0;
+$duplicate_query_count = 0;
+$duplicate_query_list = [];
+// 상단바
+foreach ((array)$g5_debug['sql'] as $key => $query) {
+
+    if (empty($query)) {
+        continue;
+    }
+    $executed_time = $query['end_time'] - $query['start_time'];
+    $show_executed_time = (float)number_format((float)$executed_time * 1000, 3, '.', '');
+    $total_query_time += $show_executed_time;
+
+    $is_duplicate = false;
+    $current_query = md5($query['sql']);
+    if (isset($duplicate_query_list[$current_query])) {
+        $is_duplicate = true;
+        $duplicate_query_count++;
+    } else {
+        $duplicate_query_list[$current_query] = $current_query;
+    }
+}
+// end 상단바
 ?>
 <style>
     <?php if (defined('G5_IS_ADMIN') && G5_IS_ADMIN){ ?>
@@ -16,8 +40,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
         <div class="debug_bar_btn_group">
             <button class="view_debug_bar debug_button">디버그</button>
         </div>
+
         <div class="debug_bar_text">
-            <?php echo 'PHP 실행시간 : ' . $php_run_time . ' | 메모리 사용량 : ' . number_format($memory_usage) . ' bytes'; ?>
+            <?php
+            echo '<span class="">' . '쿼리 수:' . (isset($g5_debug['sql']) ? count($g5_debug['sql']) : 0) . '개 </span>';
+            echo 'PHP: ' . number_format($php_total_run_time, 6) * 1000 . ' ms | 램 : ' . number_format($memory_usage) . ' bytes ' . '(' . number_format($memory_usage / (1024 ** 2), 3) . ') MiB ' . ' | 총 쿼리시간 : ' . $total_query_time . 'ms';
+            ?>
         </div>
     </div>
     <div class="debug_bar_content">
@@ -38,9 +66,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                 <h3 class="query_top">
                     총 쿼리수 : <span><?php echo isset($g5_debug['sql']) ? count($g5_debug['sql']) : 0; ?></span>
                 </h3>
+                <h3 class="query_top">
+                    중복된 쿼리수: <span><?php echo $duplicate_query_count ?></span>
+                </h3>
 
                 <div class="sql_query_list">
-                    <table class="debug_table">
+                    <table class="debug_table table">
                         <caption>
                             쿼리 목록
                         </caption>
@@ -53,12 +84,21 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                         </thead>
                         <tbody>
                         <?php
+                        $query_list = [];
                         foreach ((array)$g5_debug['sql'] as $key => $query) {
 
                             if (empty($query)) continue;
 
+                            $is_duplicate = false;
+                            $current_query = md5($query['sql']);
+                            if (isset($query_list[$current_query])) {
+                                $is_duplicate = true;
+                            } else {
+                                $query_list[$current_query] = $current_query;
+                            }
+
                             $executed_time = $query['end_time'] - $query['start_time'];
-                            $show_excuted_time = number_format((float)$executed_time * 1000, 2, '.', '');
+                            $show_executed_time = number_format((float)$executed_time * 1000, 2, '.', '');
                             ?>
                             <tr>
                                 <td scope="row" data-label="실행순서"><?php echo $key; ?></td>
@@ -73,7 +113,11 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                                     }
                                     ?>
                                     <p class="query_source">
-                                        <em><?php echo "{$query['source']['file']}:{$query['source']['line']}" ?></em><br>
+                                        <?php echo $is_duplicate ? '<span style="color: red">중복</span>' : ''; ?>
+                                        <?php foreach ($query['source']['current_file_line'] as $val) { ?>
+                                            <em><?php echo $val ?> </em><br>
+                                        <?php } ?>
+                                        <br>
                                         <?php if ($function) {
                                             echo "<em>{$function}</em><br>";
                                         } ?>
@@ -83,9 +127,11 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                                     if (!$query['success']) {
                                         echo '<p class="query_error_message">오류: [' . $query['error_code'] . '] ' . $query['error_message'] . '</p>';
                                     }
+
+                                    echo '<p class="query_time">type: ' . ($query['access_type'] ?? '') . '</p>';
                                     ?>
                                 </td>
-                                <td data-label="실행시간"><?php echo $show_excuted_time . ' ms'; ?></td>
+                                <td data-label="실행시간"><?php echo $show_executed_time . ' ms'; ?></td>
                             </tr>
                         <?php } ?>
 
@@ -111,7 +157,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                             </caption>
                             <thead>
                             <tr>
-                                <th scope="col" width="20%">event_tag (갯수)</th>
+                                <th scope="col" width="20%">event_tag (등록된 갯수)</th>
                                 <th scope="col" width="60%">event_function</th>
                                 <th scope="col" width="10%">인수의 수</th>
                                 <th scope="col" width="10%">우선 순위</th>
@@ -165,6 +211,10 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                                         } else {
                                             $print_function = $data['function'];
                                         }
+
+                                        if ($print_function instanceof Closure) {
+                                            $print_function = 'Closure';
+                                        }
                                         ?>
                                         <tr>
                                             <?php if ($is_print) { ?>
@@ -206,7 +256,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                             </caption>
                             <thead>
                             <tr>
-                                <th scope="col" width="20%">replace_tag (갯수)</th>
+                                <th scope="col" width="20%">replace_tag (등록된 갯수)</th>
                                 <th scope="col" width="60%">replace_function</th>
                                 <th scope="col" width="10%">인수의 수</th>
                                 <th scope="col" width="10%">우선 순위</th>
@@ -259,6 +309,10 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_PLUGIN_URL . '/debugbar/styl
                                             }
                                         } else {
                                             $print_function = $data['function'];
+                                        }
+
+                                        if ($print_function instanceof Closure) {
+                                            $print_function = 'Closure';
                                         }
                                         ?>
                                         <tr>
