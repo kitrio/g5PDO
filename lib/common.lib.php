@@ -23,7 +23,6 @@ function get_microtime()
 // 한페이지에 보여줄 행, 현재페이지, 총페이지수, URL
 function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
 {
-    //$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
     $url = preg_replace('#(&amp;)?page=[0-9]*#', '', $url);
     $url .= substr($url, -1) === '?' ? 'page=' : '&amp;page=';
     $url = preg_replace('|[^\w\-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', clean_xss_tags($url));
@@ -571,7 +570,6 @@ function conv_content($content, $html, $filter = true)
         $content = html_symbol($content);
 
         // 공백 처리
-        //$content = preg_replace("/  /", "&nbsp; ", $content);
         $content = str_replace("  ", "&nbsp; ", $content);
         $content = str_replace("\n ", "\n&nbsp;", $content);
 
@@ -1661,7 +1659,8 @@ function html_symbol($str)
  * @param $input
  * @return array|mixed|string|string[]
  */
-function sanitize_null_bytes($input) {
+function sanitize_null_bytes($input)
+{
     if (is_string($input)) {
         return str_replace(["\x00", "\0", '%00'], '', $input);
     }
@@ -1683,7 +1682,7 @@ function sanitize_null_bytes($input) {
  * @param string $db
  * @return PDO 객체
  */
-function sql_connect($host, $user, $pass, $db)
+function sql_connect($host, $user, $pass, $db=G5_MYSQL_DB)
 {
     try {
         //인코딩 포함 dsn
@@ -1694,7 +1693,6 @@ function sql_connect($host, $user, $pass, $db)
         if (defined('G5_TIMEZONE')) {
             sql_query(" set time_zone = '" . G5_TIMEZONE . "'");
         }
-        $pdo->query("USE " . G5_MYSQL_DB);
         return $pdo;
     } catch (Exception $e) {
         error_log(json_encode([
@@ -1703,7 +1701,7 @@ function sql_connect($host, $user, $pass, $db)
             'trace' => $e->getTrace()
         ]));
         http_response_code(502);
-        exit();
+        die('MySQL Host, User, Password, DB 정보에 오류가 있습니다.');
     }
 }
 
@@ -1719,17 +1717,18 @@ function get_pdo()
 /**
  * DB 선택
  * @param $db
- * @param PDOStatement $connect
+ * @param PDO $connect
  * @return bool
  */
 function sql_select_db($db, $connect)
 {
-    return $connect->execute("USE {$db}");
+    $result = $connect->exec("USE {$db}");
+    return $result !== false;
 }
 
 /**
  * @param $charset
- * @param PDOStatement $link
+ * @param PDO $link
  * @return void
  */
 function sql_set_charset($charset, $link = null)
@@ -2431,17 +2430,17 @@ function convert_charset($from_charset, $to_charset, $str)
  * @param $link
  * @return string
  */
-function sql_real_escape_string($str, $link=null)
+function sql_real_escape_string($str, $link = null)
 {
     global $g5;
 
-    if(!$link)
+    if (!$link)
         $link = get_pdo();
     /**
      * @var PDO $link
      */
     $escape_str = $link->quote($str);
-    if($escape_str === false){
+    if ($escape_str === false) {
         return '';
     }
     return substr($escape_str, 1, -1);
